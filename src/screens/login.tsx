@@ -22,7 +22,7 @@ export default function LoginScreen() {
       <Text>LOGIN</Text>
       <Button 
         title="Se Connecter" 
-        onPress={() => navigation.navigate("MainApp")}
+        onPress={() => navigation.navigate("Home")}
       />
     </View>
   );
