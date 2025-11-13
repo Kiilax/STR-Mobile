@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, View } from "react-native"
 
 export default function PointsListScreen() {
   return (
@@ -10,7 +10,7 @@ export default function PointsListScreen() {
         padding: 8,
       }}
     >
-      <Text>Il faudra mettre ici la liste des points d'intérêt</Text>
+      <Text>Il faudra mettre ici la liste des points d&apos;intérêt</Text>
     </View>
-  );
+  )
 }
