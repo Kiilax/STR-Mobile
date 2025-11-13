@@ -1,0 +1,17 @@
+include:
+  - project: 'nidhoggr-25/str-ci'
+    file: 
+      - '/.gitlab-ci-templates/lint.yml'
+      - '/.gitlab-ci-templates/format.yml'
+      - '/.gitlab-ci-templates/test.yml'
+    ref: prod
+
+stages:
+  - lint
+  - test
+
+lint:
+  extends: .lint-template
+
+test:
+  extends: .test-template
