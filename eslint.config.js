@@ -18,6 +18,7 @@ module.exports = defineConfig([
       "babel.config.js",
       "metro.config.js",
       "jest.config.js",
+      "expo-env.d.ts",
       "node_modules/",
       "android/",
       "ios/",
