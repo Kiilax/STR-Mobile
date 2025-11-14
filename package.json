@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "eslint \"src/**/*.{ts,tsx,js}\"",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\""
+    "lint:check": "eslint \"src/**/*.{ts,tsx,js}\" --max-warnings=0",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\""
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
