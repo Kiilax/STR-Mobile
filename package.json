@@ -8,6 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "test": "exit 0",
     "lint": "eslint \"src/**/*.{ts,tsx,js}\"",
     "lint:check": "eslint \"src/**/*.{ts,tsx,js}\" --max-warnings=0",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\""
