@@ -13,7 +13,7 @@ export default function RootLayout() {
         }}
       >
         <Tabs.Screen
-          name="map/index"
+          name="map/map"
           options={{
             title: "Carte",
             tabBarLabel: "Carte",
