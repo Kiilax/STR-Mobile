@@ -1,9 +1,9 @@
-import React from "react";
-import { View, Text, ScrollView, StyleSheet, Image } from "react-native";
-import { INTEREST_POINTS_MOCK } from "../interest-points/data/interest-points.mock";
+import React from "react"
+import { View, Text, ScrollView, StyleSheet, Image } from "react-native"
+import { INTEREST_POINTS_MOCK } from "../interest-points/data/interest-points.mock"
 
 // for the moment, we use a placeholder image for all interest points
-const placeholderImg = require("./data/placeholder.jpg");
+const placeholderImg = require("./data/placeholder.jpg")
 
 export default function InterestPointListScreen() {
   return (
@@ -15,21 +15,20 @@ export default function InterestPointListScreen() {
         </View>
       ))}
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
+  container: {
+    flex: 1,
     padding: 20,
     backgroundColor: "#F5F9FC",
-
   },
-  item: { 
+  item: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 15, 
-    borderBottomWidth: 1, 
+    padding: 15,
+    borderBottomWidth: 1,
     borderBottomColor: "#0055A4",
     backgroundColor: "#FFFFFF",
     borderRadius: 8,
@@ -43,18 +42,18 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
     borderLeftWidth: 4,
-    borderLeftColor: "#0055A4"
+    borderLeftColor: "#0055A4",
   },
   icon: {
     width: 50,
     height: 50,
     borderRadius: 8,
-    marginRight: 12
+    marginRight: 12,
   },
   text: {
     flex: 1,
     color: "#333333",
     fontSize: 16,
-    lineHeight: 22
+    lineHeight: 22,
   },
-});
+})
