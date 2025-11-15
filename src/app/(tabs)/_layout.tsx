@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router"
 import React from "react"
+import { MaterialIcons } from "@expo/vector-icons"
 
 export default function TabLayout() {
   return (
@@ -9,15 +10,17 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="map"
+        name="map/map"
         options={{
           title: "Map",
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="map" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="pointsList"
         options={{
           title: "Points d'intérêt",
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="place" size={size} color={color} />,
         }}
       />
     </Tabs>
