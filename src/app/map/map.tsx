@@ -27,7 +27,7 @@ export default function MapScreen() {
   const handleQRScanResult = (ip: string) => {
     setScannedIP(ip)
     setShowQRScanner(false)
-    console.log("Scanned IP:", ip)
+    console.log("Scanned IP:", scannedIP)
   }
 
   const handleCloseQRScanner = () => {
