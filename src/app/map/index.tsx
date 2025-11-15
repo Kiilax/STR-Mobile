@@ -1,6 +1,6 @@
 import { Text, View } from "react-native"
 
-export default function PointsListScreen() {
+export default function index() {
   return (
     <View
       style={{
@@ -10,7 +10,7 @@ export default function PointsListScreen() {
         padding: 8,
       }}
     >
-      <Text>Il faudra mettre ici la liste des points d&apos;intérêt</Text>
+      <Text>Il faudra mettre ici une carte</Text>
     </View>
   )
 }

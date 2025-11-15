@@ -1,6 +1,6 @@
 import { Text, View } from "react-native"
 
-export default function MapScreen() {
+export default function index() {
   return (
     <View
       style={{
@@ -10,7 +10,7 @@ export default function MapScreen() {
         padding: 8,
       }}
     >
-      <Text>Il faudra mettre ici une carte</Text>
+      <Text>Il faudra mettre ici 4rui3rhWla liste des points d&apos;intérêt</Text>
     </View>
   )
 }
