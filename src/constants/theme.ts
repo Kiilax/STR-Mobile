@@ -27,7 +27,10 @@ export const colors = {
     icon: light.black,
     tabIconDefault: light.secondary,
     tabIconSelected: light.accent,
-    black: light.black,
+    primary: "#fff",
+    secondary: "#F7F9FA",
+    accent: "#2AD783",
+    inverted: "#11181C",
   },
   dark: {
     text: dark.white,
@@ -36,7 +39,10 @@ export const colors = {
     icon: dark.white,
     tabIconDefault: dark.secondary,
     tabIconSelected: dark.accent,
-    white: dark.white,
+    primary: "#171C22",
+    secondary: "#20272F",
+    accent: "#2AD783",
+    inverted: "#FDFDFD",
   },
 }
 

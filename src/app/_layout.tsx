@@ -25,11 +25,10 @@ export default function RootLayout() {
             }}
           />
           <Tabs.Screen
-            name="points-list/index"
+            name="interest-points/interestPointList"
             options={{
-              title: "Liste des points",
-              tabBarLabel: "Liste",
-              tabBarIcon: ({ color, size }) => <Entypo name="list" size={size} color={color} />,
+              title: "Points d'intérêt",
+              tabBarIcon: ({ color, size }) => <Entypo name="location" size={size} color={color} />,
             }}
           />
         </Tabs>

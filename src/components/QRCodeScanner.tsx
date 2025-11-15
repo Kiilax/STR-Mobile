@@ -28,7 +28,7 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
   if (loading) {
     return (
       <View style={styles.container}>
-        <Ionicons name="hourglass" size={48} color={colors.dark.white} />
+        <Ionicons name="hourglass" size={48} color={colors.dark.inverted} />
       </View>
     )
   }
@@ -39,7 +39,7 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
         <StatusBar hidden />
         <View style={styles.header}>
           <Pressable onPress={onClose}>
-            <Ionicons name="close" size={24} color={colors.dark.white} />
+            <Ionicons name="close" size={24} color={colors.dark.inverted} />
           </Pressable>
           <Text style={styles.mainText}>QR Code Scanner</Text>
         </View>
@@ -60,7 +60,7 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
       <StatusBar hidden />
       <View style={styles.header}>
         <Pressable onPress={onClose}>
-          <Ionicons name="close" size={24} color={colors.dark.white} />
+          <Ionicons name="close" size={24} color={colors.dark.inverted} />
         </Pressable>
         <Text style={styles.mainText}>Scan QR Code</Text>
       </View>
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: colors.dark.white,
+    borderBottomColor: colors.dark.inverted,
     width: "100%",
   },
 
@@ -112,13 +112,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     flex: 1,
     textAlign: "center",
-    color: colors.dark.white,
+    color: colors.dark.inverted,
   },
   description: {
     fontSize: 16,
     textAlign: "center",
     marginHorizontal: 20,
-    color: colors.dark.white,
+    color: colors.dark.inverted,
     marginTop: 20,
     marginBottom: 20,
   },
