@@ -7,7 +7,7 @@ const placeholderImg = require("./data/placeholder.jpg");
 
 export default function InterestPointListScreen() {
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 80 }}>
       {INTEREST_POINTS_MOCK.map((eq) => (
         <View key={eq.id} style={styles.item}>
           <Image source={placeholderImg} style={styles.icon} />
