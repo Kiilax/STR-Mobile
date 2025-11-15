@@ -1,7 +1,9 @@
+import { colors } from "@/src/constants/theme"
 import { StyleSheet } from "react-native"
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
   },
   map: {
     width: "100%",
@@ -14,7 +16,7 @@ export const styles = StyleSheet.create({
     width: 55,
     height: 55,
     borderRadius: 30,
-    backgroundColor: "#007AFF",
+    backgroundColor: colors.dark.tint,
     alignItems: "center",
     justifyContent: "center",
     elevation: 4,
@@ -22,5 +24,17 @@ export const styles = StyleSheet.create({
   paragraph: {
     fontSize: 18,
     textAlign: "center",
+  },
+  qrCodeContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    backgroundColor: "#fff",
+    top: "8%",
+    left: "5%",
+    padding: 10,
+    borderRadius: 8,
+    elevation: 4,
   },
 })
