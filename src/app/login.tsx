@@ -5,7 +5,7 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>LOGIN</Text>
-      <Link href="/(tabs)/map" asChild>
+      <Link href="/(tabs)/map/map" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Se connecter</Text>
         </TouchableOpacity>
