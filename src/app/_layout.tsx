@@ -6,9 +6,11 @@ import "react-native-reanimated"
 import Entypo from "@expo/vector-icons/Entypo"
 import { colors, darkTheme } from "../constants/theme"
 import { SafeAreaView } from "react-native-safe-area-context"
+
+
 export default function RootLayout() {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.dark.background }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.dark.background }}>
       <ThemeProvider value={darkTheme}>
         <Tabs
           screenOptions={{
