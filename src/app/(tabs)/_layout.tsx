@@ -17,7 +17,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="pointsList"
+        name="interest-points/interestPointList"
         options={{
           title: "Points d'intérêt",
           tabBarIcon: ({ color, size }) => <MaterialIcons name="place" size={size} color={color} />,
