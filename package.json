@@ -10,6 +10,7 @@
     "web": "expo start --web",
     "test": "exit 0",
     "lint": "eslint \"src/**/*.{ts,tsx,js}\"",
+    "lint:fix": "eslint src/**/*.{ts,tsx} --fix",
     "lint:check": "eslint \"src/**/*.{ts,tsx,js}\" --max-warnings=0",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\""
   },
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "@types/react-native": "^0.72.8",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
     "eslint": "^9.25.0",
