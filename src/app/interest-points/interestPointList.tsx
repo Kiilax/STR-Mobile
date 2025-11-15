@@ -1,8 +1,7 @@
 import React from "react"
 import { View, Text, ScrollView, StyleSheet, Image } from "react-native"
 import { INTEREST_POINTS_MOCK } from "../interest-points/data/interest-points.mock"
-
-// for the moment, we use a placeholder image for all interest points
+import { colors } from "@/src/constants/theme"
 const placeholderImg = require("./data/placeholder.jpg")
 
 export default function InterestPointListScreen() {
@@ -22,37 +21,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#F5F9FC",
+    backgroundColor: colors.dark.background,
   },
   item: {
     flexDirection: "row",
     alignItems: "center",
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#0055A4",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
+    borderBottomColor: colors.dark.accent,
+    backgroundColor: colors.dark.secondary,
+    borderRadius: 4,
     marginBottom: 12,
-    shadowColor: "#0055A4",
+    shadowColor: colors.dark.inverted,
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowRadius: 10,
     elevation: 3,
     borderLeftWidth: 4,
-    borderLeftColor: "#0055A4",
+    borderLeftColor: colors.dark.accent,
   },
   icon: {
     width: 50,
     height: 50,
-    borderRadius: 8,
+    borderRadius: 4,
     marginRight: 12,
   },
   text: {
     flex: 1,
-    color: "#333333",
+    color: colors.dark.inverted,
     fontSize: 16,
     lineHeight: 22,
   },

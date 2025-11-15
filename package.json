@@ -12,10 +12,12 @@
     "lint": "eslint \"src/**/*.{ts,tsx,js}\"",
     "lint:fix": "eslint src/**/*.{ts,tsx} --fix",
     "lint:check": "eslint \"src/**/*.{ts,tsx,js}\" --max-warnings=0",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\""
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
@@ -26,6 +28,7 @@
     "eslint-plugin-react-native": "^5.0.0",
     "eslint-plugin-reactotron": "^0.1.9",
     "expo": "~54.0.23",
+    "expo-camera": "~17.0.9",
     "expo-constants": "~18.0.10",
     "expo-font": "~14.0.9",
     "expo-haptics": "~15.0.7",
