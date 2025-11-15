@@ -1,6 +1,6 @@
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native"
-import { StyleSheet } from "react-native"
-import { Stack, Tabs } from "expo-router"
+// import { StyleSheet } from "react-native"
+import { Tabs } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import "react-native-reanimated"
 
@@ -39,11 +39,11 @@ export default function RootLayout() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-})
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     backgroundColor: "#fff",
+//   },
+// })

@@ -8,7 +8,10 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "test": "exit 0",
     "lint": "eslint \"src/**/*.{ts,tsx,js}\"",
+    "lint:check": "eslint \"src/**/*.{ts,tsx,js}\" --max-warnings=0",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\"",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\""
   },
   "dependencies": {
@@ -30,6 +33,7 @@
     "expo-haptics": "~15.0.7",
     "expo-image": "~3.0.10",
     "expo-linking": "~8.0.8",
+    "expo-location": "~19.0.7",
     "expo-router": "~6.0.14",
     "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",
@@ -41,6 +45,7 @@
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
     "react-native-gesture-handler": "~2.28.0",
+    "react-native-maps": "1.20.1",
     "react-native-reanimated": "~4.1.1",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
