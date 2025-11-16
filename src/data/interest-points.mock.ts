@@ -1,6 +1,6 @@
 import { InterestPoint } from "@/src/types"
 
-export const INTEREST_POINTS_MOCK: InterestPoint[] = [
+const INTEREST_POINTS_MOCK: InterestPoint[] = [
   {
     id: 1,
     coordinates: [48.5734, 7.7521],
@@ -162,3 +162,5 @@ export const INTEREST_POINTS_MOCK: InterestPoint[] = [
     updatedAt: new Date("2023-02-10T10:00:00Z"),
   },
 ]
+
+export default INTEREST_POINTS_MOCK

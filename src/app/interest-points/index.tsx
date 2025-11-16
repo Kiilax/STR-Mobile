@@ -1,8 +1,8 @@
 import React from "react"
 import { View, Text, ScrollView, StyleSheet, Image } from "react-native"
-import { INTEREST_POINTS_MOCK } from "../interest-points/data/interest-points.mock"
+import INTEREST_POINTS_MOCK from "../../data/interest-points.mock"
 import { colors } from "@/src/constants/theme"
-const placeholderImg = require("./data/placeholder.jpg")
+const placeholderImg = require("@/src/data/placeholder.jpg")
 
 export default function InterestPointListScreen() {
   return (
