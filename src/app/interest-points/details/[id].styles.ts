@@ -43,7 +43,6 @@ export const styles = StyleSheet.create({
   },
   imagesContainer: {
     marginTop: 16,
-    marginLeft: 5
   },
   imageContainer: {
     borderRadius: 4,
@@ -95,6 +94,40 @@ export const styles = StyleSheet.create({
     marginTop: 12,
   },
   indicatorText: {
+    color: colors.dark.inverted,
+    fontSize: 12,
+    opacity: 0.7,
+    fontStyle: 'italic',
+  },
+  equipmentsContainer: {
+    marginTop: 8,
+  },
+  equipmentItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.dark.accent,
+    marginBottom: 8,
+  },
+  lastEquipmentItem: {
+    borderBottomWidth: 0,
+    marginBottom: 0,
+  },
+  equipmentHeader: {
+    marginBottom: 4,
+  },
+  equipmentName: {
+    color: colors.dark.inverted,
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  equipmentDescription: {
+    color: colors.dark.inverted,
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 4,
+    opacity: 0.9,
+  },
+  equipmentDimensions: {
     color: colors.dark.inverted,
     fontSize: 12,
     opacity: 0.7,

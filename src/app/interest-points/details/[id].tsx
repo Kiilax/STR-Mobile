@@ -5,16 +5,28 @@ import { useLocalSearchParams } from "expo-router";
 import { fetchInterestPointById } from "@/src/api/interest-points";
 import { useEffect, useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
+import { Equipment } from "@/src/types/equipment";
+import { fetchEquipmentById } from "@/src/api/equipments";
 
 export default function InterestPointDetailsScreen({ route }: { route: any }) {
     const { id } = useLocalSearchParams();
     const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(null);
+    const [equipments, setEquipments] = useState<Equipment[]>([]);
     const { width } = useWindowDimensions();
 
     useEffect(() => {
         async function loadInterestPoint() {
             const point = await fetchInterestPointById(id);
             setInterestPoint(point);
+            if (point && point.equipmentPlacements.length > 0) {
+                const equipmentIds = point.equipmentPlacements.map(ep => ep.equipmentId);
+                for (const equipId of equipmentIds) {
+                    const equipment = await fetchEquipmentById(equipId);
+                    if (equipment) {
+                        setEquipments(prev => [...prev, equipment]);
+                    }
+                }
+            }
         }
         loadInterestPoint();
     }, [id]);
@@ -71,12 +83,30 @@ export default function InterestPointDetailsScreen({ route }: { route: any }) {
                         </View>
                     </View>
                 )}
-                
-                <View style={styles.section}>
-                    <Text style={styles.infoText}>
-                        Point d'intérêt #{interestPoint.id}
-                    </Text>
-                </View>
+
+                {equipments.length > 0 && (
+                    <View style={styles.section}>
+                        <View style={{flex: 1}}>
+                            <Text style={styles.sectionTitle}>Équipements associés</Text>
+                            <View style={styles.equipmentsContainer}>
+                                {equipments.map((equipment, index) => (
+                                    <View key={equipment.id} style={[
+                                        styles.equipmentItem,
+                                        index === equipments.length - 1 && styles.lastEquipmentItem
+                                    ]}>
+                                        <View style={styles.equipmentHeader}>
+                                            <Text style={styles.equipmentName}>{equipment.name}</Text>
+                                        </View>
+                                        <Text style={styles.equipmentDescription}>{equipment.description}</Text>
+                                        <Text style={styles.equipmentDimensions}>
+                                            Dimensions: {equipment.length} x {equipment.width} x {equipment.height}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </View>
+                        </View>
+                    </View>
+                )}
             </View>
         </ScrollView>
     );

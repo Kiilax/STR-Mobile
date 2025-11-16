@@ -1,3 +1,4 @@
+import { EquipmentPlacement } from "./equipment"
 
 export interface InterestPointResponse {
   ok: boolean
@@ -11,4 +12,5 @@ export interface InterestPoint {
   images: string[]
   createdAt: Date
   updatedAt: Date
+  equipmentPlacements: EquipmentPlacement[]
 }
