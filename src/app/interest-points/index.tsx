@@ -5,7 +5,7 @@ import { useRouter } from "expo-router"
 import { fetchInterestPoints } from "@/src/api/interest-points"
 import { InterestPoint } from "@/src/types"
 
-const placeholderImg = require("./data/placeholder.jpg")
+const placeholderImg = require("./details/placeholder.png")
 
 export default function InterestPointListScreen() {
   const router = useRouter();
