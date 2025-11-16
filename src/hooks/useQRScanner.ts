@@ -7,10 +7,16 @@ export function useQRScanner() {
   const cameraPermissionStorage = useAsyncStorage<boolean>("cameraPermissionGranted", false)
 
   useEffect(() => {
-    if (permission?.granted) {
-      cameraPermissionStorage.setValue(true)
+    const checkAndRequestPermissions = async () => {
+      if (permission?.granted) {
+        cameraPermissionStorage.setValue(true)
+      } else if (permission && !permission.granted) {
+        await requestPermission()
+      }
     }
-  }, [cameraPermissionStorage, permission])
+
+    checkAndRequestPermissions()
+  }, [cameraPermissionStorage, permission, requestPermission])
 
   const isGranted = permission?.granted || cameraPermissionStorage.value
 

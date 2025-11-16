@@ -12,14 +12,7 @@ interface QRCodeScannerProps {
 }
 
 export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerProps) {
-  const { isGranted, loading, error, handleRequestPermission } = useQRScanner()
-
-  const handleStartScan = async () => {
-    if (!isGranted) {
-      const granted = await handleRequestPermission()
-      if (!granted) return
-    }
-  }
+  const { isGranted, loading, error } = useQRScanner()
 
   const handleScanResult = ({ data }: { data: string }) => {
     onScanResult(data)
@@ -43,13 +36,6 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
           </Pressable>
           <Text style={styles.mainText}>QR Code Scanner</Text>
         </View>
-
-        <Text style={styles.description}>Camera permission is required to scan QR codes</Text>
-
-        <Pressable onPress={handleStartScan} style={[styles.mainBtn, styles.btnYellow]}>
-          <Text>Grant Permission</Text>
-        </Pressable>
-
         {error && <Text style={styles.errorText}>Error: {error.message}</Text>}
       </View>
     )
@@ -96,17 +82,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
-  btnYellow: {
-    backgroundColor: "yellow",
-  },
   btnCancel: {
     backgroundColor: "#ff4444",
   },
 
-  mainBtn: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-  },
   mainText: {
     fontSize: 20,
     fontWeight: "bold",

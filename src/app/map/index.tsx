@@ -1,7 +1,7 @@
-import { View, Text, TouchableOpacity, Modal } from "react-native"
+import { View, TouchableOpacity, Modal, ActivityIndicator } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import { useMap } from "./hooks/useMap"
-import { styles } from "./map.styles"
+import { useMap } from "@/src/hooks"
+import { styles } from "@/src/app/map/map.styles"
 import { QRCodeScanner } from "@/src/components"
 import { useState } from "react"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
@@ -16,7 +16,7 @@ const mapStyle = [
 ]
 
 export default function MapScreen() {
-  const { mapRef, region, isFollowing, errorMsg, handleMapDrag, handleCenterOnUser } = useMap()
+  const { mapRef, region, isFollowing, userLocation, handleMapDrag, handleCenterOnUser } = useMap()
   const [showQRScanner, setShowQRScanner] = useState(false)
   const [scannedIP, setScannedIP] = useState<string | null>(null)
 
@@ -34,14 +34,6 @@ export default function MapScreen() {
     setShowQRScanner(false)
   }
 
-  if (errorMsg) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.paragraph}>{errorMsg}</Text>
-      </View>
-    )
-  }
-
   return (
     <View style={styles.container}>
       <MapView
@@ -52,15 +44,20 @@ export default function MapScreen() {
         onPanDrag={handleMapDrag}
         showsUserLocation
         showsMyLocationButton={false}
-        followsUserLocation={isFollowing}
         rotateEnabled
         userInterfaceStyle="dark"
         tintColor={colors.dark.tint}
       />
-
-      <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>
-        <Ionicons name="locate" size={26} color="white" />
-      </TouchableOpacity>
+      {!isFollowing && (
+        <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>
+          <Ionicons name="locate" size={26} color="white" />
+        </TouchableOpacity>
+      )}
+      {isFollowing && !userLocation && (
+        <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>
+          <ActivityIndicator size="small" color="white" />
+        </TouchableOpacity>
+      )}
 
       <TouchableOpacity style={styles.qrCodeContainer} onPress={handleQRCodePress}>
         <MaterialCommunityIcons name="qrcode-scan" size={24} color="black" />
