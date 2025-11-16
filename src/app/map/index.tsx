@@ -6,7 +6,7 @@ import { QRCodeScanner } from "@/src/components"
 import { useState } from "react"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import MapView from "react-native-maps"
-import { colors } from "@/src/constants/theme"
+
 const mapStyle = [
   {
     featureType: "poi",
@@ -45,8 +45,8 @@ export default function MapScreen() {
         showsUserLocation
         showsMyLocationButton={false}
         rotateEnabled
+        mapType="standard"
         userInterfaceStyle="dark"
-        tintColor={colors.dark.tint}
       />
       {!isFollowing && (
         <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>

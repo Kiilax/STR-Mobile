@@ -44,8 +44,8 @@ export function useMap() {
       const newRegion = {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
+        latitudeDelta: 0.004,
+        longitudeDelta: 0.004,
       }
       mapRef.current.animateToRegion(newRegion, 1000)
     }
