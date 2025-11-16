@@ -3,7 +3,7 @@ import MapView from "react-native-maps"
 import * as Location from "expo-location"
 
 // TODO : Move INITIAL_COORDINATES to a constants file
-const INITIAL_COORDINATES = {
+const STRASBOURG_COORDINATES = {
   latitude: 48.5734053,
   longitude: 7.7521113,
   latitudeDelta: 0.1,
@@ -12,11 +12,11 @@ const INITIAL_COORDINATES = {
 
 export function useMap() {
   const mapRef = useRef<MapView | null>(null)
-  const [region, setRegion] = useState(INITIAL_COORDINATES)
-  const [isFollowing, setIsFollowing] = useState(true)
+  const [region, setRegion] = useState(STRASBOURG_COORDINATES)
+  const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null)
+  const [isFollowing, setIsFollowing] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
-  // Request location permission and get current location
   useEffect(() => {
     async function getCurrentLocation() {
       const { status } = await Location.requestForegroundPermissionsAsync()
@@ -25,16 +25,30 @@ export function useMap() {
         return
       }
 
-      const location = await Location.getCurrentPositionAsync({})
+      await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.High,
+          timeInterval: 1000,
+          distanceInterval: 1,
+        },
+        (location) => {
+          setUserLocation(location)
+        }
+      )
+    }
+    getCurrentLocation()
+  }, [])
+
+  useEffect(() => {
+    if (isFollowing && userLocation) {
       setRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
         latitudeDelta: 0.001,
         longitudeDelta: 0.001,
       })
     }
-    getCurrentLocation()
-  }, [])
+  }, [isFollowing, userLocation])
 
   const handleMapDrag = () => {
     if (isFollowing) {
@@ -42,18 +56,8 @@ export function useMap() {
     }
   }
 
-  const handleCenterOnUser = () => {
+  const handleCenterOnUser = async () => {
     setIsFollowing(true)
-
-    if (mapRef.current) {
-      mapRef.current.animateCamera({
-        center: {
-          latitude: region.latitude,
-          longitude: region.longitude,
-        },
-        zoom: 18,
-      })
-    }
   }
 
   return {
