@@ -36,9 +36,6 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
           </Pressable>
           <Text style={styles.mainText}>QR Code Scanner</Text>
         </View>
-
-        <Text style={styles.description}>Requesting camera permission...</Text>
-
         {error && <Text style={styles.errorText}>Error: {error.message}</Text>}
       </View>
     )

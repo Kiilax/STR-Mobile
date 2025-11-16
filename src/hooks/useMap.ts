@@ -12,7 +12,7 @@ const STRASBOURG_COORDINATES = {
 
 export function useMap() {
   const mapRef = useRef<MapView | null>(null)
-  const [region, setRegion] = useState(STRASBOURG_COORDINATES)
+  const [region] = useState(STRASBOURG_COORDINATES)
   const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null)
   const [isFollowing, setIsFollowing] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
@@ -40,13 +40,14 @@ export function useMap() {
   }, [])
 
   useEffect(() => {
-    if (isFollowing && userLocation) {
-      setRegion({
+    if (isFollowing && userLocation && mapRef.current) {
+      const newRegion = {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
         latitudeDelta: 0.001,
         longitudeDelta: 0.001,
-      })
+      }
+      mapRef.current.animateToRegion(newRegion, 1000)
     }
   }, [isFollowing, userLocation])
 
@@ -58,12 +59,22 @@ export function useMap() {
 
   const handleCenterOnUser = async () => {
     setIsFollowing(true)
+    if (userLocation && mapRef.current) {
+      const newRegion = {
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.001,
+      }
+      mapRef.current.animateToRegion(newRegion, 1000)
+    }
   }
 
   return {
     mapRef,
     region,
     isFollowing,
+    userLocation,
     errorMsg,
     handleMapDrag,
     handleCenterOnUser,
