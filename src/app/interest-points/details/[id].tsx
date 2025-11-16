@@ -1,12 +1,21 @@
 import { InterestPoint } from "@/src/types";
 import { Text, View, Image, ScrollView } from "react-native";
 import { styles } from "./[id].styles";
-import { INTEREST_POINTS_MOCK } from "../data/interest-points.mock";
 import { useLocalSearchParams } from "expo-router";
+import { fetchInterestPointById } from "@/src/api/interest-points";
+import { useEffect, useState } from "react";
 
 export default function InterestPointDetailsScreen({ route }: { route: any }) {
     const { id } = useLocalSearchParams();
-    const interestPoint = INTEREST_POINTS_MOCK.find((p) => p.id.toString() === id);
+    const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(null);
+
+    useEffect(() => {
+        async function loadInterestPoint() {
+            const point = await fetchInterestPointById(id);
+            setInterestPoint(point);
+        }
+        loadInterestPoint();
+    }, [id]);
 
     if (!interestPoint) {
         return (
@@ -31,7 +40,7 @@ export default function InterestPointDetailsScreen({ route }: { route: any }) {
                             {interestPoint.images.map((imageUri, index) => (
                                 <Image 
                                     key={index} 
-                                    source={{ uri: uri }} 
+                                    source={{ uri: imageUri }} 
                                     style={styles.image} 
                                 />
                             ))}

@@ -1,19 +1,30 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text, ScrollView, Image, TouchableOpacity } from "react-native"
-import { INTEREST_POINTS_MOCK } from "./data/interest-points.mock"
 import { styles } from "./index.styles"
 import { useRouter } from "expo-router"
+import { fetchInterestPoints } from "@/src/api/interest-points"
+import { InterestPoint } from "@/src/types"
 
 const placeholderImg = require("./data/placeholder.jpg")
 
 export default function InterestPointListScreen() {
   const router = useRouter();
-  
+
+  const [interestPoints, setInterestPoints] = useState<InterestPoint[]>([]);
+
+  useEffect(() => {
+    async function loadInterestPoints() {
+      const points = await fetchInterestPoints();
+      setInterestPoints(points);
+    }
+    loadInterestPoints();
+  }, []);
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 80 }}>
-      {INTEREST_POINTS_MOCK.map((eq) => (
-        <TouchableOpacity 
-          key={eq.id} 
+      {interestPoints.map((eq) => (
+        <TouchableOpacity
+          key={eq.id}
           style={styles.item}
           onPress={() => router.push(`/interest-points/details/${eq.id}`)}
         >

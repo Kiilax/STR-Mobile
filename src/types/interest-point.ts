@@ -1,3 +1,9 @@
+
+export interface InterestPointResponse {
+  ok: boolean
+  data: InterestPoint[]
+}
+
 export interface InterestPoint {
   id: number
   coordinates: number[]
