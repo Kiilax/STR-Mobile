@@ -1,17 +1,9 @@
 import React, { useState } from "react"
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from "react-native"
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { Ionicons } from "@expo/vector-icons"
-import { colors } from "../constants/theme"
-import { InterestPoint } from "../types/interest-point"
+import { colors } from "@/src/constants/theme"
+import { InterestPoint } from "@/src/types/interest-point"
 import CoordinateSelector from "./coordinateSelector"
 import ImageSelector from "./imageSelector"
 
@@ -28,6 +20,7 @@ interface POIFormData {
 
 export default function POIForm({ onClose, onSubmit }: POIFormProps) {
   const [selectedImages, setSelectedImages] = useState<string[]>([])
+  const [imageError, setImageError] = useState<string | undefined>()
 
   const {
     control,
@@ -52,11 +45,14 @@ export default function POIForm({ onClose, onSubmit }: POIFormProps) {
   const handleImagesChange = (images: string[]) => {
     setSelectedImages(images)
     setValue("images", images)
+    if (images.length > 0) {
+      setImageError(undefined)
+    }
   }
 
   const onFormSubmit = (data: POIFormData) => {
-    if (data.coordinates[0] === 0 && data.coordinates[1] === 0) {
-      Alert.alert("Erreur", "Veuillez définir des coordonnées.")
+    if (!data.images || data.images.length === 0) {
+      setImageError("Veuillez ajouter au moins une image.")
       return
     }
 
@@ -85,7 +81,7 @@ export default function POIForm({ onClose, onSubmit }: POIFormProps) {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Comments */}
+        {/* Comment */}
         <View style={styles.formGroup}>
           <Text style={styles.label}>Commentaire</Text>
           <Controller
@@ -115,7 +111,11 @@ export default function POIForm({ onClose, onSubmit }: POIFormProps) {
         />
 
         {/* Images */}
-        <ImageSelector selectedImages={selectedImages} onImagesChange={handleImagesChange} />
+        <ImageSelector
+          selectedImages={selectedImages}
+          onImagesChange={handleImagesChange}
+          error={imageError}
+        />
 
         {/* Submit Button */}
         <TouchableOpacity
