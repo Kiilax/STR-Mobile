@@ -1,14 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import MapView from "react-native-maps"
 import * as Location from "expo-location"
-
-// TODO : Move INITIAL_COORDINATES to a constants file
-const STRASBOURG_COORDINATES = {
-  latitude: 48.5734053,
-  longitude: 7.7521113,
-  latitudeDelta: 0.1,
-  longitudeDelta: 0.1,
-}
+import { STRASBOURG_COORDINATES, USER_DELTA } from "@/src/constants/coordinates"
 
 export function useMap() {
   const mapRef = useRef<MapView | null>(null)
@@ -44,8 +37,8 @@ export function useMap() {
       const newRegion = {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
+        latitudeDelta: USER_DELTA.latitudeDelta,
+        longitudeDelta: USER_DELTA.longitudeDelta,
       }
       mapRef.current.animateToRegion(newRegion, 1000)
     }
@@ -63,8 +56,8 @@ export function useMap() {
       const newRegion = {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
+        latitudeDelta: USER_DELTA.latitudeDelta,
+        longitudeDelta: USER_DELTA.longitudeDelta,
       }
       mapRef.current.animateToRegion(newRegion, 1000)
     }
