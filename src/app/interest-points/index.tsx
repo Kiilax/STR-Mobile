@@ -17,6 +17,7 @@ import ModalWrapper from "@/src/components/ui/modal"
 import { useReactiveAsyncStore } from "@/src/hooks"
 import { InterestPoint } from "@/src/types"
 import { keys } from "@/src/config"
+import { ImageStorage } from "@/src/utils"
 
 export default function InterestPointListScreen() {
   const [showPOIForm, setShowPOIForm] = useState(false)
@@ -29,6 +30,10 @@ export default function InterestPointListScreen() {
     setValue((prev) => [...prev, point])
   }
   function deleteInterestPoint(id: number) {
+    const interestPoint = value.find((poi) => poi.id === id)
+    for (const uri of interestPoint?.images || []) {
+      ImageStorage.remove(uri)
+    }
     setValue((prev) => prev.filter((poi) => poi.id !== id))
   }
 

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
-import { useImageStorage } from "./useImageStorage"
+import { ImageStorage } from "../utils"
 
 interface UseImageSelectorProps {
   selectedImages: string[]
@@ -10,7 +10,6 @@ interface UseImageSelectorProps {
 
 export function useImageSelector({ selectedImages, onImagesChange }: UseImageSelectorProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const { save, remove } = useImageStorage()
 
   /**
    * Permet de sélectionner ou prendre des images et de les sauvegarder localement.
@@ -52,7 +51,7 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
       if (!result.canceled) {
         const savedUris: string[] = []
         for (const asset of result.assets) {
-          const savedUri = await save(asset.uri)
+          const savedUri = await ImageStorage.save(asset.uri)
           if (savedUri) savedUris.push(savedUri)
           else {
             Alert.alert("Erreur", "Impossible de sauvegarder une ou plusieurs images.")
@@ -81,7 +80,7 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
 
       if (!result.canceled) {
         const uri = result.assets[0].uri
-        const savedUri = await save(uri)
+        const savedUri = ImageStorage.save(uri)
         if (!savedUri) {
           Alert.alert("Erreur", "Impossible de sauvegarder la photo.")
           return
@@ -97,7 +96,7 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
 
   async function removeImage(index: number) {
     const uri = selectedImages[index]
-    await remove(uri)
+    ImageStorage.remove(uri)
     const updated = selectedImages.filter((_, i) => i !== index)
     onImagesChange(updated)
   }

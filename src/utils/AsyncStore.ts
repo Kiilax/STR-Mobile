@@ -29,16 +29,6 @@ export class AsyncStore {
     }
   }
 
-  // static async addToCollection<T>(key: Keys, item: T): Promise<void> {
-  //   try {
-  //     const collection = await AsyncStore.get<T[]>(key, [])
-  //     collection.push(item)
-  //     await AsyncStore.set<T[]>(key, collection)
-  //   } catch (err) {
-  //     console.error(`AsyncStore.addToCollection error for key "${key}":`, err)
-  //   }
-  // }
-
   /**
    * Update a value using a setter function.
    */
