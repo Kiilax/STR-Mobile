@@ -1,34 +1,14 @@
 import React, { useState } from "react"
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Modal } from "react-native"
-import INTEREST_POINTS_MOCK from "../../data/interest-points.mock"
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from "react-native"
+import INTEREST_POINTS_MOCK from "@/src/data/interest-points.mock"
 import { colors } from "@/src/constants/theme"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-import { POIForm, QRCodeScanner } from "@/src/components"
+import { Ionicons } from "@expo/vector-icons"
+import { POIForm } from "@/src/components"
 import ModalWrapper from "@/src/components/ui/modal"
 const placeholderImg = require("@/src/data/placeholder.jpg")
 
 export default function InterestPointListScreen() {
-  const [showQRScanner, setShowQRScanner] = useState(false)
-  const [scannedIP, setScannedIP] = useState<string | null>(null)
   const [showPOIForm, setShowPOIForm] = useState(false)
-
-  const handleQRCodePress = () => {
-    setShowQRScanner(true)
-  }
-
-  const handlePOIFormPress = () => {
-    setShowPOIForm(true)
-  }
-
-  const handleQRScanResult = (ip: string) => {
-    setScannedIP(ip)
-    setShowQRScanner(false)
-    console.log("Scanned IP:", scannedIP)
-  }
-
-  const handleCloseQRScanner = () => {
-    setShowQRScanner(false)
-  }
 
   return (
     <View style={styles.container}>
@@ -43,7 +23,7 @@ export default function InterestPointListScreen() {
       </ScrollView>
 
       {/* Show POI Form */}
-      <TouchableOpacity style={styles.fab} onPress={handlePOIFormPress}>
+      <TouchableOpacity style={styles.fab} onPress={() => setShowPOIForm(true)}>
         <Ionicons name="add" size={26} color="white" />
       </TouchableOpacity>
       <ModalWrapper visible={showPOIForm} onClose={() => setShowPOIForm(false)} fullScreen={true}>
@@ -51,18 +31,10 @@ export default function InterestPointListScreen() {
           onClose={() => setShowPOIForm(false)}
           onSubmit={(data) => {
             console.log("Nouveau POI créé:", data)
-            // TODO: @Roman - Ajouter la logique pour sauvegarder le nouveau POI
+            // TODO: @Nizar - Ajouter la logique pour sauvegarder le nouveau POI
           }}
         />
       </ModalWrapper>
-
-      {/* Show QR Code Scanner */}
-      <TouchableOpacity style={styles.qrCodeContainer} onPress={handleQRCodePress}>
-        <MaterialCommunityIcons name="qrcode-scan" size={24} color="black" />
-      </TouchableOpacity>
-      <Modal style={styles.qrCodeContainer} visible={showQRScanner} animationType="fade">
-        <QRCodeScanner onScanResult={handleQRScanResult} onClose={handleCloseQRScanner} />
-      </Modal>
     </View>
   )
 }

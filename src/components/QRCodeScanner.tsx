@@ -2,9 +2,8 @@ import { CameraView } from "expo-camera"
 import { StatusBar } from "expo-status-bar"
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import { useQRScanner } from "../hooks/useQRScanner"
-
-import { colors } from "../constants/theme"
+import { useQRScanner } from "@/src/hooks/useQRScanner"
+import { colors } from "@/src/constants/theme"
 
 interface QRCodeScannerProps {
   onScanResult: (ip: string) => void
