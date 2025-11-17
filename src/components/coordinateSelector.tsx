@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from "react"
-import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from "react-native"
+import React from "react"
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import MapView, { Marker } from "react-native-maps"
-import * as Location from "expo-location"
-import { colors } from "../constants/theme"
-import { Coordinates } from "../types"
+import { colors } from "@/src/constants/theme"
+import { Coordinates } from "@/src/types"
+import { STRASBOURG_COORDINATES } from "@/src/constants/coordinates"
+import { useCoordinateSelector } from "@/src/hooks/useCoordinateSelector"
 
 const mapStyle = [
   {
@@ -25,65 +26,11 @@ export default function CoordinateSelector({
   onCoordinatesChange,
   error,
 }: CoordinateSelectorProps) {
-  const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-  const [region, setRegion] = useState({
-    latitude: coordinates[0] || 48.5734053,
-    longitude: coordinates[1] || 7.7521113,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  })
-  const mapRef = useRef<MapView>(null)
-
-  useEffect(() => {
-    if (coordinates[0] !== 0 && coordinates[1] !== 0) {
-      setRegion({
-        latitude: coordinates[0],
-        longitude: coordinates[1],
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      })
-    }
-  }, [coordinates])
-
-  const getCurrentLocation = async () => {
-    setIsLoadingLocation(true)
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== "granted") {
-        Alert.alert("Permission refusée", "L'accès à la localisation est nécessaire.")
-        return
-      }
-
-      const location = await Location.getCurrentPositionAsync({})
-      const coords: Coordinates = [location.coords.latitude, location.coords.longitude]
-
-      const newRegion = {
-        latitude: coords[0],
-        longitude: coords[1],
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }
-
-      setRegion(newRegion)
-      onCoordinatesChange(coords)
-
-      if (mapRef.current) {
-        mapRef.current.animateToRegion(newRegion, 1000)
-      }
-    } catch {
-      Alert.alert("Erreur", "Impossible d'obtenir la localisation.")
-    } finally {
-      setIsLoadingLocation(false)
-    }
-  }
-
-  const handleMapPress = (event: any) => {
-    const { latitude, longitude } = event.nativeEvent.coordinate
-    const coords: Coordinates = [latitude, longitude]
-    onCoordinatesChange(coords)
-  }
-
-  const hasValidCoordinates = coordinates[0] !== 0 && coordinates[1] !== 0
+  const { isLoadingLocation, region, mapRef, getCurrentLocation, handleMapPress } =
+    useCoordinateSelector({
+      coordinates,
+      onCoordinatesChange,
+    })
 
   return (
     <View style={styles.container}>
@@ -118,16 +65,14 @@ export default function CoordinateSelector({
           mapType="standard"
           userInterfaceStyle="dark"
         >
-          {hasValidCoordinates && (
-            <Marker
-              coordinate={{
-                latitude: coordinates[0],
-                longitude: coordinates[1],
-              }}
-              title="Point d'intérêt"
-              description="Emplacement sélectionné"
-            />
-          )}
+          <Marker
+            coordinate={{
+              latitude: coordinates[0] || STRASBOURG_COORDINATES.latitude,
+              longitude: coordinates[1] || STRASBOURG_COORDINATES.longitude,
+            }}
+            title="Point d'intérêt"
+            description="Emplacement sélectionné"
+          />
         </MapView>
       </View>
 
