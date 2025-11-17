@@ -1,6 +1,6 @@
 import { useCameraPermissions } from "expo-camera"
 import { useEffect } from "react"
-import { useAsyncStorage } from "./useAsyncStorage"
+import { useAsyncStorage } from "./useReactiveAsyncStore"
 
 export function useQRScanner() {
   const [permission, requestPermission] = useCameraPermissions()
