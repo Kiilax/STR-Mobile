@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
+import { useImageStorage } from "./useImageStorage"
 
 interface UseImageSelectorProps {
   selectedImages: string[]
@@ -9,6 +10,7 @@ interface UseImageSelectorProps {
 
 export function useImageSelector({ selectedImages, onImagesChange }: UseImageSelectorProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const { save } = useImageStorage()
 
   const requestPermissions = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -64,9 +66,11 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
         quality: 0.8,
         allowsEditing: true,
       })
+      console.log(result)
 
       if (!result.canceled && result.assets) {
         const newImage = result.assets[0].uri
+        save(newImage)
         const updatedImages = [...selectedImages, newImage]
         onImagesChange(updatedImages)
       }
@@ -81,7 +85,6 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
     const updatedImages = selectedImages.filter((_, i) => i !== index)
     onImagesChange(updatedImages)
   }
-
   return {
     isLoading,
     pickImage,
