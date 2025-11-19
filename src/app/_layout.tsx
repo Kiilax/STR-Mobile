@@ -9,7 +9,7 @@ import QRCode from "@/src/components/QRCode"
 
 export default function RootLayout() {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.dark.background }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.dark.background }}>
       <ThemeProvider value={darkTheme}>
         <Tabs
           screenOptions={{
