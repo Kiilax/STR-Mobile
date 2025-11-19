@@ -32,18 +32,6 @@ export function useMap() {
     getCurrentLocation()
   }, [])
 
-  useEffect(() => {
-    if (isFollowing && userLocation && mapRef.current) {
-      const newRegion = {
-        latitude: userLocation.coords.latitude,
-        longitude: userLocation.coords.longitude,
-        latitudeDelta: USER_DELTA.latitudeDelta,
-        longitudeDelta: USER_DELTA.longitudeDelta,
-      }
-      mapRef.current.animateToRegion(newRegion, 1000)
-    }
-  }, [isFollowing, userLocation])
-
   const handleMapDrag = () => {
     if (isFollowing) {
       setIsFollowing(false)

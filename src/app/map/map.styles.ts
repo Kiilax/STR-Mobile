@@ -1,5 +1,6 @@
 import { colors } from "@/src/constants/theme"
 import { StyleSheet } from "react-native"
+
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -11,8 +12,8 @@ export const styles = StyleSheet.create({
   },
   fab: {
     position: "absolute",
-    bottom: 110,
     right: 20,
+    bottom: 95,
     width: 55,
     height: 55,
     borderRadius: 30,
@@ -24,19 +25,5 @@ export const styles = StyleSheet.create({
   paragraph: {
     fontSize: 18,
     textAlign: "center",
-  },
-  qrCodeContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    backgroundColor: "#fff",
-    bottom: 40,
-    right: 20,
-    width: 55,
-    height: 55,
-    padding: 10,
-    borderRadius: 8,
-    elevation: 4,
   },
 })

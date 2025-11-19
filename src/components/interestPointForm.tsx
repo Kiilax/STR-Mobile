@@ -63,6 +63,7 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
       images: data.images,
       createdAt: new Date(),
       updatedAt: new Date(),
+      equipmentPlacements: [],
     }
     onSubmit?.(poiData)
     onClose?.()
