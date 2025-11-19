@@ -5,25 +5,44 @@
 
 import { Platform } from "react-native"
 
-const tintColorLight = "#0a7ea4"
-const tintColorDark = "#fff"
+const dark = {
+  primary: "#171C22",
+  secondary: "#20272F",
+  accent: "#2AD783",
+  white: "#FDFDFD",
+}
+
+const light = {
+  primary: "#fff",
+  secondary: "#F7F9FA",
+  accent: "#2AD783",
+  black: "#11181C",
+}
 
 export const colors = {
   light: {
-    text: "#11181C",
-    background: "#fff",
-    tint: tintColorLight,
-    icon: "#687076",
-    tabIconDefault: "#687076",
-    tabIconSelected: tintColorLight,
+    text: light.black,
+    background: light.primary,
+    tint: light.accent,
+    icon: light.black,
+    tabIconDefault: light.secondary,
+    tabIconSelected: light.accent,
+    primary: "#fff",
+    secondary: "#F7F9FA",
+    accent: "#2AD783",
+    inverted: "#11181C",
   },
   dark: {
-    text: "#ECEDEE",
-    background: "#151718",
-    tint: tintColorDark,
-    icon: "#9BA1A6",
-    tabIconDefault: "#9BA1A6",
-    tabIconSelected: tintColorDark,
+    text: dark.white,
+    background: dark.primary,
+    tint: dark.accent,
+    icon: dark.white,
+    tabIconDefault: dark.secondary,
+    tabIconSelected: dark.accent,
+    primary: "#171C22",
+    secondary: "#20272F",
+    accent: "#2AD783",
+    inverted: "#FDFDFD",
   },
 }
 
@@ -51,3 +70,41 @@ export const fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 })
+
+export const darkTheme = {
+  dark: true,
+  colors: {
+    primary: dark.accent,
+    background: dark.primary,
+    card: dark.secondary,
+    text: dark.white,
+    border: dark.secondary,
+    notification: dark.accent,
+  },
+  fonts: {
+    light: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "300" as const },
+    regular: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "normal" as const },
+    medium: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "500" as const },
+    bold: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "bold" as const },
+    heavy: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "700" as const },
+  },
+}
+
+export const lightTheme = {
+  dark: false,
+  colors: {
+    primary: light.accent,
+    background: light.primary,
+    card: light.secondary,
+    text: light.black,
+    border: light.secondary,
+    notification: light.accent,
+  },
+  fonts: {
+    light: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "300" as const },
+    regular: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "normal" as const },
+    medium: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "500" as const },
+    bold: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "bold" as const },
+    heavy: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "700" as const },
+  },
+}

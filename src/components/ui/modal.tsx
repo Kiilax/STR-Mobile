@@ -5,9 +5,23 @@ interface ModalWrapperProps {
   visible: boolean
   onClose: () => void
   children: ReactNode
+  fullScreen?: boolean
 }
 
-export default function ModalWrapper({ visible, onClose, children }: ModalWrapperProps) {
+export default function ModalWrapper({
+  visible,
+  onClose,
+  children,
+  fullScreen = false,
+}: ModalWrapperProps) {
+  if (fullScreen) {
+    return (
+      <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+        {children}
+      </Modal>
+    )
+  }
+
   return (
     <Modal visible={visible} transparent onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
