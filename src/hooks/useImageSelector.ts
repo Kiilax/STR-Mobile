@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
+import { ImageStorage } from "../utils"
 
 interface UseImageSelectorProps {
   selectedImages: string[]
@@ -10,35 +11,54 @@ interface UseImageSelectorProps {
 export function useImageSelector({ selectedImages, onImagesChange }: UseImageSelectorProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const requestPermissions = async () => {
+  /**
+   * Permet de sélectionner ou prendre des images et de les sauvegarder localement.
+   * Fournit les fonctions pour gérer la sélection, la prise et la suppression d'images.
+   * @returns {Object} - { isLoading, pickImage, takePhoto, removeImage }
+   */
+  async function requestMediaPermission() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+
     if (status !== "granted") {
-      Alert.alert(
-        "Permission requise",
-        "L'accès à la galerie est nécessaire pour sélectionner des images."
-      )
+      Alert.alert("Permission requise", "L'accès à la galerie est nécessaire.")
       return false
     }
     return true
   }
 
-  const pickImage = async () => {
-    const hasPermission = await requestPermissions()
-    if (!hasPermission) return
+  async function requestCameraPermission() {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync()
+
+    if (status !== "granted") {
+      Alert.alert("Permission requise", "L'accès à la caméra est nécessaire.")
+      return false
+    }
+    return true
+  }
+
+  async function pickImage() {
+    const allowed = await requestMediaPermission()
+    if (!allowed) return
 
     setIsLoading(true)
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ["images"],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsMultipleSelection: true,
         quality: 0.8,
-        allowsEditing: false,
       })
 
-      if (!result.canceled && result.assets) {
-        const newImages = result.assets.map((asset) => asset.uri)
-        const updatedImages = [...selectedImages, ...newImages]
-        onImagesChange(updatedImages)
+      if (!result.canceled) {
+        const savedUris: string[] = []
+        for (const asset of result.assets) {
+          const savedUri = await ImageStorage.save(asset.uri)
+          if (savedUri) savedUris.push(savedUri)
+          else {
+            Alert.alert("Erreur", "Impossible de sauvegarder une ou plusieurs images.")
+            break
+          }
+        }
+        onImagesChange([...selectedImages, ...savedUris])
       }
     } catch {
       Alert.alert("Erreur", "Impossible de sélectionner les images.")
@@ -47,28 +67,25 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
     }
   }
 
-  const takePhoto = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync()
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission requise",
-        "L'accès à l'appareil photo est nécessaire pour prendre des photos."
-      )
-      return
-    }
+  async function takePhoto() {
+    const allowed = await requestCameraPermission()
+    if (!allowed) return
 
     setIsLoading(true)
     try {
       const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ["images"],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 0.8,
-        allowsEditing: true,
       })
 
-      if (!result.canceled && result.assets) {
-        const newImage = result.assets[0].uri
-        const updatedImages = [...selectedImages, newImage]
-        onImagesChange(updatedImages)
+      if (!result.canceled) {
+        const uri = result.assets[0].uri
+        const savedUri = ImageStorage.save(uri)
+        if (!savedUri) {
+          Alert.alert("Erreur", "Impossible de sauvegarder la photo.")
+          return
+        }
+        onImagesChange([...selectedImages, savedUri])
       }
     } catch {
       Alert.alert("Erreur", "Impossible de prendre la photo.")
@@ -77,9 +94,11 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
     }
   }
 
-  const removeImage = (index: number) => {
-    const updatedImages = selectedImages.filter((_, i) => i !== index)
-    onImagesChange(updatedImages)
+  async function removeImage(index: number) {
+    const uri = selectedImages[index]
+    ImageStorage.remove(uri)
+    const updated = selectedImages.filter((_, i) => i !== index)
+    onImagesChange(updated)
   }
 
   return {

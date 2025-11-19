@@ -1,5 +1,5 @@
 export * from "./useMap"
 export * from "./useQRScanner"
-export * from "./useAsyncStorage"
+export * from "./useReactiveAsyncStore"
 export * from "./useCoordinateSelector"
 export * from "./useImageSelector"

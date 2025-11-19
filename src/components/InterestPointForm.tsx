@@ -7,18 +7,18 @@ import { InterestPoint } from "@/src/types/interest-point"
 import CoordinateSelector from "./coordinateSelector"
 import ImageSelector from "./imageSelector"
 
-interface POIFormProps {
+interface InterestPointFormProps {
   onClose?: () => void
-  onSubmit?: (data: Partial<InterestPoint>) => void
+  onSubmit?: (data: InterestPoint) => void
 }
 
-interface POIFormData {
+interface InterestPointFormData {
   comment: string
   coordinates: [number, number]
   images: string[]
 }
 
-export default function POIForm({ onClose, onSubmit }: POIFormProps) {
+export default function InterestPointForm({ onClose, onSubmit }: InterestPointFormProps) {
   const [selectedImages, setSelectedImages] = useState<string[]>([])
   const [imageError, setImageError] = useState<string | undefined>()
 
@@ -28,7 +28,7 @@ export default function POIForm({ onClose, onSubmit }: POIFormProps) {
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<POIFormData>({
+  } = useForm<InterestPointFormData>({
     defaultValues: {
       comment: "",
       coordinates: [0, 0],
@@ -50,13 +50,13 @@ export default function POIForm({ onClose, onSubmit }: POIFormProps) {
     }
   }
 
-  const onFormSubmit = (data: POIFormData) => {
+  const onFormSubmit = async (data: InterestPointFormData) => {
     if (!data.images || data.images.length === 0) {
       setImageError("Veuillez ajouter au moins une image.")
       return
     }
 
-    const poiData: Partial<InterestPoint> = {
+    const poiData: InterestPoint = {
       id: Date.now(),
       comment: data.comment,
       coordinates: data.coordinates,
@@ -64,7 +64,6 @@ export default function POIForm({ onClose, onSubmit }: POIFormProps) {
       createdAt: new Date(),
       updatedAt: new Date(),
     }
-
     onSubmit?.(poiData)
     onClose?.()
   }
