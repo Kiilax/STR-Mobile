@@ -14,3 +14,8 @@ export interface InterestPoint {
   updatedAt: Date
   equipmentPlacements: EquipmentPlacement[]
 }
+
+export interface InterestPointRequest {
+  coordinates: number[]
+  comment: string
+}
