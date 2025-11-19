@@ -16,7 +16,7 @@ import { InterestPointForm } from "@/src/components"
 import ModalWrapper from "@/src/components/ui/modal"
 import { useReactiveAsyncStore } from "@/src/hooks"
 import { InterestPoint } from "@/src/types"
-import { keys } from "@/src/config"
+import { API_URL, keys } from "@/src/config"
 import { ImageStorage } from "@/src/utils"
 
 export default function InterestPointListScreen() {
@@ -54,7 +54,7 @@ export default function InterestPointListScreen() {
       ) : (
         <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 80 }}>
           {value.length === 0 ? (
-            <Text style={styles.emptyText}>Aucun point d&apos;intérêt pour le moment.</Text>
+            <Text style={styles.emptyText}>{API_URL}</Text>
           ) : (
             value.map((poi) => (
               <View key={poi.id} style={styles.item}>
