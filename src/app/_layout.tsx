@@ -1,15 +1,14 @@
 import { ThemeProvider } from "@react-navigation/native"
 import { Tabs } from "expo-router"
 import { StatusBar } from "expo-status-bar"
-import "react-native-reanimated"
 import Entypo from "@expo/vector-icons/Entypo"
 import { colors, darkTheme } from "@/src/constants/theme"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 import QRCode from "@/src/components/QRCode"
 
 export default function RootLayout() {
   return (
-    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.dark.background }}>
+    <SafeAreaProvider>
       <ThemeProvider value={darkTheme}>
         <Tabs
           screenOptions={{
@@ -36,6 +35,6 @@ export default function RootLayout() {
         <QRCode />
         <StatusBar style="auto" />
       </ThemeProvider>
-    </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
