@@ -31,6 +31,13 @@ export default function RootLayout() {
               tabBarIcon: ({ color, size }) => <Entypo name="location" size={size} color={color} />,
             }}
           />
+          <Tabs.Screen
+            name="synchronization/index"
+            options={{
+              title: "Synchronisation",
+              tabBarIcon: ({ color, size }) => <Entypo name="rocket" size={size} color={color} />,
+            }}
+          />
         </Tabs>
         <QRCode />
         <StatusBar style="auto" />

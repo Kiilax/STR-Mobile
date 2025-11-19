@@ -45,10 +45,6 @@ export default function InterestPointListScreen() {
     ])
   }
 
-  useEffect(() => {
-    console.log(value)
-  })
-
   return (
     <View style={styles.container}>
       {loading ? (

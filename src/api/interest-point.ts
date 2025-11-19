@@ -9,7 +9,10 @@ export async function fetchInterestPoints(): Promise<InterestPoint[]> {
     const downloadedImages: string[] = []
     for (const imagePath of point.images) {
       try {
-        const localUri = await FileDownloader.download(url, `${imagePath}`)
+        const localUri = await FileDownloader.download(
+          url,
+          `${imagePath.replace("/uploads", "/files")}`
+        )
         if (localUri) downloadedImages.push(localUri)
       } catch (error) {
         console.error(`Failed to download image ${imagePath}:`, error)
