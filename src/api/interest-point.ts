@@ -11,7 +11,7 @@ export async function fetchInterestPoints(): Promise<InterestPointResponse> {
       throw err
     })
 
-  return response.data
+  return response;
 }
 
 export async function fetchInterestPointById(id: number): Promise<InterestPoint | null> {
@@ -28,8 +28,6 @@ export async function fetchInterestPointById(id: number): Promise<InterestPoint 
 
 export async function createInterestPoint(data: Partial<InterestPointRequest[]>): Promise<InterestPoint> {
   const url = `${API_URL}/interest-points`
-  console.log("API URL:", url)
-  console.log("Creating interest point with data:", data)
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -39,7 +37,6 @@ export async function createInterestPoint(data: Partial<InterestPointRequest[]>)
     body: JSON.stringify(data),
   })
   const data2 = await response.json()
-  console.log(data2)
 
   return data2
 }
