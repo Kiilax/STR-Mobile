@@ -1,34 +1,108 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator } from 'react-native';
 import { useQRStore } from '@/src/store/QRCode';
 import { useReactiveAsyncStore } from '@/src/hooks';
 import { keys } from '@/src/config';
 import { createInterestPoint, fetchInterestPoints } from '@/src/api';
 import { InterestPoint } from '@/src/types';
-
+import { styles } from './index.styles';
+import { useState } from 'react';
 
 export default function QRCodeDataDisplay() {
     const qrData = useQRStore(state => state.qrData);
     const storage = useReactiveAsyncStore<InterestPoint[] | null>(keys.interestPoints, null);
     
-    const handleSync = async () => {
-        if (!storage.value) return null;
-        const dataToSend = storage.value.map(({ coordinates, comment }) => ({ coordinates, comment }));
-        createInterestPoint(dataToSend).then(() => {
-            console.log(`Interest points synchronized successfully.`);
-        }).catch((error) => {
-            console.error(`Failed to synchronize interest points:`, error);
-        });
+    const [isSyncing, setIsSyncing] = useState(false);
+    const [syncStatus, setSyncStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    const [syncMessage, setSyncMessage] = useState('');
 
-        const interestPoints = await fetchInterestPoints();
-        await storage.setValue(interestPoints.data);
-    }
+    const handleSync = async () => {
+        if (!storage.value || isSyncing) return;
+
+        setIsSyncing(true);
+        setSyncStatus('idle');
+        setSyncMessage('');
+
+        try {
+            for (const interestPoint of storage.value) {
+                const dataToSend = {
+                    comment: interestPoint.comment,
+                    latitude: interestPoint.latitude,
+                    longitude: interestPoint.longitude,
+                    images: interestPoint.images,
+                };
+            
+                await createInterestPoint(dataToSend);
+                const interestPoints = await fetchInterestPoints();
+                await storage.setValue(interestPoints.data);
+            }
+            
+            setSyncStatus('success');
+            setSyncMessage('Points d\'intérêt synchronisés avec succès');            
+        } catch (error) {
+            setSyncStatus('error');
+            setSyncMessage('Échec de la synchronisation');
+            console.error('Failed to synchronize interest points:', error);
+        } finally {
+            setIsSyncing(false);
+            
+            setTimeout(() => {
+                setSyncStatus('idle');
+                setSyncMessage('');
+            }, 3000);
+        }
+    };
+
+    const isSyncDisabled = !storage.value || isSyncing;
 
     return (
-        <View>
-            <Pressable onPress={handleSync}>
-                <Text>Commencer la synchronisation</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Synchronisation des QR Codes</Text>
+
+            <Pressable 
+                style={[styles.syncButton, isSyncDisabled && styles.syncButtonDisabled]}
+                onPress={handleSync}
+                disabled={isSyncDisabled}
+            >
+                {isSyncing ? (
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                        <Text style={styles.syncButtonText}>Synchronisation...</Text>
+                    </View>
+                ) : (
+                    <Text style={styles.syncButtonText}>
+                        Commencer la synchronisation
+                    </Text>
+                )}
             </Pressable>
-            <Text>Données du QR : {qrData}</Text>
+
+            {syncStatus !== 'idle' && (
+                <View style={[
+                    styles.statusContainer,
+                    syncStatus === 'success' ? styles.successMessage : styles.errorMessage
+                ]}>
+                    <Text style={syncStatus === 'success' ? styles.successText : styles.errorText}>
+                        {syncMessage}
+                    </Text>
+                </View>
+            )}
+
+            <View style={styles.qrDataContainer}>
+                <Text style={styles.qrDataLabel}>Données du QR Code:</Text>
+                <Text style={styles.qrDataText} numberOfLines={2} ellipsizeMode="middle">
+                    {qrData || 'Aucune donnée QR code scannée'}
+                </Text>
+            </View>
+
+            {storage.value && (
+                <View style={[styles.qrDataContainer, { marginTop: 12 }]}>
+                    <Text style={styles.qrDataLabel}>
+                        Points d'intérêt à synchroniser: 
+                        <Text style={{ color: '#007AFF', fontWeight: 'bold' }}>
+                            {' '}{storage.value.length}
+                        </Text>
+                    </Text>
+                </View>
+            )}
         </View>
     );
 };

@@ -7,7 +7,8 @@ export interface InterestPointResponse {
 
 export interface InterestPoint {
   id: number
-  coordinates: number[]
+  latitude: number
+  longitude: number
   comment: string
   images: string[]
   createdAt: Date
@@ -16,6 +17,7 @@ export interface InterestPoint {
 }
 
 export interface InterestPointRequest {
-  coordinates: number[]
+  latitude: number
+  longitude: number
   comment: string
 }

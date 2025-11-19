@@ -26,8 +26,8 @@ export async function fetchInterestPointById(id: number): Promise<InterestPoint 
   return response.data || null
 }
 
-export async function createInterestPoint(data: Partial<InterestPointRequest[]>): Promise<InterestPoint> {
-  const url = `${API_URL}/interest-points`
+export async function createInterestPoint(data: Partial<InterestPointRequest>): Promise<InterestPoint> {
+  const url = `${API_URL}/interest-point/single`
   const response = await fetch(url, {
     method: "POST",
     headers: {
