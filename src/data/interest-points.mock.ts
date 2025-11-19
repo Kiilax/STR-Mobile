@@ -8,6 +8,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-01T10:00:00Z"),
     updatedAt: new Date("2023-01-02T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-03T10:00:00Z"),
     updatedAt: new Date("2023-01-04T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 3,
@@ -24,6 +26,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-05T10:00:00Z"),
     updatedAt: new Date("2023-01-06T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 4,
@@ -32,6 +35,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-07T10:00:00Z"),
     updatedAt: new Date("2023-01-08T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 5,
@@ -40,6 +44,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-09T10:00:00Z"),
     updatedAt: new Date("2023-01-10T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 6,
@@ -48,6 +53,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-11T10:00:00Z"),
     updatedAt: new Date("2023-01-12T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 7,
@@ -56,6 +62,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-13T10:00:00Z"),
     updatedAt: new Date("2023-01-14T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 8,
@@ -64,6 +71,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-15T10:00:00Z"),
     updatedAt: new Date("2023-01-16T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 9,
@@ -72,6 +80,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-17T10:00:00Z"),
     updatedAt: new Date("2023-01-18T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 10,
@@ -80,6 +89,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-19T10:00:00Z"),
     updatedAt: new Date("2023-01-20T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 11,
@@ -88,6 +98,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-21T10:00:00Z"),
     updatedAt: new Date("2023-01-22T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 12,
@@ -96,6 +107,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-23T10:00:00Z"),
     updatedAt: new Date("2023-01-24T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 13,
@@ -104,6 +116,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-25T10:00:00Z"),
     updatedAt: new Date("2023-01-26T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 14,
@@ -112,6 +125,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-27T10:00:00Z"),
     updatedAt: new Date("2023-01-28T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 15,
@@ -120,6 +134,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-29T10:00:00Z"),
     updatedAt: new Date("2023-01-30T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 16,
@@ -128,6 +143,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-01T10:00:00Z"),
     updatedAt: new Date("2023-02-02T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 17,
@@ -136,6 +152,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-03T10:00:00Z"),
     updatedAt: new Date("2023-02-04T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 18,
@@ -144,6 +161,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-05T10:00:00Z"),
     updatedAt: new Date("2023-02-06T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 19,
@@ -152,6 +170,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-07T10:00:00Z"),
     updatedAt: new Date("2023-02-08T10:00:00Z"),
+    equipmentPlacements: [],
   },
   {
     id: 20,
@@ -160,6 +179,7 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-09T10:00:00Z"),
     updatedAt: new Date("2023-02-10T10:00:00Z"),
+    equipmentPlacements: [],
   },
 ]
 
