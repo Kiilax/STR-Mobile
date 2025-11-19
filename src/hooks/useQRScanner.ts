@@ -1,10 +1,11 @@
 import { useCameraPermissions } from "expo-camera"
 import { useEffect } from "react"
-import { useAsyncStorage } from "./useReactiveAsyncStore"
+import { useReactiveAsyncStore } from "./useReactiveAsyncStore"
+import { keys } from "../config"
 
 export function useQRScanner() {
   const [permission, requestPermission] = useCameraPermissions()
-  const cameraPermissionStorage = useAsyncStorage<boolean>("cameraPermissionGranted", false)
+  const cameraPermissionStorage = useReactiveAsyncStore<boolean>(keys.cameraPermissionGranted, false)
 
   useEffect(() => {
     const checkAndRequestPermissions = async () => {
