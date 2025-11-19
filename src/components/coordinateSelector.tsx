@@ -3,9 +3,9 @@ import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "rea
 import { Ionicons } from "@expo/vector-icons"
 import MapView, { Marker } from "react-native-maps"
 import { colors } from "@/src/constants/theme"
-import { Coordinates } from "@/src/types"
 import { STRASBOURG_COORDINATES } from "@/src/constants/coordinates"
 import { useCoordinateSelector } from "@/src/hooks/useCoordinateSelector"
+import { Coordinates } from "@/src/types"
 
 const mapStyle = [
   {
@@ -67,8 +67,8 @@ export default function CoordinateSelector({
         >
           <Marker
             coordinate={{
-              latitude: coordinates[0] || STRASBOURG_COORDINATES.latitude,
-              longitude: coordinates[1] || STRASBOURG_COORDINATES.longitude,
+              latitude: coordinates.latitude || STRASBOURG_COORDINATES.latitude,
+              longitude: coordinates.longitude || STRASBOURG_COORDINATES.longitude,
             }}
             title="Point d'intérêt"
             description="Emplacement sélectionné"

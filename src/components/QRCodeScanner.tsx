@@ -14,12 +14,12 @@ interface QRCodeScannerProps {
 }
 
 export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerProps) {
-  const { isGranted, loading, error } = useQRScanner();
-  const [showModal, setShowModal] = useState(false);
+  const { isGranted, loading, error } = useQRScanner()
+  const [showModal, setShowModal] = useState(false)
 
   const handleScanResult = ({ data }: { data: string }) => {
-    setShowModal(true);
-    console.log("Visible Modal:", showModal);
+    setShowModal(true)
+    console.log("Visible Modal:", showModal)
     onScanResult(data)
   }
 
@@ -66,8 +66,8 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
           onBarcodeScanned={handleScanResult}
         />
       </View>
-      <ModalWrapper visible={showModal} onClose={() => setShowModal(false)} >
-        <QRCodeDataDisplay />        
+      <ModalWrapper visible={showModal} onClose={() => setShowModal(false)}>
+        <QRCodeDataDisplay />
       </ModalWrapper>
     </View>
   )

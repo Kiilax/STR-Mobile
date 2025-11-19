@@ -5,18 +5,16 @@ import { useState } from "react"
 import ModalWrapper from "./ui/modal"
 import { useQRStore } from "@/src/store/QRCode"
 
-
 export default function QRCode() {
   const [showQRScanner, setShowQRScanner] = useState(false)
   const [scannedIP, setScannedIP] = useState<string | null>(null)
-  const setQRData = useQRStore(state => state.setQRData);
+  const setQRData = useQRStore((state) => state.setQRData)
 
   const handleQRScanResult = (ip: string) => {
     setScannedIP(ip)
     //setShowQRScanner(false)
-    console.log("Scanned IP:", scannedIP)
-    
-    setQRData(ip);
+
+    setQRData(ip)
     //setShowQRScanner(false);
   }
 

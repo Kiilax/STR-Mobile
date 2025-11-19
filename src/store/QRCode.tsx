@@ -1,11 +1,11 @@
-import { create } from 'zustand';
+import { create } from "zustand"
 
 type QRStore = {
-  qrData: string | null;
-  setQRData: (data: string) => void;
-};
+  qrData: string | null
+  setQRData: (data: string) => void
+}
 
-export const useQRStore = create<QRStore>(set => ({
+export const useQRStore = create<QRStore>((set) => ({
   qrData: null,
-  setQRData: data => set({ qrData: data }),
-}));
+  setQRData: (data) => set({ qrData: data }),
+}))

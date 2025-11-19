@@ -1,42 +1,44 @@
-import { create } from "zustand"
-import { InterestPoint, InterestPointRequest, InterestPointResponse } from "../types"
-import { API_URL } from "@/src/config"
+import { InterestPoint, InterestPointRequest } from "../types"
+import { FileDownloader, ProxyApi } from "@/src/utils"
 
-export async function fetchInterestPoints(): Promise<InterestPointResponse> {
-  const url = `${API_URL}/interest-points`
-  const response = await fetch(url)
-    .then((res) => res.json())
-    .catch((err) => {
-      console.error("Error fetching interest points:", err)
-      throw err
-    })
+const url = "http://192.168.1.52:3000"
 
-  return response;
+export async function fetchInterestPoints(): Promise<InterestPoint[]> {
+  const interestPoints = await ProxyApi.get<InterestPoint[]>(url, "/interest-points")
+  for (const point of interestPoints) {
+    const downloadedImages: string[] = []
+    for (const imagePath of point.images) {
+      try {
+        const localUri = await FileDownloader.download(url, `${imagePath}`)
+        if (localUri) downloadedImages.push(localUri)
+      } catch (error) {
+        console.error(`Failed to download image ${imagePath}:`, error)
+      }
+      point.images = downloadedImages
+    }
+  }
+  return interestPoints
 }
 
-export async function fetchInterestPointById(id: number): Promise<InterestPoint | null> {
-  const url = `${API_URL}/interest-points/${id}`
-  const response = await fetch(url)
-    .then((res) => res.json())
-    .catch((err) => {
-      console.error(`Error fetching interest point with id ${id}:`, err)
-      throw err
-    })
-
-  return response.data || null
+export async function fetchInterestPointById(id: number) {
+  return ProxyApi.get<InterestPoint>(url, `/interest-points/${id}`)
 }
 
-export async function createInterestPoint(data: Partial<InterestPointRequest>): Promise<InterestPoint> {
-  const url = `${API_URL}/interest-point/single`
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "accept": "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+export async function createInterestPoint(data: Partial<InterestPointRequest>) {
+  const formData = new FormData()
+
+  const { images, ...fields } = data
+  Object.entries(fields).forEach(([key, value]) => {
+    if (value !== undefined) formData.append(key, String(value))
   })
-  const data2 = await response.json()
 
-  return data2
+  images?.forEach((uri, index) =>
+    formData.append("images", {
+      uri,
+      type: "image/jpeg",
+      name: uri.split("/").pop() || `image-${index}.jpg`,
+    } as any)
+  )
+
+  return ProxyApi.post(url, "/interest-points/single", formData)
 }
