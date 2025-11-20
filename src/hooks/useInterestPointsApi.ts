@@ -1,21 +1,37 @@
 import { useCallback, useState } from "react"
 import { useMainContext } from "../context/mainContext"
-import { InterestPoint, InterestPointRequest } from "../types"
+import { Equipment, InterestPoint, InterestPointRequest } from "../types"
 import { FileDownloader, ProxyApi } from "@/src/utils"
 
 export function useInterestPointsApi() {
-  const { ip } = useMainContext()
+  const { ip, equipments, setEquipments } = useMainContext()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
     setError(null)
-    if (!ip) {
+    if (!ip || ip.trim() === "") {
       setError("IP address is not set")
       setLoading(false)
       return []
     }
+    try {
+      const newEquipments = await ProxyApi.get<Equipment[]>(ip, "/equipments")
+      const finalEquipments = []
+      for (const equip of newEquipments) {
+        const exists = equipments.find((e) => e.id === equip.id)
+        if (!exists) {
+          const localUri = await FileDownloader.download(ip + "/files/", equip.image)
+          if (localUri) equip.image = localUri
+        }
+        finalEquipments.push(equip)
+      }
+      console.log("Loaded equipments:", finalEquipments)
+      setEquipments(finalEquipments)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+    } catch (error) {}
+
     try {
       const points = await ProxyApi.get<InterestPoint[]>(ip, "/interest-points")
       for (const point of points) {
@@ -40,7 +56,7 @@ export function useInterestPointsApi() {
     } finally {
       setLoading(false)
     }
-  }, [ip])
+  }, [equipments, ip, setEquipments])
 
   const fetchById = useCallback(
     async (id: number) => {

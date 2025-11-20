@@ -1,5 +1,6 @@
 export const keys = {
   interestPoints: "interest-points",
+  equipments: "equipments",
   cameraPermissionGranted: "camera-permission-granted",
 } as const
 

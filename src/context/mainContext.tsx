@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from "react"
-import { InterestPoint } from "@/src/types"
+import { Equipment, InterestPoint } from "@/src/types"
 import { keys } from "@/src/config"
 import { useReactiveAsyncStore } from "@/src/hooks"
 import { ImageStorage } from "../utils"
@@ -13,6 +13,9 @@ type MainContextType = {
   addInterestPoint: (point: InterestPoint) => void
   deleteInterestPoint: (id: number) => void
   deleteAllInterestPoints: () => void
+
+  equipments: Equipment[]
+  setEquipments: (equipments: Equipment[]) => void
 
   loading: boolean
   error: Error | null
@@ -31,6 +34,10 @@ export function MainProvider({ children }: MainProviderProps) {
   const { value, setValue, loading, error, clearError, refresh } = useReactiveAsyncStore<
     InterestPoint[]
   >(keys.interestPoints, [])
+  const { value: equipments, setValue: setEquipments } = useReactiveAsyncStore<Equipment[]>(
+    keys.equipments,
+    []
+  )
 
   function addInterestPoint(point: InterestPoint) {
     setValue((prev) => [...prev, point])
@@ -58,6 +65,8 @@ export function MainProvider({ children }: MainProviderProps) {
         ip,
         interestPoints: value,
         loading,
+        equipments,
+        setEquipments,
         error,
         setIp,
         setInterestPoints: setValue,

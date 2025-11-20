@@ -54,7 +54,6 @@ export default function InterestPointListScreen() {
                 <Text style={styles.text}>{poi.comment}</Text>
 
                 <Pressable onPress={() => deleteInterestPoint(poi.id)}>
-                  {/* button to delete */}
                   <Ionicons name="trash" size={24} color={"#b14"} />
                 </Pressable>
               </View>
@@ -62,9 +61,6 @@ export default function InterestPointListScreen() {
           )}
         </ScrollView>
       )}
-      <Pressable onPress={() => refresh()} style={{ position: "absolute", top: 40, right: 20 }}>
-        {/* button to delete */}
-      </Pressable>
       <TouchableOpacity style={styles.fab} onPress={() => setShowPOIForm(true)}>
         <Ionicons name="add" size={26} color="white" />
       </TouchableOpacity>

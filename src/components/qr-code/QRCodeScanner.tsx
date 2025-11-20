@@ -19,7 +19,6 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
 
   const handleScanResult = ({ data }: { data: string }) => {
     setShowModal(true)
-    console.log("Visible Modal:", showModal)
     onScanResult(data)
   }
 
