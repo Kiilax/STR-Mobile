@@ -1,24 +1,24 @@
 import { InterestPoint, Equipment } from "@/src/types"
-import { 
-  Text, 
-  View, 
-  Image, 
-  ScrollView, 
-  useWindowDimensions, 
-  StyleSheet, 
-  ActivityIndicator, 
+import {
+  Text,
+  View,
+  Image,
+  ScrollView,
+  useWindowDimensions,
+  StyleSheet,
+  ActivityIndicator,
   TouchableOpacity,
   Alert,
   Modal,
   TextInput,
-  Pressable
+  Pressable,
 } from "react-native"
 import { colors } from "@/src/constants/theme"
 import { useLocalSearchParams, router } from "expo-router"
 import { useEffect, useState } from "react"
 import Carousel from "react-native-reanimated-carousel"
 import { Ionicons } from "@expo/vector-icons"
-import * as ImagePicker from 'expo-image-picker'
+import * as ImagePicker from "expo-image-picker"
 import { ImageStorage } from "@/src/utils"
 import { useMainContext } from "@/src/context/mainContext"
 
@@ -48,7 +48,7 @@ export default function InterestPointDetailsScreen() {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
-        <Text style={styles.loadingText}>Chargement du point d'intérêt...</Text>
+        <Text style={styles.loadingText}>Chargement du point d&apos;intérêt...</Text>
       </View>
     )
   }
@@ -59,7 +59,7 @@ export default function InterestPointDetailsScreen() {
       <View style={styles.container}>
         <View style={styles.errorContainer}>
           <Ionicons name="alert-circle" size={48} color={colors.dark.accent} />
-          <Text style={styles.errorText}>Point d'intérêt non trouvé</Text>
+          <Text style={styles.errorText}>Point d&apos;intérêt non trouvé</Text>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
             <Text style={styles.backButtonText}>Retour</Text>
           </TouchableOpacity>
@@ -72,14 +72,14 @@ export default function InterestPointDetailsScreen() {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
-        <Text style={styles.loadingText}>Chargement du point d'intérêt...</Text>
+        <Text style={styles.loadingText}>Chargement du point d&apos;intérêt...</Text>
       </View>
     )
   }
 
   const updateInterestPoint = (updatedPoint: InterestPoint) => {
-    updatedPoint.synced = false;
-    const updatedPoints = interestPoints.map((point: InterestPoint) => 
+    updatedPoint.synced = false
+    const updatedPoints = interestPoints.map((point: InterestPoint) =>
       point.id === updatedPoint.id ? updatedPoint : point
     )
     setInterestPoints(updatedPoints)
@@ -88,12 +88,12 @@ export default function InterestPointDetailsScreen() {
 
   const handleEditComment = () => {
     if (!interestPoint) return
-    
+
     const updatedPoint = {
       ...interestPoint,
-      comment: editedComment
+      comment: editedComment,
     }
-    
+
     updateInterestPoint(updatedPoint)
     setEditModalVisible(false)
   }
@@ -101,9 +101,9 @@ export default function InterestPointDetailsScreen() {
   const pickImage = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-      if (status !== 'granted') {
+      if (status !== "granted") {
         Alert.alert(
-          "Permission requise", 
+          "Permission requise",
           "L'accès à la galerie est nécessaire pour sélectionner des images."
         )
         return
@@ -120,15 +120,15 @@ export default function InterestPointDetailsScreen() {
       if (!result.canceled && interestPoint && result.assets[0]) {
         const newImageUri = result.assets[0].uri
         console.log("Selected image URI:", newImageUri)
-        
+
         const storedUri = await ImageStorage.save(newImageUri)
         console.log("Stored image URI:", storedUri)
-        
+
         const updatedPoint = {
           ...interestPoint,
-          images: [...interestPoint.images, storedUri].filter((uri): uri is string => uri !== null)
+          images: [...interestPoint.images, storedUri].filter((uri): uri is string => uri !== null),
         }
-        
+
         updateInterestPoint(updatedPoint)
         Alert.alert("Succès", "Image ajoutée avec succès")
       }
@@ -142,29 +142,25 @@ export default function InterestPointDetailsScreen() {
   const deleteImage = (imageIndex: number) => {
     if (!interestPoint) return
 
-    Alert.alert(
-      "Supprimer l'image",
-      "Êtes-vous sûr de vouloir supprimer cette image ?",
-      [
-        { text: "Annuler", style: "cancel" },
-        { 
-          text: "Supprimer", 
-          style: "destructive",
-          onPress: () => {
-            const imageToDelete = interestPoint.images[imageIndex]
-            ImageStorage.remove(imageToDelete)
-            
-            const updatedImages = interestPoint.images.filter((_, index) => index !== imageIndex)
-            const updatedPoint = {
-              ...interestPoint,
-              images: updatedImages
-            }
-            
-            updateInterestPoint(updatedPoint)
+    Alert.alert("Supprimer l'image", "Êtes-vous sûr de vouloir supprimer cette image ?", [
+      { text: "Annuler", style: "cancel" },
+      {
+        text: "Supprimer",
+        style: "destructive",
+        onPress: () => {
+          const imageToDelete = interestPoint.images[imageIndex]
+          ImageStorage.remove(imageToDelete)
+
+          const updatedImages = interestPoint.images.filter((_, index) => index !== imageIndex)
+          const updatedPoint = {
+            ...interestPoint,
+            images: updatedImages,
           }
-        }
-      ]
-    )
+
+          updateInterestPoint(updatedPoint)
+        },
+      },
+    ])
   }
 
   const deleteInterestPoint = () => {
@@ -175,20 +171,20 @@ export default function InterestPointDetailsScreen() {
       "Êtes-vous sûr de vouloir supprimer ce point d'intérêt ?",
       [
         { text: "Annuler", style: "cancel" },
-        { 
-          text: "Supprimer", 
+        {
+          text: "Supprimer",
           style: "destructive",
           onPress: () => {
-            interestPoint.images.forEach(uri => {
+            interestPoint.images.forEach((uri) => {
               ImageStorage.remove(uri)
             })
-            const updatedPoints = interestPoints.filter(point => point.id !== interestPoint.id)
+            const updatedPoints = interestPoints.filter((point) => point.id !== interestPoint.id)
             setInterestPoints(updatedPoints)
             setInterestPoint(null)
-            
+
             router.back()
-          }
-        }
+          },
+        },
       ]
     )
   }
@@ -201,16 +197,10 @@ export default function InterestPointDetailsScreen() {
           <View style={styles.headerContent}>
             <Text style={styles.comment}>{interestPoint.comment}</Text>
             <View style={styles.headerActions}>
-              <TouchableOpacity 
-                style={styles.editButton}
-                onPress={() => setEditModalVisible(true)}
-              >
+              <TouchableOpacity style={styles.editButton} onPress={() => setEditModalVisible(true)}>
                 <Ionicons name="pencil" size={20} color={colors.dark.tint} />
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.deleteButton}
-                onPress={deleteInterestPoint}
-              >
+              <TouchableOpacity style={styles.deleteButton} onPress={deleteInterestPoint}>
                 <Ionicons name="trash" size={20} color="#b14" />
               </TouchableOpacity>
             </View>
@@ -221,14 +211,14 @@ export default function InterestPointDetailsScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Images</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.addButton}
               onPress={() => setImagePickerModalVisible(true)}
             >
               <Ionicons name="add" size={20} color={colors.dark.tint} />
             </TouchableOpacity>
           </View>
-          
+
           {interestPoint.images && interestPoint.images.length > 0 ? (
             <View style={styles.imagesContainer}>
               <Carousel
@@ -240,13 +230,13 @@ export default function InterestPointDetailsScreen() {
                 autoPlayInterval={5000}
                 renderItem={({ item }) => (
                   <View style={styles.imageContainer}>
-                    <Image 
-                      source={{ uri: item.uri }} 
-                      style={styles.image} 
+                    <Image
+                      source={{ uri: item.uri }}
+                      style={styles.image}
                       resizeMode="cover"
                       onError={(e) => console.log("Error loading image:", e.nativeEvent.error)}
                     />
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.deleteImageButton}
                       onPress={() => deleteImage(item.index)}
                     >
@@ -262,7 +252,7 @@ export default function InterestPointDetailsScreen() {
           ) : (
             <View style={styles.noImagesContainer}>
               <Text style={styles.noImagesText}>Aucune image</Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.addImageButton}
                 onPress={() => setImagePickerModalVisible(true)}
               >
@@ -321,13 +311,13 @@ export default function InterestPointDetailsScreen() {
               placeholderTextColor="#999"
             />
             <View style={styles.modalActions}>
-              <Pressable 
+              <Pressable
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={() => setEditModalVisible(false)}
               >
                 <Text style={styles.cancelButtonText}>Annuler</Text>
               </Pressable>
-              <Pressable 
+              <Pressable
                 style={[styles.modalButton, styles.saveButton]}
                 onPress={handleEditComment}
               >
@@ -354,7 +344,7 @@ export default function InterestPointDetailsScreen() {
                 <Text style={styles.imagePickerOptionText}>Choisir depuis la galerie</Text>
               </TouchableOpacity>
             </View>
-            <Pressable 
+            <Pressable
               style={[styles.modalButton, styles.cancelButton]}
               onPress={() => setImagePickerModalVisible(false)}
             >
@@ -366,7 +356,6 @@ export default function InterestPointDetailsScreen() {
     </ScrollView>
   )
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -392,12 +381,12 @@ const styles = StyleSheet.create({
     borderLeftColor: colors.dark.accent,
   },
   headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   headerActions: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   editButton: {
@@ -429,9 +418,9 @@ const styles = StyleSheet.create({
     borderLeftColor: colors.dark.accent,
   },
   sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   sectionTitle: {
@@ -449,7 +438,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     overflow: "hidden",
     width: "85%",
-    position: 'relative',
+    position: "relative",
   },
   image: {
     width: "100%",
@@ -457,14 +446,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.dark.secondary,
   },
   deleteImageButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 8,
     right: 8,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: "rgba(0,0,0,0.5)",
     borderRadius: 12,
   },
   noImagesContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
   },
   noImagesText: {
@@ -474,14 +463,14 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   addImageButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
     padding: 12,
     borderWidth: 1,
     borderColor: colors.dark.tint,
     borderRadius: 8,
-    borderStyle: 'dashed',
+    borderStyle: "dashed",
   },
   addImageText: {
     color: colors.dark.tint,
@@ -535,24 +524,24 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   modalContent: {
     backgroundColor: colors.dark.secondary,
     borderRadius: 12,
     padding: 20,
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
   },
   modalTitle: {
     color: colors.dark.inverted,
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   commentInput: {
     backgroundColor: colors.dark.background,
@@ -563,23 +552,23 @@ const styles = StyleSheet.create({
     color: colors.dark.inverted,
     fontSize: 16,
     minHeight: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     marginBottom: 20,
   },
   modalActions: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   modalButton: {
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
     minWidth: 80,
-    alignItems: 'center',
+    alignItems: "center",
   },
   cancelButton: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: colors.dark.accent,
   },
@@ -591,17 +580,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   saveButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   imagePickerOptions: {
     gap: 16,
     marginBottom: 20,
   },
   imagePickerOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     padding: 16,
     backgroundColor: colors.dark.background,
@@ -617,19 +606,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: colors.dark.inverted,
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   errorText: {
     marginTop: 16,
     color: colors.dark.inverted,
     fontSize: 18,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
   },
   backButton: {
@@ -639,8 +628,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   backButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 })

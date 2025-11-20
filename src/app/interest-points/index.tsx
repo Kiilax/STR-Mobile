@@ -20,8 +20,16 @@ import { useRouter } from "expo-router"
 
 export default function InterestPointListScreen() {
   const [showPOIForm, setShowPOIForm] = useState(false)
-  const router = useRouter();
-  const { interestPoints, addInterestPoint, deleteInterestPoint, error, loading, clearError, refreshInterestPoints } = useMainContext()
+  const router = useRouter()
+  const {
+    interestPoints,
+    addInterestPoint,
+    deleteInterestPoint,
+    error,
+    loading,
+    clearError,
+    refreshInterestPoints,
+  } = useMainContext()
 
   if (error) {
     Alert.alert("Erreur de chargement", error.message, [
@@ -43,20 +51,15 @@ export default function InterestPointListScreen() {
             <Text style={styles.emptyText}>{API_URL}</Text>
           ) : (
             interestPoints.map((poi) => (
-              <Pressable 
-                key={poi.id}
-                onPress={() => router.push(`/interest-points/${poi.id}`)}
-              >
+              <Pressable key={poi.id} onPress={() => router.push(`/interest-points/${poi.id}`)}>
                 <View style={styles.item}>
-                  
-                    {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
-                    <Text style={styles.text}>{poi.comment}</Text>
+                  {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
+                  <Text style={styles.text}>{poi.comment}</Text>
 
-                    <Pressable onPress={() => deleteInterestPoint(poi.id)}>
-                      {/* button to delete */}
-                      <Ionicons name="trash" size={24} color={"#b14"} />
-                    </Pressable>
-                  
+                  <Pressable onPress={() => deleteInterestPoint(poi.id)}>
+                    {/* button to delete */}
+                    <Ionicons name="trash" size={24} color={"#b14"} />
+                  </Pressable>
                 </View>
               </Pressable>
             ))

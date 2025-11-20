@@ -21,11 +21,11 @@ export default function QRCodeDataDisplay() {
 
   const handleSync = async () => {
     if (!canSync) return
-    
+
     setIsSyncing(true)
     setSyncStatus("idle")
     setSyncMessage("")
-    
+
     try {
       if (hasPointsToSync) {
         for (const interestPoint of interestPoints) {
@@ -39,15 +39,15 @@ export default function QRCodeDataDisplay() {
           await create(dataToSend)
         }
       }
-      
-      deleteAllInterestPoints();
+
+      deleteAllInterestPoints()
       const newPoints = await fetchAll()
-      
+
       setInterestPoints(newPoints)
-      
+
       setSyncStatus("success")
       setSyncMessage(
-        hasPointsToSync 
+        hasPointsToSync
           ? "Points d'intérêt synchronisés avec succès"
           : "Données récupérées depuis le serveur"
       )
@@ -67,7 +67,7 @@ export default function QRCodeDataDisplay() {
         <Ionicons name="cloud-upload-outline" size={32} color="#007AFF" />
         <Text style={styles.title}>Synchronisation des données</Text>
         <Text style={styles.subtitle}>
-          Scannez un QR Code pour synchroniser vos points d'intérêt
+          Scannez un QR Code pour synchroniser vos points d&apos;intérêt
         </Text>
       </View>
 
@@ -77,7 +77,7 @@ export default function QRCodeDataDisplay() {
           <Ionicons name="qr-code-outline" size={24} color="#333" />
           <Text style={styles.sectionTitle}>Étape 1: Scan du QR Code</Text>
         </View>
-        
+
         <QRCode />
       </View>
 
@@ -88,27 +88,24 @@ export default function QRCodeDataDisplay() {
           <Text style={styles.sectionTitle}>Étape 2: Points à synchroniser</Text>
         </View>
 
-        <View style={[
-          styles.pointsCard,
-          hasPointsToSync ? styles.pointsAvailable : styles.noPoints
-        ]}>
-          <Ionicons 
-            name={hasPointsToSync ? "warning" : "checkmark-done"} 
-            size={24} 
-            color={hasPointsToSync ? "#FF9800" : "#4CAF50"} 
+        <View
+          style={[styles.pointsCard, hasPointsToSync ? styles.pointsAvailable : styles.noPoints]}
+        >
+          <Ionicons
+            name={hasPointsToSync ? "warning" : "checkmark-done"}
+            size={24}
+            color={hasPointsToSync ? "#FF9800" : "#4CAF50"}
           />
           <View style={styles.pointsInfo}>
             <Text style={styles.pointsCount}>
-              {hasPointsToSync 
+              {hasPointsToSync
                 ? `${interestPoints.length} point(s) d'intérêt en attente`
-                : "Aucun point à synchroniser"
-              }
+                : "Aucun point à synchroniser"}
             </Text>
             <Text style={styles.pointsDescription}>
               {hasPointsToSync
                 ? "Ces points seront envoyés au serveur lors de la synchronisation"
-                : "La synchronisation récupérera les points d'intérêt du serveur"
-              }
+                : "La synchronisation récupérera les points d'intérêt du serveur"}
             </Text>
           </View>
         </View>
@@ -145,10 +142,9 @@ export default function QRCodeDataDisplay() {
               <>
                 <Ionicons name="cloud-upload" size={20} color="#FFFFFF" />
                 <Text style={styles.syncButtonText}>
-                  {hasPointsToSync 
-                    ? "Commencer la synchronisation" 
-                    : "Récupérer les données du serveur"
-                  }
+                  {hasPointsToSync
+                    ? "Commencer la synchronisation"
+                    : "Récupérer les données du serveur"}
                 </Text>
               </>
             )}
@@ -162,10 +158,10 @@ export default function QRCodeDataDisplay() {
               syncStatus === "success" ? styles.successMessage : styles.errorMessage,
             ]}
           >
-            <Ionicons 
-              name={syncStatus === "success" ? "checkmark-circle" : "alert-circle"} 
-              size={20} 
-              color="#FFFFFF" 
+            <Ionicons
+              name={syncStatus === "success" ? "checkmark-circle" : "alert-circle"}
+              size={20}
+              color="#FFFFFF"
             />
             <Text style={syncStatus === "success" ? styles.successText : styles.errorText}>
               {syncMessage}
@@ -189,10 +185,9 @@ export default function QRCodeDataDisplay() {
               <Text style={styles.stepNumberText}>2</Text>
             </View>
             <Text style={styles.stepText}>
-              {hasPointsToSync 
+              {hasPointsToSync
                 ? "Vos points locaux seront envoyés au serveur"
-                : "Les points du serveur seront récupérés"
-              }
+                : "Les points du serveur seront récupérés"}
             </Text>
           </View>
           <View style={styles.step}>

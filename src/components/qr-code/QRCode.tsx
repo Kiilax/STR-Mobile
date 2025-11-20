@@ -1,14 +1,6 @@
 // QRCode.tsx
-import { 
-  MaterialCommunityIcons, 
-  Ionicons 
-} from "@expo/vector-icons"
-import { 
-  TouchableOpacity, 
-  StyleSheet, 
-  View, 
-  Text 
-} from "react-native"
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"
+import { TouchableOpacity, StyleSheet, View, Text } from "react-native"
 import QRCodeScanner from "./QRCodeScanner"
 import { useState } from "react"
 import ModalWrapper from "../ui/modal"
@@ -36,17 +28,12 @@ export default function QRCode() {
     <View style={styles.container}>
       {/* Bouton principal Scan QR Code */}
       {!ip ? (
-        <TouchableOpacity
-          style={styles.scanButton}
-          onPress={() => setShowQRScanner(true)}
-        >
+        <TouchableOpacity style={styles.scanButton} onPress={() => setShowQRScanner(true)}>
           <View style={styles.scanButtonContent}>
             <MaterialCommunityIcons name="qrcode-scan" size={28} color="#007AFF" />
             <View style={styles.scanButtonText}>
               <Text style={styles.scanButtonTitle}>Scanner le QR Code</Text>
-              <Text style={styles.scanButtonSubtitle}>
-                Cliquez pour scanner le code du site
-              </Text>
+              <Text style={styles.scanButtonSubtitle}>Cliquez pour scanner le code du site</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </View>
@@ -63,17 +50,14 @@ export default function QRCode() {
               <Text style={styles.scanSuccessSubtitle}>Site connecté</Text>
             </View>
           </View>
-          
+
           <View style={styles.ipContainer}>
             <Text style={styles.ipLabel}>Adresse du site:</Text>
             <View style={styles.ipValueContainer}>
               <Text style={styles.ipValue} numberOfLines={1} ellipsizeMode="middle">
                 {ip}
               </Text>
-              <TouchableOpacity 
-                style={styles.rescanButton}
-                onPress={handleScanAgain}
-              >
+              <TouchableOpacity style={styles.rescanButton} onPress={handleScanAgain}>
                 <Ionicons name="refresh" size={16} color="#007AFF" />
                 <Text style={styles.rescanText}>Changer</Text>
               </TouchableOpacity>
@@ -83,15 +67,8 @@ export default function QRCode() {
       )}
 
       {/* Modal du scanner QR Code */}
-      <ModalWrapper
-        visible={showQRScanner}
-        onClose={handleCloseScanner}
-        fullScreen={true}
-      >
-        <QRCodeScanner 
-          onScanResult={handleQRScanResult} 
-          onClose={handleCloseScanner} 
-        />
+      <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner} fullScreen={true}>
+        <QRCodeScanner onScanResult={handleQRScanResult} onClose={handleCloseScanner} />
       </ModalWrapper>
     </View>
   )
