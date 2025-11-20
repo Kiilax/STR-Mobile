@@ -1,7 +1,7 @@
 import { View, TouchableOpacity, ActivityIndicator, Text } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useMap } from "@/src/hooks"
-import { styles } from "@/src/app/map/map.styles"
+import { styles } from "./styles"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import MapViewDirections from "react-native-maps-directions"
 import { InterestPoint } from "@/src/types"
