@@ -6,6 +6,8 @@ import { colors } from "@/src/constants/theme"
 import { InterestPoint } from "@/src/types/interest-point"
 import CoordinateSelector from "./coordinateSelector"
 import ImageSelector from "./imageSelector"
+import { Coordinates } from "../types"
+import { convertToAddress } from "@/src/utils"
 
 interface InterestPointFormProps {
   onClose?: () => void
@@ -14,7 +16,7 @@ interface InterestPointFormProps {
 
 interface InterestPointFormData {
   comment: string
-  coordinates: [number, number]
+  coordinates: Coordinates
   images: string[]
 }
 
@@ -31,14 +33,13 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
   } = useForm<InterestPointFormData>({
     defaultValues: {
       comment: "",
-      coordinates: [0, 0],
+      coordinates: { latitude: 0, longitude: 0 },
       images: [],
     },
   })
-
   const coordinates = watch("coordinates")
 
-  const handleCoordinatesChange = (coords: [number, number]) => {
+  const handleCoordinatesChange = (coords: Coordinates) => {
     setValue("coordinates", coords)
   }
 
@@ -59,10 +60,17 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
     const poiData: InterestPoint = {
       id: Date.now(),
       comment: data.comment,
-      coordinates: data.coordinates,
+      latitude: data.coordinates.latitude,
+      longitude: data.coordinates.longitude,
       images: data.images,
+      synced: false,
       createdAt: new Date(),
       updatedAt: new Date(),
+      isVisited: false,
+      address:
+        (await convertToAddress(data.coordinates.latitude, data.coordinates.longitude)) ??
+        "Adresse inconnue",
+      equipmentPlacements: [],
     }
     onSubmit?.(poiData)
     onClose?.()

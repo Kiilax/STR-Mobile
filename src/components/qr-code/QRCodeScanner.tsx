@@ -4,6 +4,9 @@ import { Platform, Pressable, StyleSheet, Text, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useQRScanner } from "@/src/hooks/useQRScanner"
 import { colors } from "@/src/constants/theme"
+import ModalWrapper from "../ui/modal"
+import { useState } from "react"
+import QRCodeDataDisplay from "../../app/synchronization"
 
 interface QRCodeScannerProps {
   onScanResult: (ip: string) => void
@@ -12,8 +15,10 @@ interface QRCodeScannerProps {
 
 export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerProps) {
   const { isGranted, loading, error } = useQRScanner()
+  const [showModal, setShowModal] = useState(false)
 
   const handleScanResult = ({ data }: { data: string }) => {
+    setShowModal(true)
     onScanResult(data)
   }
 
@@ -60,6 +65,9 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
           onBarcodeScanned={handleScanResult}
         />
       </View>
+      <ModalWrapper visible={showModal} onClose={() => setShowModal(false)} fullScreen>
+        <QRCodeDataDisplay />
+      </ModalWrapper>
     </View>
   )
 }

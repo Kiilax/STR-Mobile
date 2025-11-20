@@ -1,16 +1,22 @@
 import { EquipmentPlacement } from "./equipment"
 
-export interface InterestPointResponse {
-  ok: boolean
-  data: InterestPoint[]
-}
-
 export interface InterestPoint {
   id: number
-  coordinates: number[]
+  latitude: number
+  longitude: number
   comment: string
   images: string[]
   createdAt: Date
   updatedAt: Date
-  equipmentPlacements: EquipmentPlacement[]
+  isVisited: boolean
+  synced: boolean
+  address?: string
+  equipmentPlacements?: EquipmentPlacement[]
+}
+
+export interface InterestPointRequest {
+  latitude: number
+  longitude: number
+  comment: string
+  images: string[]
 }

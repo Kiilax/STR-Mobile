@@ -1,6 +1,6 @@
 import { File, Directory, Paths } from "expo-file-system"
 export class ImageStorage {
-  static save(uri: string) {
+  static async save(uri: string) {
     try {
       const image = new File(uri)
       image.move(new Directory(Paths.document))
@@ -14,8 +14,10 @@ export class ImageStorage {
   static remove(uri: string) {
     try {
       const image = new File(uri)
-      image.delete()
-      return true
+      if (image.exists) {
+        image.delete()
+        return true
+      }
     } catch (error) {
       console.error("Error removing image from persistent storage:", error)
       return false

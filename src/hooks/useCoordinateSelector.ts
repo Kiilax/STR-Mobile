@@ -2,8 +2,8 @@ import { useState, useRef, useEffect, useCallback } from "react"
 import { Alert } from "react-native"
 import MapView from "react-native-maps"
 import * as Location from "expo-location"
-import { Coordinates } from "@/src/types"
 import { STRASBOURG_COORDINATES, USER_DELTA } from "@/src/constants/coordinates"
+import { Coordinates } from "@/src/types"
 
 interface UseCoordinateSelectorProps {
   coordinates: Coordinates
@@ -17,8 +17,8 @@ export function useCoordinateSelector({
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
   const [hasInitialized, setHasInitialized] = useState(false)
   const [region, setRegion] = useState({
-    latitude: coordinates[0] || STRASBOURG_COORDINATES.latitude,
-    longitude: coordinates[1] || STRASBOURG_COORDINATES.longitude,
+    latitude: coordinates.latitude || STRASBOURG_COORDINATES.latitude,
+    longitude: coordinates.longitude || STRASBOURG_COORDINATES.longitude,
     latitudeDelta: STRASBOURG_COORDINATES.latitudeDelta,
     longitudeDelta: STRASBOURG_COORDINATES.longitudeDelta,
   })
@@ -40,11 +40,14 @@ export function useCoordinateSelector({
       }
 
       const location = await Location.getCurrentPositionAsync({})
-      const coords: Coordinates = [location.coords.latitude, location.coords.longitude]
+      const coords: Coordinates = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      }
 
       const newRegion = {
-        latitude: coords[0],
-        longitude: coords[1],
+        latitude: coords.latitude,
+        longitude: coords.longitude,
         latitudeDelta: USER_DELTA.latitudeDelta,
         longitudeDelta: USER_DELTA.longitudeDelta,
       }
@@ -71,8 +74,8 @@ export function useCoordinateSelector({
 
   useEffect(() => {
     setRegion({
-      latitude: coordinates[0] || STRASBOURG_COORDINATES.latitude,
-      longitude: coordinates[1] || STRASBOURG_COORDINATES.longitude,
+      latitude: coordinates.latitude || STRASBOURG_COORDINATES.latitude,
+      longitude: coordinates.longitude || STRASBOURG_COORDINATES.longitude,
       latitudeDelta: USER_DELTA.latitudeDelta,
       longitudeDelta: USER_DELTA.longitudeDelta,
     })
@@ -80,7 +83,7 @@ export function useCoordinateSelector({
 
   const handleMapPress = (event: any) => {
     const { latitude, longitude } = event.nativeEvent.coordinate
-    const coords: Coordinates = [latitude, longitude]
+    const coords: Coordinates = { latitude, longitude }
     onCoordinatesChangeRef.current(coords)
   }
 

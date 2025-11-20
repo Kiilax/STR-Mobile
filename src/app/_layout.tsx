@@ -1,41 +1,50 @@
 import { ThemeProvider } from "@react-navigation/native"
 import { Tabs } from "expo-router"
 import { StatusBar } from "expo-status-bar"
-import "react-native-reanimated"
 import Entypo from "@expo/vector-icons/Entypo"
-import { colors, darkTheme } from "@/src/constants/theme"
-import { SafeAreaView } from "react-native-safe-area-context"
-import QRCode from "@/src/components/QRCode"
+import { darkTheme } from "@/src/constants/theme"
+import { SafeAreaProvider } from "react-native-safe-area-context"
+import { MainProvider } from "../context/mainContext"
 
 export default function RootLayout() {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.dark.background }}>
-      <ThemeProvider value={darkTheme}>
-        <Tabs
-          screenOptions={{
-            headerShown: false,
-            tabBarStyle: { backgroundColor: darkTheme.colors.card },
-          }}
-        >
-          <Tabs.Screen
-            name="map/index"
-            options={{
-              title: "Carte",
-              tabBarLabel: "Carte",
-              tabBarIcon: ({ color, size }) => <Entypo name="map" size={size} color={color} />,
+    <MainProvider>
+      <SafeAreaProvider>
+        <ThemeProvider value={darkTheme}>
+          <Tabs
+            screenOptions={{
+              headerShown: false,
+              tabBarStyle: { backgroundColor: darkTheme.colors.card },
             }}
-          />
-          <Tabs.Screen
-            name="interest-points"
-            options={{
-              title: "Points d'intérêt",
-              tabBarIcon: ({ color, size }) => <Entypo name="location" size={size} color={color} />,
-            }}
-          />
-        </Tabs>
-        <QRCode />
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </SafeAreaView>
+          >
+            <Tabs.Screen
+              name="map/index"
+              options={{
+                title: "Carte",
+                tabBarLabel: "Carte",
+                tabBarIcon: ({ color, size }) => <Entypo name="map" size={size} color={color} />,
+              }}
+            />
+            <Tabs.Screen
+              name="interest-points"
+              options={{
+                title: "Points d'intérêt",
+                tabBarIcon: ({ color, size }) => (
+                  <Entypo name="location" size={size} color={color} />
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="synchronization/index"
+              options={{
+                title: "Synchronisation",
+                tabBarIcon: ({ color, size }) => <Entypo name="rocket" size={size} color={color} />,
+              }}
+            />
+          </Tabs>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </MainProvider>
   )
 }
