@@ -2,7 +2,7 @@ import { ThemeProvider } from "@react-navigation/native"
 import { Tabs } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import Entypo from "@expo/vector-icons/Entypo"
-import { colors, darkTheme } from "@/src/constants/theme"
+import { darkTheme } from "@/src/constants/theme"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import QRCode from "@/src/components/QRCode"
 

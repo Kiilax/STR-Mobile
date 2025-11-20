@@ -14,6 +14,7 @@ export default function QRCode() {
 
   const handleQRScanResult = (ip: string) => {
     setScannedIP(ip)
+    console.log("Scanned IP:", scannedIP)
     //setShowQRScanner(false)
 
     setQRData(ip)

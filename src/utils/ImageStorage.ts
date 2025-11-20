@@ -19,6 +19,7 @@ export class ImageStorage {
         return true
       }
     } catch (error) {
+      console.error("Error removing image from persistent storage:", error)
       return false
     }
   }

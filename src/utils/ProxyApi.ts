@@ -1,5 +1,4 @@
 import { ApiResponse } from "../types"
-import { File, Paths } from "expo-file-system"
 
 export class ProxyApi {
   static async request<T>(url: string, endpoint: string, options: RequestInit = {}): Promise<T> {

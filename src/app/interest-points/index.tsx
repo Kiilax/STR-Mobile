@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react"
+import React, { useState } from "react"
 import {
   View,
   Text,
@@ -17,7 +17,7 @@ import ModalWrapper from "@/src/components/ui/modal"
 import { useReactiveAsyncStore } from "@/src/hooks"
 import { InterestPoint } from "@/src/types"
 import { API_URL, keys } from "@/src/config"
-import { FileDownloader, ImageStorage, ProxyApi } from "@/src/utils"
+import { ImageStorage } from "@/src/utils"
 
 export default function InterestPointListScreen() {
   const [showPOIForm, setShowPOIForm] = useState(false)
