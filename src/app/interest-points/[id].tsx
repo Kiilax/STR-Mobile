@@ -276,6 +276,8 @@ export default function InterestPointDetailsScreen() {
                       index === equipments.length - 1 && styles.lastEquipmentItem,
                     ]}
                   >
+                    <Image source={{ uri: equipment.image }} style={styles.equipmentImage} />
+
                     <View style={styles.equipmentHeader}>
                       <Text style={styles.equipmentName}>{equipment.name}</Text>
                     </View>
@@ -521,6 +523,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     opacity: 0.7,
     fontStyle: "italic",
+  },
+  equipmentImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    marginTop: 8,
   },
   modalOverlay: {
     flex: 1,
