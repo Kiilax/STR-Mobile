@@ -1,13 +1,13 @@
 import { View, TouchableOpacity, ActivityIndicator, Text } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import { useMap, useReactiveAsyncStore } from "@/src/hooks"
+import { useMap } from "@/src/hooks"
 import { styles } from "@/src/app/map/map.styles"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import MapViewDirections from "react-native-maps-directions"
 import { InterestPoint } from "@/src/types"
 import { useEffect, useState } from "react"
-import { keys } from "@/src/config"
 import * as geolib from "geolib" // import { colors } from "@/src/constants/theme"
+import { useMainContext } from "@/src/context/mainContext"
 
 const mapStyle = [
   {
@@ -20,7 +20,7 @@ const mapStyle = [
 export default function MapScreen() {
   const { mapRef, region, isFollowing, userLocation, handleMapDrag, handleCenterOnUser } = useMap()
   const [sortedMarkers, setSortedMarkers] = useState<InterestPoint[]>([])
-  const { value: markers } = useReactiveAsyncStore<InterestPoint[]>(keys.interestPoints, [])
+  const { interestPoints: markers } = useMainContext()
 
   useEffect(() => {
     const sortMarkersByDistance = () => {

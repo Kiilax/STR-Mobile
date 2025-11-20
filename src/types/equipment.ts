@@ -10,4 +10,5 @@ export interface Equipment {
   length: number
   width: number
   height: number
+  image: string
 }

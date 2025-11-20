@@ -2,23 +2,18 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { TouchableOpacity, StyleSheet } from "react-native"
 import QRCodeScanner from "./QRCodeScanner"
 import { useState } from "react"
-import ModalWrapper from "./ui/modal"
+import ModalWrapper from "../ui/modal"
 import { useFloatingButtonsPosition } from "@/src/hooks"
-import { useQRStore } from "@/src/store/QRCode"
+import { useMainContext } from "@/src/context/mainContext"
 
 export default function QRCode() {
   const [showQRScanner, setShowQRScanner] = useState(false)
-  const [scannedIP, setScannedIP] = useState<string | null>(null)
   const { buttonBottom } = useFloatingButtonsPosition()
-  const setQRData = useQRStore((state) => state.setQRData)
-
+  const { setIp } = useMainContext()
   const handleQRScanResult = (ip: string) => {
-    setScannedIP(ip)
-    console.log("Scanned IP:", scannedIP)
-    //setShowQRScanner(false)
-
-    setQRData(ip)
-    //setShowQRScanner(false);
+    if (!ip || ip.trim() === "") return
+    setIp(ip)
+    setShowQRScanner(false)
   }
 
   return (

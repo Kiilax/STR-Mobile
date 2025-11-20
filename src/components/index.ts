@@ -1,5 +1,5 @@
-export { default as QRCodeScanner } from "./QRCodeScanner"
+export { default as QRCodeScanner } from "./qr-code/QRCodeScanner"
+export { default as QRCode } from "./qr-code/QRCode"
 export { default as InterestPointForm } from "./interestPointForm"
 export { default as CoordinateSelector } from "./coordinateSelector"
 export { default as ImageSelector } from "./imageSelector"
-export { default as QRCode } from "./QRCode"
