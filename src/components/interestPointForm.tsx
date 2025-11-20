@@ -7,6 +7,7 @@ import { InterestPoint } from "@/src/types/interest-point"
 import CoordinateSelector from "./coordinateSelector"
 import ImageSelector from "./imageSelector"
 import { Coordinates } from "../types"
+import { convertToAddress } from "@/src/utils"
 
 interface InterestPointFormProps {
   onClose?: () => void
@@ -36,7 +37,6 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
       images: [],
     },
   })
-
   const coordinates = watch("coordinates")
 
   const handleCoordinatesChange = (coords: Coordinates) => {
@@ -65,6 +65,10 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
       images: data.images,
       createdAt: new Date(),
       updatedAt: new Date(),
+      isVisited: false,
+      address:
+        (await convertToAddress(data.coordinates.latitude, data.coordinates.longitude)) ??
+        "Adresse inconnue",
       equipmentPlacements: [],
     }
     onSubmit?.(poiData)

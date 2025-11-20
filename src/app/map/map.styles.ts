@@ -1,4 +1,4 @@
-import { colors } from "@/src/constants/theme"
+import { colors, darkTheme } from "@/src/constants/theme"
 import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
@@ -25,5 +25,14 @@ export const styles = StyleSheet.create({
   paragraph: {
     fontSize: 18,
     textAlign: "center",
+  },
+  addressText: {
+    position: "absolute",
+    bottom: 0,
+    backgroundColor: darkTheme.colors.card,
+    color: colors.dark.tint,
+    padding: 15,
+    maxWidth: "70%",
+    borderTopRightRadius: 10,
   },
 })

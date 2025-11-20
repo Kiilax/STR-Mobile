@@ -1,14 +1,13 @@
 import { View, TouchableOpacity, ActivityIndicator, Text } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import { useMap, useRouteZoom } from "@/src/hooks"
+import { useMap, useReactiveAsyncStore } from "@/src/hooks"
 import { styles } from "@/src/app/map/map.styles"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import MapViewDirections from "react-native-maps-directions"
-import INTEREST_POINTS_MOCK from "@/src/data/interest-points.mock"
 import { InterestPoint } from "@/src/types"
-import { useState } from "react"
-import { colors } from "@/src/constants/theme"
-import Geocoder from "react-native-geocoding"
+import { useEffect, useState } from "react"
+import { keys } from "@/src/config"
+import * as geolib from "geolib" // import { colors } from "@/src/constants/theme"
 
 const mapStyle = [
   {
@@ -20,26 +19,31 @@ const mapStyle = [
 
 export default function MapScreen() {
   const { mapRef, region, isFollowing, userLocation, handleMapDrag, handleCenterOnUser } = useMap()
-  const [selectedPoint, setSelectedPoint] = useState<InterestPoint | null>(null)
+  const [sortedMarkers, setSortedMarkers] = useState<InterestPoint[]>([])
+  const { value: markers } = useReactiveAsyncStore<InterestPoint[]>(keys.interestPoints, [])
 
-  const markers = INTEREST_POINTS_MOCK as InterestPoint[]
-
-  useRouteZoom({ mapRef, selectedPoint, userLocation })
-
-  const handleMarkerPress = (marker: InterestPoint) => {
-    setSelectedPoint(marker)
-  }
-
-  const getAdressFromCoordinates = async (latitude: number, longitude: number) => {
-    try {
-      const res = await Geocoder.geocodePosition({ lat: latitude, lng: longitude })
-      if (res && res.length > 0) {
-        return res[0].formattedAddress
+  useEffect(() => {
+    const sortMarkersByDistance = () => {
+      if (!userLocation) {
+        setSortedMarkers(markers)
+        return
       }
-    } catch (error) {
-      console.error("Error getting address from coordinates:", error)
+
+      const sorted = [...markers].sort((a, b) => {
+        const distanceA = geolib.getDistance(
+          { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
+          { latitude: a.latitude, longitude: a.longitude }
+        )
+        const distanceB = geolib.getDistance(
+          { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
+          { latitude: b.latitude, longitude: b.longitude }
+        )
+        return distanceA - distanceB
+      })
+      setSortedMarkers(sorted)
     }
-  }
+    sortMarkersByDistance()
+  }, [markers, userLocation])
 
   return (
     <View style={styles.container}>
@@ -57,7 +61,7 @@ export default function MapScreen() {
         userInterfaceStyle="dark"
         toolbarEnabled={false}
       >
-        {markers.map((marker) => (
+        {sortedMarkers.map((marker) => (
           <Marker
             key={marker.id}
             coordinate={{
@@ -66,38 +70,29 @@ export default function MapScreen() {
             }}
             title={marker.comment}
             image={require("./favicon.png")}
-            onPress={() => handleMarkerPress(marker)}
           />
         ))}
-        {selectedPoint && userLocation && (
+        {sortedMarkers.length > 0 && userLocation && (
           <MapViewDirections
             origin={{
               latitude: userLocation.coords.latitude,
               longitude: userLocation.coords.longitude,
             }}
+            waypoints={sortedMarkers}
             destination={{
-              latitude: selectedPoint.latitude,
-              longitude: selectedPoint.longitude,
+              latitude: sortedMarkers[sortedMarkers.length - 1].latitude,
+              longitude: sortedMarkers[sortedMarkers.length - 1].longitude,
             }}
             apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!}
             strokeWidth={4}
-            strokeColor={colors.dark.tint}
+            strokeColor="red"
             mode="DRIVING"
             onError={(e) => console.log("MapDirections error :", e)}
           />
         )}
       </MapView>
 
-      <Text
-        style={{
-          position: "absolute",
-          top: 40,
-          backgroundColor: "white",
-          color: colors.dark.tint,
-        }}
-      >
-        A
-      </Text>
+      <Text style={styles.addressText}>{"Sélectionnez un point d'intérêt"}</Text>
 
       {!isFollowing && (
         <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>
