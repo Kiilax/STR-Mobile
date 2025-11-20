@@ -1,7 +1,7 @@
 import { InterestPoint, InterestPointRequest } from "../types"
 import { FileDownloader, ProxyApi } from "@/src/utils"
 
-const url = "http://10.116.98.11:3000"
+const url = "http://10.194.2.127:3000"
 
 export async function fetchInterestPoints(): Promise<InterestPoint[]> {
   const interestPoints = await ProxyApi.get<InterestPoint[]>(url, "/interest-points")

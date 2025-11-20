@@ -18,9 +18,11 @@ import { useReactiveAsyncStore } from "@/src/hooks"
 import { InterestPoint } from "@/src/types"
 import { API_URL, keys } from "@/src/config"
 import { ImageStorage } from "@/src/utils"
+import { useRouter } from "expo-router";
 
 export default function InterestPointListScreen() {
   const [showPOIForm, setShowPOIForm] = useState(false)
+  const router = useRouter();
 
   const { value, setValue, loading, error, clearError, refresh } = useReactiveAsyncStore<
     InterestPoint[]
@@ -58,15 +60,19 @@ export default function InterestPointListScreen() {
             <Text style={styles.emptyText}>{API_URL}</Text>
           ) : (
             value.map((poi) => (
-              <View key={poi.id} style={styles.item}>
-                {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
-                <Text style={styles.text}>{poi.comment}</Text>
+              <Pressable onPress={() => router.push(`interest-points/${poi.id}`)}>
+                <View key={poi.id} style={styles.item}>
+                  
+                    {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
+                    <Text style={styles.text}>{poi.comment}</Text>
 
-                <Pressable onPress={() => deleteInterestPoint(poi.id)}>
-                  {/* button to delete */}
-                  <Ionicons name="trash" size={24} color={"#b14"} />
-                </Pressable>
-              </View>
+                    <Pressable onPress={() => deleteInterestPoint(poi.id)}>
+                      {/* button to delete */}
+                      <Ionicons name="trash" size={24} color={"#b14"} />
+                    </Pressable>
+                  
+                </View>
+              </Pressable>
             ))
           )}
         </ScrollView>

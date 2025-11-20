@@ -1,34 +1,51 @@
 import { InterestPoint, Equipment } from "@/src/types"
-import { Text, View, Image, ScrollView, useWindowDimensions, StyleSheet } from "react-native"
+import { Text, View, Image, ScrollView, useWindowDimensions, StyleSheet, ActivityIndicator } from "react-native"
 import { colors } from "@/src/constants/theme"
 import { useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
 import Carousel from "react-native-reanimated-carousel"
-import { fetchEquipmentById, fetchInterestPointById } from "@/src/api/"
-import { API_URL } from "@/src/config"
+import { API_URL, keys } from "@/src/config"
+import { useReactiveAsyncStore } from "@/src/hooks"
+import { set } from "react-hook-form"
+
 
 export default function InterestPointDetailsScreen({ route }: { route: any }) {
   const { id } = useLocalSearchParams()
   const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(null)
   const [equipments, setEquipments] = useState<Equipment[]>([])
   const { width } = useWindowDimensions()
+  const { value, setValue, loading, error, clearError, refresh } = useReactiveAsyncStore<
+    InterestPoint[]
+  >(keys.interestPoints, [])
 
   useEffect(() => {
     async function loadInterestPoint() {
-      const point = await fetchInterestPointById(Number(id))
-      setInterestPoint(point)
-      if (point && point.equipmentPlacements && point.equipmentPlacements.length > 0) {
-        const equipmentIds = point.equipmentPlacements.map((ep) => ep.equipmentId)
+      console.log("Interest Points loaded:", value);      
+      const selectedInterestPoint = value.find((item) => {
+        return item.id === Number(id);;
+      });
+      if (selectedInterestPoint) setInterestPoint(selectedInterestPoint);
+      
+      if (selectedInterestPoint && selectedInterestPoint.equipmentPlacements && selectedInterestPoint.equipmentPlacements.length > 0) {
+        setInterestPoint(selectedInterestPoint)
+        const equipmentIds = selectedInterestPoint.equipmentPlacements.map((ep) => ep.equipmentId)
         for (const equipId of equipmentIds) {
-          const equipment = await fetchEquipmentById(equipId)
-          if (equipment) {
-            setEquipments((prev) => [...prev, equipment])
-          }
+
+          setEquipments([]);
         }
       }
     }
     loadInterestPoint()
-  }, [id])
+  }, [id, value])
+
+  if (loading || !interestPoint) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={colors.dark.tint} />
+        <Text style={styles.comment}>Chargement du point d'intérêt...</Text>
+      </View>
+    )
+  }
 
   if (!interestPoint) {
     return (
@@ -59,7 +76,7 @@ export default function InterestPointDetailsScreen({ route }: { route: any }) {
                 <Carousel
                   width={width - 40}
                   height={250}
-                  data={images}
+                  data={interestPoint.images.map((uri) => ({ uri }))}
                   loop
                   autoPlay={true}
                   autoPlayInterval={5000}
