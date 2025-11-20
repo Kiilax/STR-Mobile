@@ -1,30 +1,24 @@
 import { View, Text, Pressable, ActivityIndicator } from "react-native"
-import { useQRStore } from "@/src/store/QRCode"
-import { useReactiveAsyncStore } from "@/src/hooks"
-import { keys } from "@/src/config"
-import { createInterestPoint, fetchInterestPoints } from "@/src/api"
-import { InterestPoint } from "@/src/types"
 import { styles } from "./index.styles"
 import { useState } from "react"
+import { useMainContext } from "@/src/context/mainContext"
+import { useInterestPointsApi } from "@/src/hooks"
 
 export default function QRCodeDataDisplay() {
-  const qrData = useQRStore((state) => state.qrData)
-  const { value, setValue } = useReactiveAsyncStore<InterestPoint[] | null>(
-    keys.interestPoints,
-    null
-  )
+  const { ip, interestPoints, setInterestPoints, deleteAllInterestPoints } = useMainContext()
+  const { fetchAll, create } = useInterestPointsApi()
 
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncStatus, setSyncStatus] = useState<"idle" | "success" | "error">("idle")
   const [syncMessage, setSyncMessage] = useState("")
 
   const handleSync = async () => {
-    if (!value || value.length === 0 || isSyncing) return
+    if (isSyncing) return
     setIsSyncing(true)
     setSyncStatus("idle")
     setSyncMessage("")
     try {
-      for (const interestPoint of value) {
+      for (const interestPoint of interestPoints) {
         const dataToSend = {
           comment: interestPoint.comment,
           latitude: interestPoint.latitude,
@@ -32,10 +26,13 @@ export default function QRCodeDataDisplay() {
           images: interestPoint.images,
         }
 
-        await createInterestPoint(dataToSend)
-        const interestPoints = await fetchInterestPoints()
-        await setValue(interestPoints)
+        await create(dataToSend)
       }
+      const newPoints = await fetchAll()
+      if (newPoints.length > 0) {
+        deleteAllInterestPoints()
+      }
+      setInterestPoints(newPoints)
       setSyncStatus("success")
       setSyncMessage("Points d'intérêt synchronisés avec succès")
     } catch (error) {
@@ -44,24 +41,17 @@ export default function QRCodeDataDisplay() {
       console.error("Failed to synchronize interest points:", error)
     } finally {
       setIsSyncing(false)
-
-      setTimeout(() => {
-        setSyncStatus("idle")
-        setSyncMessage("")
-      }, 3000)
     }
   }
-
-  const isSyncDisabled = !value || isSyncing
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Synchronisation des QR Codes</Text>
 
       <Pressable
-        style={[styles.syncButton, isSyncDisabled && styles.syncButtonDisabled]}
+        style={[styles.syncButton, isSyncing && styles.syncButtonDisabled]}
         onPress={handleSync}
-        disabled={isSyncDisabled}
+        disabled={isSyncing}
       >
         {isSyncing ? (
           <View style={styles.loadingContainer}>
@@ -89,15 +79,15 @@ export default function QRCodeDataDisplay() {
       <View style={styles.qrDataContainer}>
         <Text style={styles.qrDataLabel}>Données du QR Code:</Text>
         <Text style={styles.qrDataText} numberOfLines={2} ellipsizeMode="middle">
-          {qrData || "Aucune donnée QR code scannée"}
+          {ip || "Aucune donnée QR code scannée"}
         </Text>
       </View>
 
-      {value && value.length > 0 && (
+      {interestPoints.length > 0 && (
         <View style={[styles.qrDataContainer, { marginTop: 12 }]}>
           <Text style={styles.qrDataLabel}>
             Points d&apos;intérêt à synchroniser:
-            <Text style={{ color: "#007AFF", fontWeight: "bold" }}> {value.length}</Text>
+            <Text style={{ color: "#007AFF", fontWeight: "bold" }}> {interestPoints.length}</Text>
           </Text>
         </View>
       )}

@@ -4,9 +4,9 @@ import { Platform, Pressable, StyleSheet, Text, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useQRScanner } from "@/src/hooks/useQRScanner"
 import { colors } from "@/src/constants/theme"
-import ModalWrapper from "./ui/modal"
+import ModalWrapper from "../ui/modal"
 import { useState } from "react"
-import QRCodeDataDisplay from "../app/synchronization"
+import QRCodeDataDisplay from "../../app/synchronization"
 
 interface QRCodeScannerProps {
   onScanResult: (ip: string) => void
