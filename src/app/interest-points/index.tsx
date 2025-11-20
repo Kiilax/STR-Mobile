@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   View,
   Text,
@@ -16,8 +16,9 @@ import { InterestPointForm } from "@/src/components"
 import ModalWrapper from "@/src/components/ui/modal"
 import { useReactiveAsyncStore } from "@/src/hooks"
 import { InterestPoint } from "@/src/types"
-import { API_URL, keys } from "@/src/config"
+import { keys } from "@/src/config"
 import { ImageStorage } from "@/src/utils"
+import SearchBar from "@components/searchBar"
 
 export default function InterestPointListScreen() {
   const [showPOIForm, setShowPOIForm] = useState(false)
@@ -25,10 +26,16 @@ export default function InterestPointListScreen() {
   const { value, setValue, loading, error, clearError, refresh } = useReactiveAsyncStore<
     InterestPoint[]
   >(keys.interestPoints, [])
+  const [filteredPoints, setFilteredPoints] = useState(value);
+
+  useEffect(() => {
+    setFilteredPoints(value);
+  }, [value]);
 
   function addInterestPoint(point: InterestPoint) {
     console.log("Adding interest point:", point)
     setValue((prev) => [...prev, point])
+    setFilteredPoints((prev) => [...prev, point])
   }
   function deleteInterestPoint(id: number) {
     const interestPoint = value.find((poi) => poi.id === id)
@@ -36,6 +43,7 @@ export default function InterestPointListScreen() {
       ImageStorage.remove(uri)
     }
     setValue((prev) => prev.filter((poi) => poi.id !== id))
+    setFilteredPoints((prev) => prev.filter((poi) => poi.id !== id))
   }
 
   if (error) {
@@ -53,27 +61,31 @@ export default function InterestPointListScreen() {
           <Text style={styles.loadingText}>Chargement des points d&apos;intérêt...</Text>
         </View>
       ) : (
-        <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 80 }}>
-          {!value || value.length === 0 ? (
-            <Text style={styles.emptyText}>{API_URL}</Text>
-          ) : (
-            value.map((poi) => (
-              <View key={poi.id} style={styles.item}>
-                {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
-                <Text style={styles.text}>{poi.comment}</Text>
-
-                <Pressable onPress={() => deleteInterestPoint(poi.id)}>
-                  {/* button to delete */}
-                  <Ionicons name="trash" size={24} color={"#b14"} />
-                </Pressable>
+        <View style={styles.content}>
+          <View style={styles.searchContainer}>
+            <SearchBar data={value} onFilter={setFilteredPoints} />
+          </View>
+          <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
+            {!filteredPoints || filteredPoints.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>Aucun point d'intérêt trouvé</Text>
               </View>
-            ))
-          )}
-        </ScrollView>
+            ) : (
+              filteredPoints.map((poi) => (
+                <View key={poi.id} style={styles.item}>
+                  {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
+                  <Text style={styles.text}>{poi.comment}</Text>
+
+                  <Pressable onPress={() => deleteInterestPoint(poi.id)} style={styles.deleteButton}>
+                    <Ionicons name="trash" size={24} color={"#b14"} />
+                  </Pressable>
+                </View>
+              ))
+            )}
+          </ScrollView>
+        </View>
       )}
-      <Pressable onPress={() => refresh()} style={{ position: "absolute", top: 40, right: 20 }}>
-        {/* button to delete */}
-      </Pressable>
+      
       <TouchableOpacity style={styles.fab} onPress={() => setShowPOIForm(true)}>
         <Ionicons name="add" size={26} color="white" />
       </TouchableOpacity>
@@ -81,7 +93,6 @@ export default function InterestPointListScreen() {
       <ModalWrapper visible={showPOIForm} onClose={() => setShowPOIForm(false)} fullScreen={true}>
         <InterestPointForm onClose={() => setShowPOIForm(false)} onSubmit={addInterestPoint} />
       </ModalWrapper>
-      <Text> Refresh</Text>
     </View>
   )
 }
@@ -89,12 +100,21 @@ export default function InterestPointListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative",
+    backgroundColor: colors.dark.background,
+  },
+  content: {
+    flex: 1,
+  },
+  searchContainer: {
+    padding: 20,
+    paddingBottom: 10,
   },
   scrollContainer: {
     flex: 1,
-    padding: 20,
-    backgroundColor: colors.dark.background,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 100,
   },
   item: {
     flexDirection: "row",
@@ -125,9 +145,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
   },
+  deleteButton: {
+    padding: 4,
+  },
   fab: {
     position: "absolute",
-    bottom: 95,
+    bottom: 30,
     right: 20,
     width: 55,
     height: 55,
@@ -136,6 +159,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     elevation: 4,
+    shadowColor: colors.dark.inverted,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   loadingContainer: {
     flex: 1,
@@ -148,10 +175,15 @@ const styles = StyleSheet.create({
     color: colors.dark.inverted,
     fontSize: 16,
   },
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 50,
+  },
   emptyText: {
     textAlign: "center",
-    marginTop: 50,
     color: colors.dark.inverted,
     fontSize: 16,
+    opacity: 0.7,
   },
 })
