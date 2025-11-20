@@ -80,11 +80,8 @@ export default function MapScreen() {
   }, [sortedMarkers, userLocation, calculateDistance])
 
   useEffect(() => {
-    console.log("User location updated:", userLocation)
     if (distanceNextMarker !== null && nextMarker) {
-      console.log(`Distance to next marker (${nextMarker.comment}):`, distanceNextMarker)
       if (distanceNextMarker <= 50) {
-        console.log(`Arrived at marker: ${nextMarker.comment}`)
         nextMarker.isVisited = true
       }
     }
@@ -134,7 +131,7 @@ export default function MapScreen() {
             }}
             apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!}
             strokeWidth={4}
-            strokeColor="blue"
+            strokeColor="#00D4FF"
             mode="DRIVING"
             onError={(e) => console.log("MapDirections error :", e)}
           />
