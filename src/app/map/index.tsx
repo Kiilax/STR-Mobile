@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ActivityIndicator } from "react-native"
+import { View, TouchableOpacity, ActivityIndicator, Text } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useMap, useRouteZoom } from "@/src/hooks"
 import { styles } from "@/src/app/map/map.styles"
@@ -8,6 +8,7 @@ import INTEREST_POINTS_MOCK from "@/src/data/interest-points.mock"
 import { InterestPoint } from "@/src/types"
 import { useState } from "react"
 import { colors } from "@/src/constants/theme"
+import Geocoder from "react-native-geocoding"
 
 const mapStyle = [
   {
@@ -27,6 +28,17 @@ export default function MapScreen() {
 
   const handleMarkerPress = (marker: InterestPoint) => {
     setSelectedPoint(marker)
+  }
+
+  const getAdressFromCoordinates = async (latitude: number, longitude: number) => {
+    try {
+      const res = await Geocoder.geocodePosition({ lat: latitude, lng: longitude })
+      if (res && res.length > 0) {
+        return res[0].formattedAddress
+      }
+    } catch (error) {
+      console.error("Error getting address from coordinates:", error)
+    }
   }
 
   return (
@@ -75,6 +87,18 @@ export default function MapScreen() {
           />
         )}
       </MapView>
+
+      <Text
+        style={{
+          position: "absolute",
+          top: 40,
+          backgroundColor: "white",
+          color: colors.dark.tint,
+        }}
+      >
+        A
+      </Text>
+
       {!isFollowing && (
         <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>
           <Ionicons name="locate" size={26} color="white" />
