@@ -30,7 +30,6 @@ export default function InterestPointDetailsScreen() {
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
   const { width } = useWindowDimensions()
   const { interestPoints, setInterestPoints, equipments } = useMainContext()
-  console.log("Equipments from context:", equipments)
 
   const selectedInterestPoint = interestPoints.find((item) => {
     return item.id === Number(id)
@@ -44,7 +43,6 @@ export default function InterestPointDetailsScreen() {
   }, [selectedInterestPoint])
 
   if (!interestPoints || interestPoints.length === 0) {
-    console.log("No interest points found")
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
@@ -54,7 +52,6 @@ export default function InterestPointDetailsScreen() {
   }
 
   if (!selectedInterestPoint) {
-    console.log("No interest point found with id:", id)
     return (
       <View style={styles.container}>
         <View style={styles.errorContainer}>
@@ -119,10 +116,8 @@ export default function InterestPointDetailsScreen() {
 
       if (!result.canceled && interestPoint && result.assets[0]) {
         const newImageUri = result.assets[0].uri
-        console.log("Selected image URI:", newImageUri)
 
         const storedUri = await ImageStorage.save(newImageUri)
-        console.log("Stored image URI:", storedUri)
 
         const updatedPoint = {
           ...interestPoint,
@@ -276,6 +271,8 @@ export default function InterestPointDetailsScreen() {
                       index === equipments.length - 1 && styles.lastEquipmentItem,
                     ]}
                   >
+                    <Image source={{ uri: equipment.image }} style={styles.equipmentImage} />
+
                     <View style={styles.equipmentHeader}>
                       <Text style={styles.equipmentName}>{equipment.name}</Text>
                     </View>
@@ -521,6 +518,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     opacity: 0.7,
     fontStyle: "italic",
+  },
+  equipmentImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    marginTop: 8,
   },
   modalOverlay: {
     flex: 1,

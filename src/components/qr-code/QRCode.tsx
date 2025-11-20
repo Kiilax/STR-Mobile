@@ -8,11 +8,41 @@ import { useMainContext } from "@/src/context/mainContext"
 export default function QRCode() {
   const [showQRScanner, setShowQRScanner] = useState(false)
   const { ip, setIp } = useMainContext()
+  const [isFetching, setIsFetching] = useState(false)
+  const fetchWithTimeout = (url: string, options: any = {}, timeout = 800) => {
+    return Promise.race([
+      fetch(url, options),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), timeout)),
+    ])
+  }
 
-  const handleQRScanResult = (scannedIp: string) => {
-    if (!scannedIp || scannedIp.trim() === "") return
-    setIp(scannedIp)
-    setShowQRScanner(false)
+  const handleQRScanResult = async (data: string) => {
+    if (!data || data.trim() === "") return
+    const ips = data.split(";")
+    let neo: string | null = null
+    for (const ip of ips) {
+      if (isFetching) break
+      try {
+        setIsFetching(true)
+        const response = (await fetchWithTimeout(
+          `http://${ip}`,
+          {
+            method: "GET",
+          },
+          400
+        )) as Response
+        if (response.ok) {
+          neo = `http://${ip}`
+          setIp(neo)
+          setShowQRScanner(false)
+          break
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+      } catch (err) {
+      } finally {
+        setIsFetching(false)
+      }
+    }
   }
 
   const handleCloseScanner = () => {
@@ -66,7 +96,7 @@ export default function QRCode() {
       )}
 
       {/* Modal du scanner QR Code */}
-      <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner} fullScreen={true}>
+      <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner} fullScreen>
         <QRCodeScanner onScanResult={handleQRScanResult} onClose={handleCloseScanner} />
       </ModalWrapper>
     </View>
