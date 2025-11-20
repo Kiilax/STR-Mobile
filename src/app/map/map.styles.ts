@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
-  addressText: {
+  distanceText: {
     position: "absolute",
     bottom: 0,
     backgroundColor: darkTheme.colors.card,
