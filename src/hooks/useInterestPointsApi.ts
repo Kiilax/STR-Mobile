@@ -27,7 +27,6 @@ export function useInterestPointsApi() {
         }
         finalEquipments.push(equip)
       }
-      console.log("Loaded equipments:", finalEquipments)
       setEquipments(finalEquipments)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
     } catch (error) {}

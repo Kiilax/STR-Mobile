@@ -8,6 +8,7 @@ export interface InterestPoint {
   images: string[]
   createdAt: Date
   updatedAt: Date
+  isVisited: boolean
   synced: boolean
   address?: string
   equipmentPlacements?: EquipmentPlacement[]

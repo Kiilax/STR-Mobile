@@ -1,4 +1,3 @@
-// QRCode.tsx
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"
 import { TouchableOpacity, StyleSheet, View, Text } from "react-native"
 import QRCodeScanner from "./QRCodeScanner"

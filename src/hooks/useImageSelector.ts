@@ -70,17 +70,18 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
   async function takePhoto() {
     const allowed = await requestCameraPermission()
     if (!allowed) return
-
     setIsLoading(true)
     try {
       const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 0.8,
+        mediaTypes: ["images", "videos"],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
       })
 
       if (!result.canceled) {
         const uri = result.assets[0].uri
-        const savedUri = ImageStorage.save(uri)
+        const savedUri = await ImageStorage.save(uri)
         if (!savedUri) {
           Alert.alert("Erreur", "Impossible de sauvegarder la photo.")
           return
