@@ -4,6 +4,7 @@ import { API_URL } from "@/src/config"
 export async function fetchEquipements(): Promise<Equipment[]> {
   try {
     const response = await fetch(`${API_URL}/equipments`).then((res) => res.json())
+
     return response.data
   } catch (error) {
     console.error("Error fetching equipments:", error)

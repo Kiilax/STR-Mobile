@@ -3,7 +3,8 @@ import { InterestPoint } from "@/src/types"
 const INTEREST_POINTS_MOCK: InterestPoint[] = [
   {
     id: 1,
-    coordinates: [48.5734, 7.7521],
+    latitude: 48.5734,
+    longitude: 7.7521,
     comment: "Cathédrale Notre-Dame de Strasbourg",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-01T10:00:00Z"),
@@ -12,7 +13,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 2,
-    coordinates: [48.5797, 7.7507],
+    latitude: 48.5797,
+    longitude: 7.7507,
     comment: "Petite France - Quartier pittoresque",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-03T10:00:00Z"),
@@ -21,7 +23,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 3,
-    coordinates: [48.5808, 7.7691],
+    latitude: 48.5808,
+    longitude: 7.7691,
     comment: "Parlement Européen",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-05T10:00:00Z"),
@@ -30,7 +33,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 4,
-    coordinates: [48.5851, 7.7349],
+    latitude: 48.5851,
+    longitude: 7.7349,
     comment: "Parc de l'Orangerie",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-07T10:00:00Z"),
@@ -39,7 +43,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 5,
-    coordinates: [48.5845, 7.7502],
+    latitude: 48.5845,
+    longitude: 7.7502,
     comment: "Palais Rohan",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-09T10:00:00Z"),
@@ -48,7 +53,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 6,
-    coordinates: [48.5794, 7.7483],
+    latitude: 48.5794,
+    longitude: 7.7483,
     comment: "Barrage Vauban",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-11T10:00:00Z"),
@@ -57,7 +63,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 7,
-    coordinates: [48.5823, 7.7512],
+    latitude: 48.5823,
+    longitude: 7.7512,
     comment: "Place Kléber",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-13T10:00:00Z"),
@@ -66,7 +73,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 8,
-    coordinates: [48.5801, 7.7556],
+    latitude: 48.5801,
+    longitude: 7.7556,
     comment: "Musée d'Art Moderne et Contemporain",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-15T10:00:00Z"),
@@ -75,7 +83,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 9,
-    coordinates: [48.5819, 7.7489],
+    latitude: 48.5819,
+    longitude: 7.7489,
     comment: "Place Gutenberg",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-17T10:00:00Z"),
@@ -84,7 +93,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 10,
-    coordinates: [48.5776, 7.7525],
+    latitude: 48.5776,
+    longitude: 7.7525,
     comment: "Ponts Couverts",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-19T10:00:00Z"),
@@ -93,7 +103,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 11,
-    coordinates: [48.5792, 7.7531],
+    latitude: 48.5792,
+    longitude: 7.7531,
     comment: "Maison Kammerzell",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-21T10:00:00Z"),
@@ -102,7 +113,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 12,
-    coordinates: [48.5847, 7.7621],
+    latitude: 48.5847,
+    longitude: 7.7621,
     comment: "Conseil de l'Europe",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-23T10:00:00Z"),
@@ -111,7 +123,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 13,
-    coordinates: [48.5812, 7.7543],
+    latitude: 48.5812,
+    longitude: 7.7543,
     comment: "Place de la République",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-25T10:00:00Z"),
@@ -120,7 +133,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 14,
-    coordinates: [48.5834, 7.7498],
+    latitude: 48.5834,
+    longitude: 7.7498,
     comment: "Église Saint-Paul",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-27T10:00:00Z"),
@@ -129,7 +143,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 15,
-    coordinates: [48.5756, 7.7612],
+    latitude: 48.5756,
+    longitude: 7.7612,
     comment: "Jardin Botanique",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-01-29T10:00:00Z"),
@@ -138,7 +153,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 16,
-    coordinates: [48.5799, 7.7442],
+    latitude: 48.5799,
+    longitude: 7.7442,
     comment: "Cave des Hospices de Strasbourg",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-01T10:00:00Z"),
@@ -147,7 +163,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 17,
-    coordinates: [48.5825, 7.7467],
+    latitude: 48.5825,
+    longitude: 7.7467,
     comment: "Opéra National du Rhin",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-03T10:00:00Z"),
@@ -156,7 +173,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 18,
-    coordinates: [48.5789, 7.7564],
+    latitude: 48.5789,
+    longitude: 7.7564,
     comment: "Église Saint-Thomas",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-05T10:00:00Z"),
@@ -165,7 +183,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 19,
-    coordinates: [48.5867, 7.7298],
+    latitude: 48.5867,
+    longitude: 7.7298,
     comment: "Parc de la Citadelle",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-07T10:00:00Z"),
@@ -174,7 +193,8 @@ const INTEREST_POINTS_MOCK: InterestPoint[] = [
   },
   {
     id: 20,
-    coordinates: [48.5743, 7.7589],
+    latitude: 48.5743,
+    longitude: 7.7589,
     comment: "Musée Alsacien",
     images: ["placeholder.jpg"],
     createdAt: new Date("2023-02-09T10:00:00Z"),
