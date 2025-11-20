@@ -4,7 +4,6 @@ import { StatusBar } from "expo-status-bar"
 import Entypo from "@expo/vector-icons/Entypo"
 import { darkTheme } from "@/src/constants/theme"
 import { SafeAreaProvider } from "react-native-safe-area-context"
-import { QRCode } from "@/src/components"
 import { MainProvider } from "../context/mainContext"
 
 export default function RootLayout() {

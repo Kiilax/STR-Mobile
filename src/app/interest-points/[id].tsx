@@ -1,4 +1,4 @@
-import { InterestPoint, Equipment } from "@/src/types"
+import { InterestPoint } from "@/src/types"
 import {
   Text,
   View,
@@ -29,7 +29,7 @@ export default function InterestPointDetailsScreen() {
   const [editedComment, setEditedComment] = useState("")
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
   const { width } = useWindowDimensions()
-  const { interestPoints, setInterestPoints, equipments, setEquipments } = useMainContext()
+  const { interestPoints, setInterestPoints, equipments } = useMainContext()
   console.log("Equipments from context:", equipments)
 
   const selectedInterestPoint = interestPoints.find((item) => {
