@@ -139,11 +139,15 @@ export default function MapScreen() {
       </MapView>
       <View style={styles.infoContainer}>
         <Text style={styles.addressText}>
-          {distanceNextMarker !== null ? nextMarker?.address : "Sélectionnez un point d'intérêt"}
+          {distanceNextMarker !== null ? nextMarker?.address : "Chargement..."}
         </Text>
-        <Text style={styles.distanceText}>
-          {distanceNextMarker !== null ? `${distanceNextMarker}m` : ""}
-        </Text>
+        <View style={{ width: "30%" }}>
+          {distanceNextMarker !== null ? (
+            <Text style={styles.distanceText}>{`${distanceNextMarker}m`}</Text>
+          ) : (
+            <ActivityIndicator size="small" color="cyan" />
+          )}
+        </View>
       </View>
 
       {!isFollowing && (

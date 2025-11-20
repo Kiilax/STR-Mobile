@@ -36,7 +36,6 @@ export const styles = StyleSheet.create({
     color: "cyan",
     padding: 15,
     textAlign: "right",
-    width: "30%",
   },
   infoContainer: {
     position: "absolute",
