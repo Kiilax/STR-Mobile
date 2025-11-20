@@ -19,13 +19,13 @@ export default function QRCodeDataDisplay() {
     setSyncMessage("")
     try {
       for (const interestPoint of interestPoints) {
+        if (interestPoint.synced) continue
         const dataToSend = {
           comment: interestPoint.comment,
           latitude: interestPoint.latitude,
           longitude: interestPoint.longitude,
           images: interestPoint.images,
         }
-
         await create(dataToSend)
       }
       const newPoints = await fetchAll()

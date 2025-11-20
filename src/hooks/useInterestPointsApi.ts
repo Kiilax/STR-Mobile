@@ -4,7 +4,7 @@ import { InterestPoint, InterestPointRequest } from "../types"
 import { FileDownloader, ProxyApi } from "@/src/utils"
 
 export function useInterestPointsApi() {
-  const { ip, setInterestPoints } = useMainContext()
+  const { ip } = useMainContext()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -18,7 +18,6 @@ export function useInterestPointsApi() {
     }
     try {
       const points = await ProxyApi.get<InterestPoint[]>(ip, "/interest-points")
-      console.log(ip + "/files")
       for (const point of points) {
         const downloadedImages: string[] = []
         for (const imagePath of point.images) {
@@ -31,15 +30,17 @@ export function useInterestPointsApi() {
         }
         point.images = downloadedImages
       }
-      setInterestPoints(points)
-      return points
+      return points.map((point) => ({
+        ...point,
+        synced: true,
+      }))
     } catch (err: any) {
       setError(err.message || "Failed to fetch interest points")
       throw err
     } finally {
       setLoading(false)
     }
-  }, [ip, setInterestPoints])
+  }, [ip])
 
   const fetchById = useCallback(
     async (id: number) => {
@@ -87,9 +88,7 @@ export function useInterestPointsApi() {
             name: uri.split("/").pop() || `image-${index}.jpg`,
           } as any)
         )
-        console.log("Creating interest point with data:", data)
-        const created = await ProxyApi.post(ip, "/interest-points/single", formData)
-        return created
+        return await ProxyApi.post(ip, "/interest-points/single", formData)
       } catch (err: any) {
         setError(err.message || "Failed to create interest point")
         throw err
