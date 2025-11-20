@@ -42,3 +42,7 @@ export async function createInterestPoint(data: Partial<InterestPointRequest>) {
 
   return ProxyApi.post(url, "/interest-points/single", formData)
 }
+
+export async function deleteInterestPoint(id: number) {
+  return ProxyApi.delete(url, `/interest-points/${id}`)
+}
