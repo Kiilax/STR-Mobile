@@ -137,12 +137,14 @@ export default function MapScreen() {
           />
         )}
       </MapView>
-
-      <Text style={styles.distanceText}>
-        {distanceNextMarker !== null
-          ? `Distance jusqu'à ${nextMarker?.comment} : ${distanceNextMarker}m`
-          : "Sélectionnez un point d'intérêt"}
-      </Text>
+      <View style={styles.infoContainer}>
+        <Text style={styles.addressText}>
+          {distanceNextMarker !== null ? nextMarker?.address : "Sélectionnez un point d'intérêt"}
+        </Text>
+        <Text style={styles.distanceText}>
+          {distanceNextMarker !== null ? `${distanceNextMarker}m` : ""}
+        </Text>
+      </View>
 
       {!isFollowing && (
         <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>
