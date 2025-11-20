@@ -10,10 +10,27 @@ export default function QRCode() {
   const [showQRScanner, setShowQRScanner] = useState(false)
   const { buttonBottom } = useFloatingButtonsPosition()
   const { setIp } = useMainContext()
-  const handleQRScanResult = (ip: string) => {
-    if (!ip || ip.trim() === "") return
-    setIp(ip)
-    setShowQRScanner(false)
+  const handleQRScanResult = async (data: string) => {
+    if (!data || data.trim() === "") return
+    const ips = data.split(";")
+    console.log("Scanned IPs:", ips)
+    let neo: string | null = null
+    for (const ip of ips) {
+      try {
+        const response = await fetch(`http://${ip}`, {
+          method: "GET",
+        })
+
+        if (response.ok) {
+          neo = `http://${ip}`
+          setIp(neo)
+          setShowQRScanner(false)
+          break
+        }
+      } catch (err) {
+        console.log("Fetch error with", ip, err)
+      }
+    }
   }
 
   return (
