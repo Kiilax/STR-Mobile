@@ -6,6 +6,7 @@ import { useMainContext } from "@/src/context/mainContext"
 import { useInterestPointsApi } from "@/src/hooks"
 import QRCode from "@/src/components/qr-code/QRCode"
 import { Ionicons } from "@expo/vector-icons"
+import { deleteInterestPoint } from "@/src/api/interest-point"
 
 export default function QRCodeDataDisplay() {
   const { ip, interestPoints, setInterestPoints, deleteAllInterestPoints } = useMainContext()
@@ -29,7 +30,12 @@ export default function QRCodeDataDisplay() {
     try {
       if (hasPointsToSync) {
         for (const interestPoint of interestPoints) {
-          if (interestPoint.synced) continue
+          if (interestPoint.synced) continue;
+          try {
+            await deleteInterestPoint(interestPoint.id);
+          } catch (error) {
+            // Ignore deletion errors
+          }
           const dataToSend = {
             comment: interestPoint.comment,
             latitude: interestPoint.latitude,
