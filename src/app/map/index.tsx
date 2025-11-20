@@ -8,6 +8,7 @@ import INTEREST_POINTS_MOCK from "@/src/data/interest-points.mock"
 import { InterestPoint } from "@/src/types"
 import { useState } from "react"
 import { colors } from "@/src/constants/theme"
+import QRCode from "@/src/components/qr-code/QRCode"
 
 const mapStyle = [
   {

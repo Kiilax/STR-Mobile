@@ -78,6 +78,7 @@ export default function InterestPointDetailsScreen() {
   }
 
   const updateInterestPoint = (updatedPoint: InterestPoint) => {
+    updatedPoint.synced = false;
     const updatedPoints = interestPoints.map((point: InterestPoint) => 
       point.id === updatedPoint.id ? updatedPoint : point
     )

@@ -43,7 +43,6 @@ export default function RootLayout() {
               }}
             />
           </Tabs>
-          <QRCode />
           <StatusBar style="auto" />
         </ThemeProvider>
       </SafeAreaProvider>
