@@ -14,11 +14,11 @@ import { colors } from "@/src/constants/theme"
 import { Ionicons } from "@expo/vector-icons"
 import { InterestPointForm } from "@/src/components"
 import ModalWrapper from "@/src/components/ui/modal"
+import { API_URL, keys } from "@/src/config"
+import { useMainContext } from "@/src/context/mainContext"
 import { useReactiveAsyncStore } from "@/src/hooks"
 import { InterestPoint } from "@/src/types"
-import { API_URL, keys } from "@/src/config"
-import { ImageStorage } from "@/src/utils"
-import { useRouter } from "expo-router";
+import { useRouter } from "expo-router"
 
 export default function InterestPointListScreen() {
   const [showPOIForm, setShowPOIForm] = useState(false)
@@ -27,18 +27,7 @@ export default function InterestPointListScreen() {
   const { value, setValue, loading, error, clearError, refresh } = useReactiveAsyncStore<
     InterestPoint[]
   >(keys.interestPoints, [])
-
-  function addInterestPoint(point: InterestPoint) {
-    console.log("Adding interest point:", point)
-    setValue((prev) => [...prev, point])
-  }
-  function deleteInterestPoint(id: number) {
-    const interestPoint = value.find((poi) => poi.id === id)
-    for (const uri of interestPoint?.images || []) {
-      ImageStorage.remove(uri)
-    }
-    setValue((prev) => prev.filter((poi) => poi.id !== id))
-  }
+  const interestPoints = value || []
 
   if (error) {
     Alert.alert("Erreur de chargement", error.message, [
@@ -46,6 +35,7 @@ export default function InterestPointListScreen() {
       { text: "Ignorer", onPress: clearError, style: "cancel" },
     ])
   }
+  const { addInterestPoint, deleteInterestPoint } = useMainContext()
 
   return (
     <View style={styles.container}>
@@ -56,7 +46,7 @@ export default function InterestPointListScreen() {
         </View>
       ) : (
         <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 80 }}>
-          {!value || value.length === 0 ? (
+          {interestPoints.length === 0 ? (
             <Text style={styles.emptyText}>{API_URL}</Text>
           ) : (
             value.map((poi) => (
@@ -77,9 +67,6 @@ export default function InterestPointListScreen() {
           )}
         </ScrollView>
       )}
-      <Pressable onPress={() => refresh()} style={{ position: "absolute", top: 40, right: 20 }}>
-        {/* button to delete */}
-      </Pressable>
       <TouchableOpacity style={styles.fab} onPress={() => setShowPOIForm(true)}>
         <Ionicons name="add" size={26} color="white" />
       </TouchableOpacity>
