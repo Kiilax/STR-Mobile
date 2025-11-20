@@ -18,7 +18,6 @@ export class ProxyApi {
     }
 
     const response = await fetch(`${url}${endpoint}`, cleanedOptions)
-    console.log(`Response from ${url}${endpoint}:`, response)
 
     if (!response.ok) {
       const errorText = await response.text()

@@ -1,7 +1,7 @@
 import { InterestPoint, InterestPointRequest } from "../types"
 import { FileDownloader, ProxyApi } from "@/src/utils"
 
-const url = "http://192.168.1.52:3000"
+const url = "http://10.116.98.11:3000"
 
 export async function fetchInterestPoints(): Promise<InterestPoint[]> {
   const interestPoints = await ProxyApi.get<InterestPoint[]>(url, "/interest-points")
@@ -9,10 +9,7 @@ export async function fetchInterestPoints(): Promise<InterestPoint[]> {
     const downloadedImages: string[] = []
     for (const imagePath of point.images) {
       try {
-        const localUri = await FileDownloader.download(
-          url,
-          `${imagePath.replace("/uploads", "/files")}`
-        )
+        const localUri = await FileDownloader.download(url + "/files", imagePath)
         if (localUri) downloadedImages.push(localUri)
       } catch (error) {
         console.error(`Failed to download image ${imagePath}:`, error)

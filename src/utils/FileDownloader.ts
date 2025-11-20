@@ -18,12 +18,10 @@ export class FileDownloader {
           fileName = match[1]
         }
       }
-      console.log(`Determined file name: ${fileName}`)
 
       const file = new File(Paths.document, fileName)
       file.write(await response.bytes())
       const uri = await ImageStorage.save(file.uri)
-      console.log(`File downloaded and saved to: ${uri}`)
       return uri
     } catch (error) {
       console.error("Error downloading file:", error)
