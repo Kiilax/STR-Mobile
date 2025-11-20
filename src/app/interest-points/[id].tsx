@@ -17,52 +17,71 @@ import { colors } from "@/src/constants/theme"
 import { useLocalSearchParams, router } from "expo-router"
 import { useEffect, useState } from "react"
 import Carousel from "react-native-reanimated-carousel"
-import { API_URL, keys } from "@/src/config"
-import { useReactiveAsyncStore } from "@/src/hooks"
 import { Ionicons } from "@expo/vector-icons"
 import * as ImagePicker from 'expo-image-picker'
 import { ImageStorage } from "@/src/utils"
+import { useMainContext } from "@/src/context/mainContext"
 
 export default function InterestPointDetailsScreen() {
   const { id } = useLocalSearchParams()
   const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(null)
-  const [equipments, setEquipments] = useState<Equipment[]>([])
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [editedComment, setEditedComment] = useState("")
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
   const { width } = useWindowDimensions()
-  const { value, setValue, loading } = useReactiveAsyncStore<InterestPoint[]>(
-    keys.interestPoints, 
-    []
-  )
+  const { interestPoints, setInterestPoints, equipments, setEquipments } = useMainContext()
+  console.log("Equipments from context:", equipments)
+
+  const selectedInterestPoint = interestPoints.find((item) => {
+    return item.id === Number(id)
+  })
 
   useEffect(() => {
-    function loadInterestPoint() {
-      
-      if (!value || value.length === 0) {
-        console.log("No interest points found")
-        return
-      }
-      
-      const selectedInterestPoint = value.find((item) => {
-        return item.id === Number(id)
-      })
-      
-      if (selectedInterestPoint) {
-        setInterestPoint(selectedInterestPoint)
-        setEditedComment(selectedInterestPoint.comment)
-      } else {
-        console.log("No interest point found with id:", id)
-      }
+    if (selectedInterestPoint) {
+      setInterestPoint(selectedInterestPoint)
+      setEditedComment(selectedInterestPoint.comment)
     }
-    
-    loadInterestPoint()
-  }, [id, value])
+  }, [selectedInterestPoint])
+
+  if (!interestPoints || interestPoints.length === 0) {
+    console.log("No interest points found")
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={colors.dark.tint} />
+        <Text style={styles.loadingText}>Chargement du point d'intérêt...</Text>
+      </View>
+    )
+  }
+
+  if (!selectedInterestPoint) {
+    console.log("No interest point found with id:", id)
+    return (
+      <View style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Ionicons name="alert-circle" size={48} color={colors.dark.accent} />
+          <Text style={styles.errorText}>Point d'intérêt non trouvé</Text>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <Text style={styles.backButtonText}>Retour</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
+  if (!interestPoint) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={colors.dark.tint} />
+        <Text style={styles.loadingText}>Chargement du point d'intérêt...</Text>
+      </View>
+    )
+  }
 
   const updateInterestPoint = (updatedPoint: InterestPoint) => {
-    setValue(prev => prev.map(point => 
+    const updatedPoints = interestPoints.map((point: InterestPoint) => 
       point.id === updatedPoint.id ? updatedPoint : point
-    ))
+    )
+    setInterestPoints(updatedPoints)
     setInterestPoint(updatedPoint)
   }
 
@@ -80,7 +99,6 @@ export default function InterestPointDetailsScreen() {
 
   const pickImage = async () => {
     try {
-      // Demander la permission d'accéder à la galerie
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
       if (status !== 'granted') {
         Alert.alert(
@@ -102,13 +120,12 @@ export default function InterestPointDetailsScreen() {
         const newImageUri = result.assets[0].uri
         console.log("Selected image URI:", newImageUri)
         
-        // Stocker l'image localement
-        const storedUri = await ImageStorage.store(newImageUri)
+        const storedUri = await ImageStorage.save(newImageUri)
         console.log("Stored image URI:", storedUri)
         
         const updatedPoint = {
           ...interestPoint,
-          images: [...interestPoint.images, storedUri]
+          images: [...interestPoint.images, storedUri].filter((uri): uri is string => uri !== null)
         }
         
         updateInterestPoint(updatedPoint)
@@ -134,7 +151,6 @@ export default function InterestPointDetailsScreen() {
           style: "destructive",
           onPress: () => {
             const imageToDelete = interestPoint.images[imageIndex]
-            // Supprimer l'image du stockage
             ImageStorage.remove(imageToDelete)
             
             const updatedImages = interestPoint.images.filter((_, index) => index !== imageIndex)
@@ -162,42 +178,17 @@ export default function InterestPointDetailsScreen() {
           text: "Supprimer", 
           style: "destructive",
           onPress: () => {
-            // Supprimer toutes les images associées
             interestPoint.images.forEach(uri => {
               ImageStorage.remove(uri)
             })
+            const updatedPoints = interestPoints.filter(point => point.id !== interestPoint.id)
+            setInterestPoints(updatedPoints)
+            setInterestPoint(null)
             
-            // Mettre à jour la liste globale
-            setValue(prev => prev.filter(point => point.id !== interestPoint.id))
-            
-            // Retourner à la liste
             router.back()
           }
         }
       ]
-    )
-  }
-
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color={colors.dark.tint} />
-        <Text style={styles.loadingText}>Chargement du point d'intérêt...</Text>
-      </View>
-    )
-  }
-
-  if (!interestPoint) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.errorContainer}>
-          <Ionicons name="alert-circle" size={48} color={colors.dark.accent} />
-          <Text style={styles.errorText}>Point d'intérêt non trouvé</Text>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <Text style={styles.backButtonText}>Retour</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
     )
   }
 
@@ -375,6 +366,7 @@ export default function InterestPointDetailsScreen() {
   )
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -540,7 +532,6 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     fontStyle: "italic",
   },
-  // Styles pour les modals
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -621,7 +612,6 @@ const styles = StyleSheet.create({
     color: colors.dark.inverted,
     fontSize: 16,
   },
-  // Styles pour les états d'erreur et de chargement
   loadingText: {
     marginTop: 10,
     color: colors.dark.inverted,

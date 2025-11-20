@@ -1,5 +1,5 @@
 import { View, Text, Pressable, ActivityIndicator } from "react-native"
-import { styles } from "./index.styles"
+import { styles } from "./styles"
 import { useState } from "react"
 import { useMainContext } from "@/src/context/mainContext"
 import { useInterestPointsApi } from "@/src/hooks"

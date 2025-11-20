@@ -14,28 +14,21 @@ import { colors } from "@/src/constants/theme"
 import { Ionicons } from "@expo/vector-icons"
 import { InterestPointForm } from "@/src/components"
 import ModalWrapper from "@/src/components/ui/modal"
-import { API_URL, keys } from "@/src/config"
+import { API_URL } from "@/src/config"
 import { useMainContext } from "@/src/context/mainContext"
-import { useReactiveAsyncStore } from "@/src/hooks"
-import { InterestPoint } from "@/src/types"
 import { useRouter } from "expo-router"
 
 export default function InterestPointListScreen() {
   const [showPOIForm, setShowPOIForm] = useState(false)
   const router = useRouter();
-
-  const { value, setValue, loading, error, clearError, refresh } = useReactiveAsyncStore<
-    InterestPoint[]
-  >(keys.interestPoints, [])
-  const interestPoints = value || []
+  const { interestPoints, addInterestPoint, deleteInterestPoint, error, loading, clearError, refreshInterestPoints } = useMainContext()
 
   if (error) {
     Alert.alert("Erreur de chargement", error.message, [
-      { text: "Réessayer", onPress: refresh },
+      { text: "Réessayer", onPress: refreshInterestPoints },
       { text: "Ignorer", onPress: clearError, style: "cancel" },
     ])
   }
-  const { addInterestPoint, deleteInterestPoint } = useMainContext()
 
   return (
     <View style={styles.container}>
@@ -49,9 +42,12 @@ export default function InterestPointListScreen() {
           {interestPoints.length === 0 ? (
             <Text style={styles.emptyText}>{API_URL}</Text>
           ) : (
-            value.map((poi) => (
-              <Pressable onPress={() => router.push(`interest-points/${poi.id}`)}>
-                <View key={poi.id} style={styles.item}>
+            interestPoints.map((poi) => (
+              <Pressable 
+                key={poi.id}
+                onPress={() => router.push(`/interest-points/${poi.id}`)}
+              >
+                <View style={styles.item}>
                   
                     {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
                     <Text style={styles.text}>{poi.comment}</Text>
@@ -74,7 +70,6 @@ export default function InterestPointListScreen() {
       <ModalWrapper visible={showPOIForm} onClose={() => setShowPOIForm(false)} fullScreen={true}>
         <InterestPointForm onClose={() => setShowPOIForm(false)} onSubmit={addInterestPoint} />
       </ModalWrapper>
-      <Text> Refresh</Text>
     </View>
   )
 }

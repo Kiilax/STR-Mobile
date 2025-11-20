@@ -1,7 +1,7 @@
 import { View, TouchableOpacity, ActivityIndicator } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useMap, useRouteZoom } from "@/src/hooks"
-import { styles } from "@/src/app/map/map.styles"
+import { styles } from "@/src/app/map/styles"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import MapViewDirections from "react-native-maps-directions"
 import INTEREST_POINTS_MOCK from "@/src/data/interest-points.mock"
