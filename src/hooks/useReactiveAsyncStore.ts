@@ -9,6 +9,7 @@ interface UseReactiveAsyncStoreResult<T> {
   error: Error | null
   clearError: () => void
   refresh: () => Promise<void>
+  deleteValue: () => Promise<void>
 }
 /**
  * useReactiveAsyncStore is a custom React hook for managing a value in AsyncStore
@@ -59,8 +60,17 @@ export function useReactiveAsyncStore<T>(
       setError(null)
       try {
         const nextValue = value instanceof Function ? value(storedValue) : value
-        setStoredValue(nextValue)
-        await AsyncStore.set(key, nextValue)
+
+        if (nextValue === undefined) {
+          console.warn(
+            `Attempted to store undefined value for key "${key}". Using defaultValue instead.`
+          )
+          setStoredValue(defaultValue)
+          await AsyncStore.set(key, defaultValue)
+        } else {
+          setStoredValue(nextValue)
+          await AsyncStore.set(key, nextValue)
+        }
       } catch (err) {
         const storageError = err instanceof Error ? err : new Error("Unknown error occurred")
         setError(storageError)
@@ -68,10 +78,15 @@ export function useReactiveAsyncStore<T>(
         await loadStoredValue()
       }
     },
-    [key, storedValue, loadStoredValue]
+    [key, storedValue, loadStoredValue, defaultValue]
   )
 
   const clearError = useCallback(() => setError(null), [])
+
+  function deleteValue() {
+    setError(null)
+    return AsyncStore.remove(key)
+  }
 
   return {
     value: storedValue,
@@ -80,5 +95,6 @@ export function useReactiveAsyncStore<T>(
     error,
     clearError,
     refresh: loadStoredValue,
+    deleteValue,
   }
 }

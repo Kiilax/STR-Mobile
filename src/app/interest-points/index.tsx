@@ -27,6 +27,7 @@ export default function InterestPointListScreen() {
   >(keys.interestPoints, [])
 
   function addInterestPoint(point: InterestPoint) {
+    console.log("Adding interest point:", point)
     setValue((prev) => [...prev, point])
   }
   function deleteInterestPoint(id: number) {
@@ -53,7 +54,7 @@ export default function InterestPointListScreen() {
         </View>
       ) : (
         <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 80 }}>
-          {value.length === 0 ? (
+          {!value || value.length === 0 ? (
             <Text style={styles.emptyText}>{API_URL}</Text>
           ) : (
             value.map((poi) => (
@@ -70,7 +71,9 @@ export default function InterestPointListScreen() {
           )}
         </ScrollView>
       )}
-
+      <Pressable onPress={() => refresh()} style={{ position: "absolute", top: 40, right: 20 }}>
+        {/* button to delete */}
+      </Pressable>
       <TouchableOpacity style={styles.fab} onPress={() => setShowPOIForm(true)}>
         <Ionicons name="add" size={26} color="white" />
       </TouchableOpacity>
@@ -78,6 +81,7 @@ export default function InterestPointListScreen() {
       <ModalWrapper visible={showPOIForm} onClose={() => setShowPOIForm(false)} fullScreen={true}>
         <InterestPointForm onClose={() => setShowPOIForm(false)} onSubmit={addInterestPoint} />
       </ModalWrapper>
+      <Text> Refresh</Text>
     </View>
   )
 }

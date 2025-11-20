@@ -61,8 +61,8 @@ export default function MapScreen() {
           <Marker
             key={marker.id}
             coordinate={{
-              latitude: marker.coordinates[0],
-              longitude: marker.coordinates[1],
+              latitude: marker.latitude,
+              longitude: marker.longitude,
             }}
             title={marker.comment}
             image={require("./favicon.png")}
@@ -76,8 +76,8 @@ export default function MapScreen() {
               longitude: userLocation.coords.longitude,
             }}
             destination={{
-              latitude: selectedPoint.coordinates[0],
-              longitude: selectedPoint.coordinates[1],
+              latitude: selectedPoint.latitude,
+              longitude: selectedPoint.longitude,
             }}
             apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!}
             strokeWidth={4}

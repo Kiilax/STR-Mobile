@@ -17,7 +17,7 @@ export default function InterestPointDetailsScreen({ route }: { route: any }) {
     async function loadInterestPoint() {
       const point = await fetchInterestPointById(Number(id))
       setInterestPoint(point)
-      if (point && point.equipmentPlacements.length > 0) {
+      if (point && point.equipmentPlacements && point.equipmentPlacements.length > 0) {
         const equipmentIds = point.equipmentPlacements.map((ep) => ep.equipmentId)
         for (const equipId of equipmentIds) {
           const equipment = await fetchEquipmentById(equipId)
