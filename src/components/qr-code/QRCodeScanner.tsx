@@ -65,7 +65,7 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
           onBarcodeScanned={handleScanResult}
         />
       </View>
-      <ModalWrapper visible={showModal} onClose={() => setShowModal(false)}>
+      <ModalWrapper visible={showModal} onClose={() => setShowModal(false)} fullScreen>
         <QRCodeDataDisplay />
       </ModalWrapper>
     </View>

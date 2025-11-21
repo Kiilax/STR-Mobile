@@ -16,25 +16,27 @@ import { InterestPointForm } from "@/src/components"
 import ModalWrapper from "@/src/components/ui/modal"
 import { API_URL } from "@/src/config"
 import { useMainContext } from "@/src/context/mainContext"
+import { useRouter } from "expo-router"
 
 export default function InterestPointListScreen() {
   const [showPOIForm, setShowPOIForm] = useState(false)
-
+  const router = useRouter()
   const {
     interestPoints,
-    loading,
+    addInterestPoint,
+    deleteInterestPoint,
     error,
+    loading,
     clearError,
-    refreshInterestPoints: refresh,
+    refreshInterestPoints,
   } = useMainContext()
 
   if (error) {
     Alert.alert("Erreur de chargement", error.message, [
-      { text: "Réessayer", onPress: refresh },
+      { text: "Réessayer", onPress: refreshInterestPoints },
       { text: "Ignorer", onPress: clearError, style: "cancel" },
     ])
   }
-  const { addInterestPoint, deleteInterestPoint } = useMainContext()
 
   return (
     <View style={styles.container}>
@@ -49,14 +51,17 @@ export default function InterestPointListScreen() {
             <Text style={styles.emptyText}>{API_URL}</Text>
           ) : (
             interestPoints.map((poi) => (
-              <View key={poi.id} style={styles.item}>
-                {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
-                <Text style={styles.text}>{poi.comment}</Text>
+              <Pressable key={poi.id} onPress={() => router.push(`/interest-points/${poi.id}`)}>
+                <View style={styles.item}>
+                  {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
+                  <Text style={styles.text}>{poi.comment}</Text>
 
-                <Pressable onPress={() => deleteInterestPoint(poi.id)}>
-                  <Ionicons name="trash" size={24} color={"#b14"} />
-                </Pressable>
-              </View>
+                  <Pressable onPress={() => deleteInterestPoint(poi.id)}>
+                    {/* button to delete */}
+                    <Ionicons name="trash" size={24} color={"#b14"} />
+                  </Pressable>
+                </View>
+              </Pressable>
             ))
           )}
         </ScrollView>
@@ -68,7 +73,6 @@ export default function InterestPointListScreen() {
       <ModalWrapper visible={showPOIForm} onClose={() => setShowPOIForm(false)} fullScreen={true}>
         <InterestPointForm onClose={() => setShowPOIForm(false)} onSubmit={addInterestPoint} />
       </ModalWrapper>
-      <Text> Refresh</Text>
     </View>
   )
 }
