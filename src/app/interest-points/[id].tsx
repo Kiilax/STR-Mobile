@@ -31,7 +31,7 @@ export default function InterestPointDetailsScreen() {
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const { width } = useWindowDimensions()
-  const { interestPoints, setInterestPoints, equipments, setEquipments } = useMainContext()
+  const { interestPoints, setInterestPoints, equipments } = useMainContext()
 
   const selectedInterestPoint = interestPoints.find((item) => {
     return item.id === Number(id)
@@ -48,9 +48,9 @@ export default function InterestPointDetailsScreen() {
             setSelectedEquipments((prev) => [...prev, equipment])
           }
         }
-      }      
+      }
     }
-  }, [selectedInterestPoint])
+  }, [selectedInterestPoint, equipments])
 
   if (!interestPoints || interestPoints.length === 0) {
     return (
@@ -197,177 +197,180 @@ export default function InterestPointDetailsScreen() {
 
   return (
     <>
-    <Stack.Screen options={{ title: "Détails du point d'intérêt" }} />
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        {/* Header avec boutons d'action */}
-        <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <Text style={styles.comment}>{interestPoint.comment}</Text>
-            <View style={styles.headerActions}>
-              <TouchableOpacity style={styles.editButton} onPress={() => setEditModalVisible(true)}>
-                <Ionicons name="pencil" size={20} color={colors.dark.tint} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton} onPress={deleteInterestPoint}>
-                <Ionicons name="trash" size={20} color="#b14" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        {/* Section Images */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Images</Text>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => setImagePickerModalVisible(true)}
-            >
-              <Ionicons name="add" size={20} color={colors.dark.tint} />
-            </TouchableOpacity>
-          </View>
-
-          {interestPoint.images && interestPoint.images.length > 0 ? (
-            <View style={styles.imagesContainer}>
-              <Carousel
-                width={width - 40}
-                height={250}
-                data={interestPoint.images.map((uri, index) => ({ uri, index }))}
-                loop={interestPoint.images.length > 1}
-                autoPlay={interestPoint.images.length > 1}
-                autoPlayInterval={5000}
-                onSnapToItem={(index) => setCurrentImageIndex(index)}
-                renderItem={({ item }) => (
-                  <View style={styles.imageContainer}>
-                    <Image
-                      source={{ uri: item.uri }}
-                      style={styles.image}
-                      resizeMode="cover"
-                      onError={(e) => console.log("Error loading image:", e.nativeEvent.error)}
-                    />
-                    <TouchableOpacity
-                      style={styles.deleteImageButton}
-                      onPress={() => deleteImage(item.index)}
-                    >
-                      <Ionicons name="close-circle" size={24} color="#fff" />
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
-              <View style={styles.carouselIndicator}>
-                <Text style={styles.imageCounter}>
-                  {currentImageIndex + 1} / {interestPoint.images.length}
-                </Text>
-                <Text style={styles.indicatorText}>Glissez pour naviguer entre les images</Text>
+      <Stack.Screen options={{ title: "Détails du point d'intérêt" }} />
+      <ScrollView style={styles.container}>
+        <View style={styles.content}>
+          {/* Header avec boutons d'action */}
+          <View style={styles.header}>
+            <View style={styles.headerContent}>
+              <Text style={styles.comment}>{interestPoint.comment}</Text>
+              <View style={styles.headerActions}>
+                <TouchableOpacity
+                  style={styles.editButton}
+                  onPress={() => setEditModalVisible(true)}
+                >
+                  <Ionicons name="pencil" size={20} color={colors.dark.tint} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.deleteButton} onPress={deleteInterestPoint}>
+                  <Ionicons name="trash" size={20} color="#b14" />
+                </TouchableOpacity>
               </View>
             </View>
-          ) : (
-            <View style={styles.noImagesContainer}>
-              <Text style={styles.noImagesText}>Aucune image</Text>
+          </View>
+
+          {/* Section Images */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Images</Text>
               <TouchableOpacity
-                style={styles.addImageButton}
+                style={styles.addButton}
                 onPress={() => setImagePickerModalVisible(true)}
               >
-                <Ionicons name="images" size={24} color={colors.dark.tint} />
-                <Text style={styles.addImageText}>Ajouter une image</Text>
+                <Ionicons name="add" size={20} color={colors.dark.tint} />
               </TouchableOpacity>
+            </View>
+
+            {interestPoint.images && interestPoint.images.length > 0 ? (
+              <View style={styles.imagesContainer}>
+                <Carousel
+                  width={width - 40}
+                  height={250}
+                  data={interestPoint.images.map((uri, index) => ({ uri, index }))}
+                  loop={interestPoint.images.length > 1}
+                  autoPlay={interestPoint.images.length > 1}
+                  autoPlayInterval={5000}
+                  onSnapToItem={(index) => setCurrentImageIndex(index)}
+                  renderItem={({ item }) => (
+                    <View style={styles.imageContainer}>
+                      <Image
+                        source={{ uri: item.uri }}
+                        style={styles.image}
+                        resizeMode="cover"
+                        onError={(e) => console.log("Error loading image:", e.nativeEvent.error)}
+                      />
+                      <TouchableOpacity
+                        style={styles.deleteImageButton}
+                        onPress={() => deleteImage(item.index)}
+                      >
+                        <Ionicons name="close-circle" size={24} color="#fff" />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                />
+                <View style={styles.carouselIndicator}>
+                  <Text style={styles.imageCounter}>
+                    {currentImageIndex + 1} / {interestPoint.images.length}
+                  </Text>
+                  <Text style={styles.indicatorText}>Glissez pour naviguer entre les images</Text>
+                </View>
+              </View>
+            ) : (
+              <View style={styles.noImagesContainer}>
+                <Text style={styles.noImagesText}>Aucune image</Text>
+                <TouchableOpacity
+                  style={styles.addImageButton}
+                  onPress={() => setImagePickerModalVisible(true)}
+                >
+                  <Ionicons name="images" size={24} color={colors.dark.tint} />
+                  <Text style={styles.addImageText}>Ajouter une image</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+
+          {selectedEquipments.length > 0 && (
+            <View style={styles.section}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.sectionTitle}>Équipements associés</Text>
+                <View style={styles.equipmentsContainer}>
+                  {selectedEquipments.map((equipment, index) => (
+                    <View
+                      key={equipment.id}
+                      style={[
+                        styles.equipmentItem,
+                        index === selectedEquipments.length - 1 && styles.lastEquipmentItem,
+                      ]}
+                    >
+                      <Image source={{ uri: equipment.image }} style={styles.equipmentImage} />
+
+                      <View style={styles.equipmentHeader}>
+                        <Text style={styles.equipmentName}>{equipment.name}</Text>
+                      </View>
+                      <Text style={styles.equipmentDescription}>{equipment.description}</Text>
+                      <Text style={styles.equipmentDimensions}>
+                        Dimensions: {equipment.length} x {equipment.width} x {equipment.height}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
             </View>
           )}
         </View>
 
-        {selectedEquipments.length > 0 && (
-          <View style={styles.section}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.sectionTitle}>Équipements associés</Text>
-              <View style={styles.equipmentsContainer}>
-                {selectedEquipments.map((equipment, index) => (
-                  <View
-                    key={equipment.id}
-                    style={[
-                      styles.equipmentItem,
-                      index === selectedEquipments.length - 1 && styles.lastEquipmentItem,
-                    ]}
-                  >
-                    <Image source={{ uri: equipment.image }} style={styles.equipmentImage} />
-
-                    <View style={styles.equipmentHeader}>
-                      <Text style={styles.equipmentName}>{equipment.name}</Text>
-                    </View>
-                    <Text style={styles.equipmentDescription}>{equipment.description}</Text>
-                    <Text style={styles.equipmentDimensions}>
-                      Dimensions: {equipment.length} x {equipment.width} x {equipment.height}
-                    </Text>
-                  </View>
-                ))}
+        {/* Modal d'édition du commentaire */}
+        <Modal
+          visible={editModalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setEditModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Modifier le commentaire</Text>
+              <TextInput
+                style={styles.commentInput}
+                value={editedComment}
+                onChangeText={setEditedComment}
+                multiline
+                numberOfLines={4}
+                placeholder="Saisissez votre commentaire..."
+                placeholderTextColor="#999"
+              />
+              <View style={styles.modalActions}>
+                <Pressable
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setEditModalVisible(false)}
+                >
+                  <Text style={styles.cancelButtonText}>Annuler</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.modalButton, styles.saveButton]}
+                  onPress={handleEditComment}
+                >
+                  <Text style={styles.saveButtonText}>Enregistrer</Text>
+                </Pressable>
               </View>
             </View>
           </View>
-        )}
-      </View>
+        </Modal>
 
-      {/* Modal d'édition du commentaire */}
-      <Modal
-        visible={editModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setEditModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Modifier le commentaire</Text>
-            <TextInput
-              style={styles.commentInput}
-              value={editedComment}
-              onChangeText={setEditedComment}
-              multiline
-              numberOfLines={4}
-              placeholder="Saisissez votre commentaire..."
-              placeholderTextColor="#999"
-            />
-            <View style={styles.modalActions}>
+        {/* Modal d'ajout d'images */}
+        <Modal
+          visible={imagePickerModalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setImagePickerModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Ajouter une image</Text>
+              <View style={styles.imagePickerOptions}>
+                <TouchableOpacity style={styles.imagePickerOption} onPress={pickImage}>
+                  <Ionicons name="images" size={32} color={colors.dark.tint} />
+                  <Text style={styles.imagePickerOptionText}>Choisir depuis la galerie</Text>
+                </TouchableOpacity>
+              </View>
               <Pressable
                 style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setEditModalVisible(false)}
+                onPress={() => setImagePickerModalVisible(false)}
               >
                 <Text style={styles.cancelButtonText}>Annuler</Text>
               </Pressable>
-              <Pressable
-                style={[styles.modalButton, styles.saveButton]}
-                onPress={handleEditComment}
-              >
-                <Text style={styles.saveButtonText}>Enregistrer</Text>
-              </Pressable>
             </View>
           </View>
-        </View>
-      </Modal>
-
-      {/* Modal d'ajout d'images */}
-      <Modal
-        visible={imagePickerModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setImagePickerModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Ajouter une image</Text>
-            <View style={styles.imagePickerOptions}>
-              <TouchableOpacity style={styles.imagePickerOption} onPress={pickImage}>
-                <Ionicons name="images" size={32} color={colors.dark.tint} />
-                <Text style={styles.imagePickerOptionText}>Choisir depuis la galerie</Text>
-              </TouchableOpacity>
-            </View>
-            <Pressable
-              style={[styles.modalButton, styles.cancelButton]}
-              onPress={() => setImagePickerModalVisible(false)}
-            >
-              <Text style={styles.cancelButtonText}>Annuler</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-    </ScrollView>
+        </Modal>
+      </ScrollView>
     </>
   )
 }
