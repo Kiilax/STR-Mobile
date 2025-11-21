@@ -30,7 +30,7 @@ export default function InterestPointDetailsScreen() {
   const [editedComment, setEditedComment] = useState("")
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
   const { width } = useWindowDimensions()
-  const { interestPoints, setInterestPoints, equipments } = useMainContext()
+  const { interestPoints, setInterestPoints, equipments, setEquipments } = useMainContext()
 
   const selectedInterestPoint = interestPoints.find((item) => {
     return item.id === Number(id)
@@ -40,13 +40,14 @@ export default function InterestPointDetailsScreen() {
     if (selectedInterestPoint) {
       setInterestPoint(selectedInterestPoint)
       setEditedComment(selectedInterestPoint.comment)
+      setSelectedEquipments([])
       for (const placement of selectedInterestPoint.equipmentPlacements || []) {
         for (const equipment of equipments) {
           if (equipment.id === placement.equipmentId) {
             setSelectedEquipments((prev) => [...prev, equipment])
           }
         }
-      }
+      }      
     }
   }, [selectedInterestPoint])
 
@@ -191,6 +192,7 @@ export default function InterestPointDetailsScreen() {
       ]
     )
   }
+  console.log("Selected equipments:", selectedEquipments)
 
   return (
     <>
