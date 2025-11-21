@@ -23,7 +23,13 @@ export class ProxyApi {
       throw new Error(`HTTP ${response.status}: ${errorText}`)
     }
 
-    const json = (await response.json()) as ApiResponse<T>
+    // Handle empty responses (e.g., 204 No Content)
+    const text = await response.text()
+    if (!text) {
+      return {} as T
+    }
+
+    const json = JSON.parse(text) as ApiResponse<T>
 
     if (!json.success) {
       console.error("API Error:", json.error)
@@ -58,9 +64,13 @@ export class ProxyApi {
     })
   }
 
-  static delete<T>(url: string, endpoint: string) {
+  static async delete<T>(url: string, endpoint: string) {
+    const requestHeaders = {
+      "Content-Type": "application/json",
+    }
     return this.request<T>(url, endpoint, {
       method: "DELETE",
+      headers: requestHeaders,
     })
   }
 }

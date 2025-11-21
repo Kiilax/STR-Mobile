@@ -15,13 +15,17 @@ export async function fetchInterestPoints(): Promise<InterestPoint[]> {
         console.error(`Failed to download image ${imagePath}:`, error)
       }
       point.images = downloadedImages
+      point.synced = true
+      point.updated = false
     }
   }
   return interestPoints
 }
 
 export async function fetchInterestPointById(id: number) {
-  return ProxyApi.get<InterestPoint>(url, `/interest-points/${id}`)
+  const interestPoint = await ProxyApi.get<InterestPoint>(url, `/interest-points/${id}`)
+  interestPoint.synced = true
+  return interestPoint
 }
 
 export async function createInterestPoint(data: Partial<InterestPointRequest>) {
@@ -41,4 +45,9 @@ export async function createInterestPoint(data: Partial<InterestPointRequest>) {
   )
 
   return ProxyApi.post(url, "/interest-points/single", formData)
+}
+
+export async function deleteInterestPoint(id: number) {
+  console.log(`Deleting interest point with id ${id} wth url: ${url}/interest-points/${id}`)
+  return await ProxyApi.delete(url, `/interest-points/${id}`)
 }

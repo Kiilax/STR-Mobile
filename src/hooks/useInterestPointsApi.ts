@@ -112,12 +112,34 @@ export function useInterestPointsApi() {
     [ip]
   )
 
+  const deleteIP = useCallback(
+    async (id: number) => {
+      setLoading(true)
+      setError(null)
+      if (!ip) {
+        setError("IP address is not set")
+        setLoading(false)
+        return []
+      }
+      try {
+        return await ProxyApi.delete(ip, `/interest-points/${id}`)
+      } catch (err: any) {
+        setError(err.message || `Failed to delete interest point with id ${id}`)
+        throw err
+      } finally {
+        setLoading(false)
+      }
+    },
+    [ip]
+  )
+
   const clearError = useCallback(() => setError(null), [])
 
   return {
     fetchAll,
     fetchById,
     create,
+    deleteIP,
     loading,
     error,
     clearError,
