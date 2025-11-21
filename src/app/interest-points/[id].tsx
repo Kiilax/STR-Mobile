@@ -14,7 +14,7 @@ import {
   Pressable,
 } from "react-native"
 import { colors } from "@/src/constants/theme"
-import { useLocalSearchParams, router } from "expo-router"
+import { useLocalSearchParams, router, Stack } from "expo-router"
 import { useEffect, useState } from "react"
 import Carousel from "react-native-reanimated-carousel"
 import { Ionicons } from "@expo/vector-icons"
@@ -25,6 +25,7 @@ import { useMainContext } from "@/src/context/mainContext"
 export default function InterestPointDetailsScreen() {
   const { id } = useLocalSearchParams()
   const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(null)
+  const [selectedEquipments, setSelectedEquipments] = useState<any[]>([])
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [editedComment, setEditedComment] = useState("")
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
@@ -39,6 +40,13 @@ export default function InterestPointDetailsScreen() {
     if (selectedInterestPoint) {
       setInterestPoint(selectedInterestPoint)
       setEditedComment(selectedInterestPoint.comment)
+      for (const placement of selectedInterestPoint.equipmentPlacements || []) {
+        for (const equipment of equipments) {
+          if (equipment.id === placement.equipmentId) {
+            setSelectedEquipments((prev) => [...prev, equipment])
+          }
+        }
+      }
     }
   }, [selectedInterestPoint])
 
@@ -185,6 +193,8 @@ export default function InterestPointDetailsScreen() {
   }
 
   return (
+    <>
+    <Stack.Screen options={{ title: "Détails du point d'intérêt" }} />
     <ScrollView style={styles.container}>
       <View style={styles.content}>
         {/* Header avec boutons d'action */}
@@ -258,17 +268,17 @@ export default function InterestPointDetailsScreen() {
           )}
         </View>
 
-        {equipments.length > 0 && (
+        {selectedEquipments.length > 0 && (
           <View style={styles.section}>
             <View style={{ flex: 1 }}>
               <Text style={styles.sectionTitle}>Équipements associés</Text>
               <View style={styles.equipmentsContainer}>
-                {equipments.map((equipment, index) => (
+                {selectedEquipments.map((equipment, index) => (
                   <View
                     key={equipment.id}
                     style={[
                       styles.equipmentItem,
-                      index === equipments.length - 1 && styles.lastEquipmentItem,
+                      index === selectedEquipments.length - 1 && styles.lastEquipmentItem,
                     ]}
                   >
                     <Image source={{ uri: equipment.image }} style={styles.equipmentImage} />
@@ -351,6 +361,7 @@ export default function InterestPointDetailsScreen() {
         </View>
       </Modal>
     </ScrollView>
+    </>
   )
 }
 
