@@ -86,6 +86,7 @@ export default function InterestPointDetailsScreen() {
 
   const updateInterestPoint = (updatedPoint: InterestPoint) => {
     updatedPoint.synced = false
+    updatedPoint.updated = true
     const updatedPoints = interestPoints.map((point: InterestPoint) =>
       point.id === updatedPoint.id ? updatedPoint : point
     )
@@ -216,6 +217,12 @@ export default function InterestPointDetailsScreen() {
                 </TouchableOpacity>
               </View>
             </View>
+            {interestPoint.address && (
+              <View style={styles.addressContainer}>
+                <Ionicons name="location" size={16} color={colors.dark.tint} />
+                <Text style={styles.addressText}>{interestPoint.address}</Text>
+              </View>
+            )}
           </View>
 
           {/* Section Images */}
@@ -419,6 +426,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     marginRight: 12,
+  },
+  addressContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.dark.accent,
+  },
+  addressText: {
+    color: colors.dark.inverted,
+    fontSize: 13,
+    opacity: 0.8,
+    flex: 1,
   },
   section: {
     padding: 15,

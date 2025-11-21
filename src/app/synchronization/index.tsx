@@ -6,18 +6,18 @@ import { useMainContext } from "@/src/context/mainContext"
 import { useInterestPointsApi } from "@/src/hooks"
 import QRCode from "@/src/components/qr-code/QRCode"
 import { Ionicons } from "@expo/vector-icons"
-import { deleteInterestPoint } from "@/src/api/interest-point"
 
 export default function QRCodeDataDisplay() {
   const { ip, interestPoints, setInterestPoints, deleteAllInterestPoints } = useMainContext()
-  const { fetchAll, create } = useInterestPointsApi()
+  const { fetchAll, create, deleteIP } = useInterestPointsApi()
 
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncStatus, setSyncStatus] = useState<"idle" | "success" | "error">("idle")
   const [syncMessage, setSyncMessage] = useState("")
 
   const hasScannedQR = !!ip
-  const hasPointsToSync = interestPoints.length > 0
+  const pointsToSync = interestPoints.filter((point) => !point.synced || point.updated)
+  const hasPointsToSync = pointsToSync.length > 0
   const canSync = hasScannedQR && !isSyncing
 
   const handleSync = async () => {
@@ -28,14 +28,21 @@ export default function QRCodeDataDisplay() {
     setSyncMessage("")
 
     try {
-      if (hasPointsToSync) {
+      if (pointsToSync) {
         for (const interestPoint of interestPoints) {
-          if (interestPoint.synced) continue;
-          try {
-            await deleteInterestPoint(interestPoint.id);
-          } catch (error) {
-            // Ignore deletion errors
+          if (interestPoint.synced && !interestPoint.updated) {
+            continue;
           }
+
+          if (!interestPoint.synced && interestPoint.updated) {
+            try {
+              await deleteIP(interestPoint.id);
+              console.log(`Deleted updated point ${interestPoint.id} from server`);
+            } catch (error) {
+              console.error(`Failed to delete interest point ${interestPoint.id}:`, error)
+            }
+          }
+          
           const dataToSend = {
             comment: interestPoint.comment,
             latitude: interestPoint.latitude,
@@ -43,6 +50,7 @@ export default function QRCodeDataDisplay() {
             images: interestPoint.images,
           }
           await create(dataToSend)
+          console.log(`Created/uploaded point: ${interestPoint.comment}`);
         }
       }
 
@@ -105,7 +113,7 @@ export default function QRCodeDataDisplay() {
           <View style={styles.pointsInfo}>
             <Text style={styles.pointsCount}>
               {hasPointsToSync
-                ? `${interestPoints.length} point(s) d'intérêt en attente`
+                ? `${pointsToSync.length} point(s) d'intérêt en attente`
                 : "Aucun point à synchroniser"}
             </Text>
             <Text style={styles.pointsDescription}>

@@ -10,6 +10,7 @@ export interface InterestPoint {
   updatedAt: Date
   isVisited: boolean
   synced: boolean
+  updated: boolean
   address?: string
   equipmentPlacements?: EquipmentPlacement[]
 }
@@ -19,4 +20,5 @@ export interface InterestPointRequest {
   longitude: number
   comment: string
   images: string[]
+  address?: string
 }
