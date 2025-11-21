@@ -26,13 +26,26 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
-  distanceText: {
-    position: "absolute",
-    bottom: 0,
-    backgroundColor: darkTheme.colors.card,
+  addressText: {
     color: colors.dark.tint,
     padding: 15,
-    maxWidth: "70%",
+    flex: 1,
+    width: "70%",
+  },
+  distanceText: {
+    color: "cyan",
+    padding: 15,
+    textAlign: "right",
+    width: "30%",
+  },
+  infoContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
     borderTopRightRadius: 10,
+    maxWidth: "80%",
+    backgroundColor: darkTheme.colors.card,
+    flexDirection: "row",
+    alignItems: "center",
   },
 })
