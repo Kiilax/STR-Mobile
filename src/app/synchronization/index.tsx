@@ -31,18 +31,18 @@ export default function QRCodeDataDisplay() {
       if (pointsToSync) {
         for (const interestPoint of interestPoints) {
           if (interestPoint.synced && !interestPoint.updated) {
-            continue;
+            continue
           }
 
           if (!interestPoint.synced && interestPoint.updated) {
             try {
-              await deleteIP(interestPoint.id);
-              console.log(`Deleted updated point ${interestPoint.id} from server`);
+              await deleteIP(interestPoint.id)
+              console.log(`Deleted updated point ${interestPoint.id} from server`)
             } catch (error) {
               console.error(`Failed to delete interest point ${interestPoint.id}:`, error)
             }
           }
-          
+
           const dataToSend = {
             comment: interestPoint.comment,
             latitude: interestPoint.latitude,
@@ -50,7 +50,7 @@ export default function QRCodeDataDisplay() {
             images: interestPoint.images,
           }
           await create(dataToSend)
-          console.log(`Created/uploaded point: ${interestPoint.comment}`);
+          console.log(`Created/uploaded point: ${interestPoint.comment}`)
         }
       }
 
