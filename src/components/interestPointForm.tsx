@@ -64,6 +64,7 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
       longitude: data.coordinates.longitude,
       images: data.images,
       synced: false,
+      updated: false,
       createdAt: new Date(),
       updatedAt: new Date(),
       isVisited: false,
