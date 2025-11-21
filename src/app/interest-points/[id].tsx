@@ -29,6 +29,7 @@ export default function InterestPointDetailsScreen() {
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [editedComment, setEditedComment] = useState("")
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const { width } = useWindowDimensions()
   const { interestPoints, setInterestPoints, equipments, setEquipments } = useMainContext()
 
@@ -235,6 +236,7 @@ export default function InterestPointDetailsScreen() {
                 loop={interestPoint.images.length > 1}
                 autoPlay={interestPoint.images.length > 1}
                 autoPlayInterval={5000}
+                onSnapToItem={(index) => setCurrentImageIndex(index)}
                 renderItem={({ item }) => (
                   <View style={styles.imageContainer}>
                     <Image
@@ -253,6 +255,9 @@ export default function InterestPointDetailsScreen() {
                 )}
               />
               <View style={styles.carouselIndicator}>
+                <Text style={styles.imageCounter}>
+                  {currentImageIndex + 1} / {interestPoint.images.length}
+                </Text>
                 <Text style={styles.indicatorText}>Glissez pour naviguer entre les images</Text>
               </View>
             </View>
@@ -487,10 +492,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   carouselIndicator: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 12,
+    gap: 4,
+  },
+  imageCounter: {
+    color: colors.dark.inverted,
+    fontSize: 14,
+    fontWeight: "600",
+    opacity: 0.9,
   },
   indicatorText: {
     color: colors.dark.inverted,
