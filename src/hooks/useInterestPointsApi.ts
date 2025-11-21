@@ -18,13 +18,11 @@ export function useInterestPointsApi() {
     }
     try {
       const newEquipments = await ProxyApi.get<Equipment[]>(ip, "/equipments")
+      setEquipments([])
       const finalEquipments = []
       for (const equip of newEquipments) {
-        const exists = equipments.find((e) => e.id === equip.id)
-        if (!exists) {
-          const localUri = await FileDownloader.download(ip + "/files/", equip.image)
-          if (localUri) equip.image = localUri
-        }
+        const localUri = await FileDownloader.download(ip + "/files/", equip.image)
+        if (localUri) equip.image = localUri
         finalEquipments.push(equip)
       }
       setEquipments(finalEquipments)
@@ -55,7 +53,7 @@ export function useInterestPointsApi() {
     } finally {
       setLoading(false)
     }
-  }, [equipments, ip, setEquipments])
+  }, [ip, setEquipments])
 
   const fetchById = useCallback(
     async (id: number) => {
