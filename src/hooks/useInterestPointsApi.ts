@@ -4,7 +4,7 @@ import { Equipment, InterestPoint, InterestPointRequest } from "../types"
 import { FileDownloader, ProxyApi } from "@/src/utils"
 
 export function useInterestPointsApi() {
-  const { ip, equipments, setEquipments } = useMainContext()
+  const { ip, setEquipments } = useMainContext()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
