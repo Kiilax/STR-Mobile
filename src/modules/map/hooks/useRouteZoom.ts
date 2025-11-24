@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import MapView from "react-native-maps"
 import * as Location from "expo-location"
-import { InterestPoint } from "@/src/types"
+import { InterestPoint } from "@/types"
 
 interface UseRouteZoomProps {
   mapRef: React.RefObject<MapView | null>

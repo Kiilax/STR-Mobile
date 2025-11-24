@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
-import { useMainContext } from "../context/mainContext"
-import { Equipment, InterestPoint, InterestPointRequest } from "../types"
-import { FileDownloader, ProxyApi } from "@/src/utils"
+import { useMainContext } from "@/context/mainContext"
+import { Equipment, InterestPoint, InterestPointRequest } from "@/types"
+import { FileDownloader, ProxyApi } from "@/utils"
 
 export function useInterestPointsApi() {
   const { ip, setEquipments } = useMainContext()

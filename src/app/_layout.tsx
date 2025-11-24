@@ -2,7 +2,7 @@ import { ThemeProvider } from "@react-navigation/native"
 import { Tabs } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import Entypo from "@expo/vector-icons/Entypo"
-import { darkTheme } from "@/src/constants/theme"
+import { darkTheme } from "@/constants/theme"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { MainProvider } from "../context/mainContext"
 
@@ -18,7 +18,7 @@ export default function RootLayout() {
             }}
           >
             <Tabs.Screen
-              name="map/index"
+              name="map"
               options={{
                 title: "Carte",
                 tabBarLabel: "Carte",
@@ -35,8 +35,9 @@ export default function RootLayout() {
               }}
             />
             <Tabs.Screen
-              name="synchronization/index"
+              name="synchronization"
               options={{
+                headerShown: true,
                 title: "Synchronisation",
                 tabBarIcon: ({ color, size }) => <Entypo name="rocket" size={size} color={color} />,
               }}

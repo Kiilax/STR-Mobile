@@ -2,12 +2,12 @@ import React, { useState } from "react"
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { Ionicons } from "@expo/vector-icons"
-import { colors } from "@/src/constants/theme"
-import { InterestPoint } from "@/src/types/interest-point"
-import CoordinateSelector from "./coordinateSelector"
-import ImageSelector from "./imageSelector"
-import { Coordinates } from "../types"
-import { convertToAddress } from "@/src/utils"
+import { colors } from "@/constants/theme"
+import { InterestPoint } from "@/types/interest-point"
+import CoordinateSelector from "./components/coordinate-selector"
+import ImageSelector from "./components/image-selector"
+import { Coordinates } from "@/types"
+import { convertToAddress } from "@/utils"
 
 interface InterestPointFormProps {
   onClose?: () => void

@@ -1,9 +1,9 @@
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"
 import { TouchableOpacity, StyleSheet, View, Text } from "react-native"
-import QRCodeScanner from "./QRCodeScanner"
+import QRCodeScanner from "./components/qr-code-scanner"
 import { useState } from "react"
-import ModalWrapper from "../ui/modal"
-import { useMainContext } from "@/src/context/mainContext"
+import ModalWrapper from "@/components/modal"
+import { useMainContext } from "@/context/mainContext"
 
 export default function QRCode() {
   const [showQRScanner, setShowQRScanner] = useState(false)

@@ -2,10 +2,10 @@ import React from "react"
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import MapView, { Marker } from "react-native-maps"
-import { colors } from "@/src/constants/theme"
-import { STRASBOURG_COORDINATES } from "@/src/constants/coordinates"
-import { useCoordinateSelector } from "@/src/hooks/useCoordinateSelector"
-import { Coordinates } from "@/src/types"
+import { colors } from "@/constants/theme"
+import { STRASBOURG_COORDINATES } from "@/constants/coordinates"
+import { useCoordinateSelector } from "@/modules/interest-point-form/hooks/useCoordinateSelector"
+import { Coordinates } from "@/types"
 
 const mapStyle = [
   {

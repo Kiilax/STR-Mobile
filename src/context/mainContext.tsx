@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode } from "react"
-import { Equipment, InterestPoint } from "@/src/types"
-import { keys } from "@/src/config"
-import { useReactiveAsyncStore } from "@/src/hooks"
+import { Equipment, InterestPoint } from "@/types"
+import { keys } from "@/config"
+import { useReactiveAsyncStore } from "@/hooks"
 import { ImageStorage } from "../utils"
 
 type MainContextType = {

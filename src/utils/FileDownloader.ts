@@ -1,6 +1,6 @@
 import { Paths, File } from "expo-file-system"
 import { fetch } from "expo/fetch"
-import { ImageStorage } from "./ImageStorage"
+import { ImageStorage } from "./imageStorage"
 
 export class FileDownloader {
   static async download(url: string, endpoint: string) {

@@ -1,13 +1,13 @@
-import { View, TouchableOpacity, ActivityIndicator, Text } from "react-native"
+import { View, TouchableOpacity, ActivityIndicator, Text, StyleSheet } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import { useMap } from "@/src/hooks"
-import { styles } from "./styles"
+import { useMap } from "@/modules/map/hooks"
+import { colors, darkTheme } from "@/constants/theme"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import MapViewDirections from "react-native-maps-directions"
-import { InterestPoint } from "@/src/types"
+import { InterestPoint } from "@/types"
 import { useEffect, useState, useCallback } from "react"
-import * as geolib from "geolib" // import { colors } from "@/src/constants/theme"
-import { useMainContext } from "@/src/context/mainContext"
+import * as geolib from "geolib" // import { colors } from "@/constants/theme"
+import { useMainContext } from "@/context/mainContext"
 
 const mapStyle = [
   {
@@ -113,8 +113,8 @@ export default function MapScreen() {
             title={marker.comment}
             image={
               marker.isVisited
-                ? require("@/src/assets/markers/md-gr.png")
-                : require("@/src/assets/markers/md-red.png")
+                ? require("@/assets/markers/md-gr.png")
+                : require("@/assets/markers/md-red.png")
             }
           />
         ))}
@@ -159,3 +159,52 @@ export default function MapScreen() {
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+  fab: {
+    position: "absolute",
+    right: 20,
+    bottom: 95,
+    width: 55,
+    height: 55,
+    borderRadius: 30,
+    backgroundColor: colors.dark.tint,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 4,
+  },
+  paragraph: {
+    fontSize: 18,
+    textAlign: "center",
+  },
+  addressText: {
+    color: colors.dark.tint,
+    padding: 15,
+    flex: 1,
+    width: "70%",
+  },
+  distanceText: {
+    color: "cyan",
+    padding: 15,
+    textAlign: "right",
+    width: "30%",
+  },
+  infoContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    borderTopRightRadius: 10,
+    maxWidth: "80%",
+    backgroundColor: darkTheme.colors.card,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+})

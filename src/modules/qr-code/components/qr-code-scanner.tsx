@@ -2,11 +2,11 @@ import { CameraView } from "expo-camera"
 import { StatusBar } from "expo-status-bar"
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import { useQRScanner } from "@/src/hooks/useQRScanner"
-import { colors } from "@/src/constants/theme"
-import ModalWrapper from "../ui/modal"
+import { useQRScanner } from "@/modules/qr-code/hooks/useQRScanner"
+import { colors } from "@/constants/theme"
+import ModalWrapper from "@/components/modal"
 import { useState } from "react"
-import QRCodeDataDisplay from "../../app/synchronization"
+import QRCodeDataDisplay from "@/app/synchronization"
 
 interface QRCodeScannerProps {
   onScanResult: (ip: string) => void

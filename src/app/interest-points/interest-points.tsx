@@ -10,12 +10,11 @@ import {
   Alert,
   Pressable,
 } from "react-native"
-import { colors } from "@/src/constants/theme"
+import { colors } from "@/constants/theme"
 import { Ionicons } from "@expo/vector-icons"
-import { InterestPointForm } from "@/src/components"
-import ModalWrapper from "@/src/components/ui/modal"
-import { API_URL } from "@/src/config"
-import { useMainContext } from "@/src/context/mainContext"
+import InterestPointForm from "@/modules/interest-point-form"
+import ModalWrapper from "@/components/modal"
+import { useMainContext } from "@/context/mainContext"
 import { useRouter } from "expo-router"
 
 export default function InterestPointListScreen() {
@@ -48,7 +47,7 @@ export default function InterestPointListScreen() {
       ) : (
         <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 80 }}>
           {interestPoints.length === 0 ? (
-            <Text style={styles.emptyText}>{API_URL}</Text>
+            <Text style={styles.emptyText}>Aucun point d&apos;intérêt disponible.</Text>
           ) : (
             interestPoints.map((poi) => (
               <Pressable key={poi.id} onPress={() => router.push(`/interest-points/${poi.id}`)}>

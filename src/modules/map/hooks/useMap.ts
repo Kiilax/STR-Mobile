@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import MapView from "react-native-maps"
 import * as Location from "expo-location"
-import { STRASBOURG_COORDINATES, USER_DELTA } from "@/src/constants/coordinates"
+import { STRASBOURG_COORDINATES, USER_DELTA } from "@/constants/coordinates"
 
 export function useMap() {
   const mapRef = useRef<MapView | null>(null)
