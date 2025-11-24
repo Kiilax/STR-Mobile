@@ -1,4 +1,4 @@
-import { InterestPoint } from "@/src/types"
+import { InterestPoint } from "@/types"
 import {
   Text,
   View,
@@ -13,14 +13,14 @@ import {
   TextInput,
   Pressable,
 } from "react-native"
-import { colors } from "@/src/constants/theme"
+import { colors } from "@/constants/theme"
 import { useLocalSearchParams, router, Stack } from "expo-router"
 import { useEffect, useState } from "react"
 import Carousel from "react-native-reanimated-carousel"
 import { Ionicons } from "@expo/vector-icons"
 import * as ImagePicker from "expo-image-picker"
-import { ImageStorage } from "@/src/utils"
-import { useMainContext } from "@/src/context/mainContext"
+import { ImageStorage } from "@/utils"
+import { useMainContext } from "@/context/mainContext"
 
 export default function InterestPointDetailsScreen() {
   const { id } = useLocalSearchParams()
