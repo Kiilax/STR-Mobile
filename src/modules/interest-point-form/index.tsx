@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 
 import { useForm, Controller } from "react-hook-form"
 import { Ionicons } from "@expo/vector-icons"
 import { colors } from "@/constants/theme"
-import { InterestPoint } from "@/types/interest-point"
+import { InterestPoint } from "@/types/interestPoint"
 import CoordinateSelector from "./components/coordinate-selector"
 import ImageSelector from "./components/image-selector"
 import { Coordinates } from "@/types"
