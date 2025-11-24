@@ -6,7 +6,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import MapViewDirections from "react-native-maps-directions"
 import { InterestPoint } from "@/types"
 import { useEffect, useState, useCallback } from "react"
-import * as geolib from "geolib" // import { colors } from "@/constants/theme"
+import * as geolib from "geolib"
 import { useMainContext } from "@/context/mainContext"
 
 const mapStyle = [

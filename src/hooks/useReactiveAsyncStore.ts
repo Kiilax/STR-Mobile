@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
-import { AsyncStore } from "../utils/asyncStore"
+import { AsyncStore } from "@/utils/asyncStore"
 import { Keys } from "@config/index"
 
 interface UseReactiveAsyncStoreResult<T> {

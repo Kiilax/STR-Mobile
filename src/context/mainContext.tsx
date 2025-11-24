@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, ReactNode } from "react"
 import { Equipment, InterestPoint } from "@/types"
 import { keys } from "@/config"
 import { useReactiveAsyncStore } from "@/hooks"
-import { ImageStorage } from "../utils"
+import { ImageStorage } from "@/utils"
 
 type MainContextType = {
   ip: string | null

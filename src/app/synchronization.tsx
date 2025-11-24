@@ -1,10 +1,9 @@
-// index.tsx
 import { View, Text, Pressable, ActivityIndicator, ScrollView, StyleSheet } from "react-native"
 import { colors } from "@/constants/theme"
 import { useState } from "react"
 import { useMainContext } from "@/context/mainContext"
 import { useInterestPointsApi } from "@/hooks"
-import QRCode from "@/modules/qr-code/qr-code"
+import QRCode from "@/modules/qr-code"
 import { Ionicons } from "@expo/vector-icons"
 
 export default function QRCodeDataDisplay() {

@@ -4,7 +4,7 @@ import { StatusBar } from "expo-status-bar"
 import Entypo from "@expo/vector-icons/Entypo"
 import { darkTheme } from "@/constants/theme"
 import { SafeAreaProvider } from "react-native-safe-area-context"
-import { MainProvider } from "../context/mainContext"
+import { MainProvider } from "@/context/mainContext"
 
 export default function RootLayout() {
   return (

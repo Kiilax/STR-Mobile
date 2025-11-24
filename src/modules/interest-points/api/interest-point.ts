@@ -1,4 +1,4 @@
-import { InterestPoint, InterestPointRequest } from "../../../types"
+import { InterestPoint, InterestPointRequest } from "@/types"
 import { FileDownloader, ProxyApi } from "@/utils"
 
 const url = "http://10.194.2.127:3000"
