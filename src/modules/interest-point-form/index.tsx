@@ -68,9 +68,7 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
       createdAt: new Date(),
       updatedAt: new Date(),
       isVisited: false,
-      address:
-        (await convertToAddress(data.coordinates.latitude, data.coordinates.longitude)) ??
-        "Adresse inconnue",
+      address: (await convertToAddress(data.coordinates)) ?? "Adresse inconnue",
       equipmentPlacements: [],
     }
     onSubmit?.(poiData)
