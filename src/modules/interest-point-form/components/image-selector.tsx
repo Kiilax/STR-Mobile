@@ -2,7 +2,7 @@ import React from "react"
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { colors } from "@/constants/theme"
-import { useImageSelector } from "@/hooks"
+import { useImageSelector } from "../hooks"
 
 interface ImageSelectorProps {
   selectedImages: string[]
