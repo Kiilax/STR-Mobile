@@ -71,5 +71,10 @@
     "expo-module-scripts": "^5.0.7",
     "typescript": "~5.9.2"
   },
+  "expo": {
+    "router": {
+      "appRoot": "src/app"
+    }
+  },
   "private": true
 }
