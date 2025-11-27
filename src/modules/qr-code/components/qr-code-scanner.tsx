@@ -6,7 +6,7 @@ import { useQRScanner } from "@/modules/qr-code/hooks/useQRScanner"
 import { colors } from "@/constants/theme"
 import ModalWrapper from "@/components/modal"
 import { useState } from "react"
-import QRCodeDataDisplay from "@/app/synchronization"
+import QRCodeDataDisplay from "@/app/(tabs)/synchronization"
 
 interface QRCodeScannerProps {
   onScanResult: (ip: string) => void
