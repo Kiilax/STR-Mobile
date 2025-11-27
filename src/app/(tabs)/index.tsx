@@ -2,7 +2,7 @@ import { View, TouchableOpacity, ActivityIndicator, Text, StyleSheet } from "rea
 import { Ionicons } from "@expo/vector-icons"
 import { useMap } from "@/modules/map/hooks"
 import { colors, darkTheme } from "@/constants/theme"
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
+import MapView, { Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE } from "react-native-maps"
 import MapViewDirections from "react-native-maps-directions"
 import { useMarkers } from "@/modules/map/hooks/useMarkers"
 
@@ -21,7 +21,7 @@ export default function MapScreen() {
   return (
     <View style={styles.container}>
       <MapView
-        provider={PROVIDER_GOOGLE}
+        provider={PROVIDER_DEFAULT}
         ref={mapRef}
         style={styles.map}
         customMapStyle={mapStyle}
