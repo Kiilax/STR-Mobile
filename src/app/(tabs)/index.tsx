@@ -2,7 +2,7 @@ import { View, TouchableOpacity, ActivityIndicator, Text, StyleSheet } from "rea
 import { Ionicons } from "@expo/vector-icons"
 import { useMap } from "@/modules/map/hooks"
 import { colors, darkTheme } from "@/constants/theme"
-import MapView, { Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE } from "react-native-maps"
+import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps"
 import MapViewDirections from "react-native-maps-directions"
 import { useMarkers } from "@/modules/map/hooks/useMarkers"
 
