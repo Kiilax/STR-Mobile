@@ -90,7 +90,6 @@ export default function QRCodeDataDisplay() {
           <Ionicons name="qr-code-outline" size={24} color="#333" />
           <Text style={styles.sectionTitle}>Étape 1: Scan du QR Code</Text>
         </View>
-
         <QRCode />
       </View>
 
@@ -181,35 +180,6 @@ export default function QRCodeDataDisplay() {
             </Text>
           </View>
         )}
-      </View>
-
-      {/* Informations supplémentaires */}
-      <View style={styles.infoSection}>
-        <Text style={styles.infoTitle}>Comment synchroniser ?</Text>
-        <View style={styles.stepsContainer}>
-          <View style={styles.step}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>1</Text>
-            </View>
-            <Text style={styles.stepText}>Scannez le QR Code du site</Text>
-          </View>
-          <View style={styles.step}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>2</Text>
-            </View>
-            <Text style={styles.stepText}>
-              {hasPointsToSync
-                ? "Vos points locaux seront envoyés au serveur"
-                : "Les points du serveur seront récupérés"}
-            </Text>
-          </View>
-          <View style={styles.step}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>3</Text>
-            </View>
-            <Text style={styles.stepText}>Les données sont mises à jour des deux côtés</Text>
-          </View>
-        </View>
       </View>
     </ScrollView>
   )
