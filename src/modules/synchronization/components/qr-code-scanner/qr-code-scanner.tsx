@@ -1,12 +1,13 @@
 import { CameraView } from "expo-camera"
 import { StatusBar } from "expo-status-bar"
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native"
+import { Pressable, Text, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useQRScanner } from "@/modules/synchronization/hooks/useQRScanner"
 import { colors } from "@/constants/theme"
 import ModalWrapper from "@/components/modal"
 import { useState } from "react"
 import QRCodeDataDisplay from "@/app/(tabs)/synchronization"
+import { styles } from "./qr-code-scanner.styles"
 
 interface QRCodeScannerProps {
   onScanResult: (ip: string) => void
@@ -71,57 +72,3 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.dark.background,
-    color: colors.dark.text,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.dark.inverted,
-    width: "100%",
-  },
-
-  btnCancel: {
-    backgroundColor: "#ff4444",
-  },
-
-  mainText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    flex: 1,
-    textAlign: "center",
-    color: colors.dark.inverted,
-  },
-  description: {
-    fontSize: 16,
-    textAlign: "center",
-    marginHorizontal: 20,
-    color: colors.dark.inverted,
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  camStyle: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-
-  errorText: {
-    color: "red",
-    marginTop: 10,
-    textAlign: "center",
-  },
-  cameraSquare: {
-    width: Platform.OS === "web" ? 400 : 300,
-    height: Platform.OS === "web" ? 400 : 300,
-  },
-})

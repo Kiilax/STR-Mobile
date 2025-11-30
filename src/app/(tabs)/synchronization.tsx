@@ -3,7 +3,7 @@ import { colors } from "@/constants/theme"
 import { useState } from "react"
 import { useMainContext } from "@/context/mainContext"
 import { useInterestPointsApi } from "@/hooks"
-import QRCode from "@/modules/qr-code"
+import { QRCode } from "@/modules/synchronization/components"
 import { Ionicons } from "@expo/vector-icons"
 
 export default function QRCodeDataDisplay() {
