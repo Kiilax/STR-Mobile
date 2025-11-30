@@ -1,0 +1,43 @@
+FROM node:20
+
+RUN apt-get update && apt-get install -y \
+    openjdk-17-jdk \
+    curl \
+    git \
+    unzip \
+    python3 \
+    build-essential \
+    jq \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+RUN npm install -g eas-cli expo-cli
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+ARG EXPO_TOKEN
+ENV EXPO_TOKEN=$EXPO_TOKEN
+
+ARG EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
+ENV EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=$EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
+
+CMD ["sh", "-c", "\
+    eas login --token $EXPO_TOKEN && \
+    BUILD_JSON=$(eas build --platform android --profile apk --non-interactive --json) && \
+    BUILD_ID=$(echo $BUILD_JSON | jq -r '.id // .buildId') && \
+    echo Build ID: $BUILD_ID && \
+    BUILD_VIEW=$(eas build:view $BUILD_ID --json) && \
+    ARTIFACT_URL=$(echo $BUILD_VIEW | jq -r '.artifacts[0].url // .artifactUrl') && \
+    echo Downloading APK from $ARTIFACT_URL && \
+    curl -L -o app.apk $ARTIFACT_URL && \
+    ls -lh app.apk \
+"]
+
