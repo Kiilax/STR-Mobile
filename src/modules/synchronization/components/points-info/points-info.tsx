@@ -12,7 +12,6 @@ export default function PointsInfo() {
 
     return (
         <View style={commonStyles.section}>
-            {/* Section Points à synchroniser */}
             <View style={commonStyles.sectionHeader}>
                 <Ionicons name="location-outline" size={24} color="#333" />
                 <Text style={commonStyles.sectionTitle}>Étape 2: Points à synchroniser</Text>

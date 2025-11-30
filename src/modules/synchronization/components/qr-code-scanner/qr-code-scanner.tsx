@@ -6,7 +6,7 @@ import { useQRScanner } from "@/modules/synchronization/hooks/useQRScanner"
 import { colors } from "@/constants/theme"
 import ModalWrapper from "@/components/modal"
 import { useState } from "react"
-import QRCodeDataDisplay from "@/app/(tabs)/synchronization"
+import SynchronizationScreen from "@/app/(tabs)/synchronization"
 import { styles } from "./qr-code-scanner.styles"
 
 interface QRCodeScannerProps {
@@ -67,7 +67,7 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
         />
       </View>
       <ModalWrapper visible={showModal} onClose={() => setShowModal(false)} fullScreen>
-        <QRCodeDataDisplay />
+        <SynchronizationScreen />
       </ModalWrapper>
     </View>
   )
