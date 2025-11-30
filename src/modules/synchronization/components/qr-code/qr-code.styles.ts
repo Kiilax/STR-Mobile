@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native"
+import { colors } from "@/constants/theme"
 
 export const styles = StyleSheet.create({
   container: {
@@ -15,7 +16,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     borderLeftWidth: 4,
-    borderLeftColor: "#007AFF",
+    borderLeftColor: colors.dark.accent,
   },
   scanButtonContent: {
     flexDirection: "row",
@@ -107,7 +108,7 @@ export const styles = StyleSheet.create({
   },
   rescanText: {
     fontSize: 12,
-    color: "#007AFF",
+    color: colors.dark.tint,
     fontWeight: "500",
     marginLeft: 4,
   },

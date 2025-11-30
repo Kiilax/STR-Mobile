@@ -5,6 +5,7 @@ import { useState } from "react"
 import { ModalWrapper } from "@/components"
 import { useMainContext } from "@/context/mainContext"
 import { styles } from "./qr-code.styles"
+import { colors } from "@/constants/theme"
 
 export default function QRCode() {
   const [showQRScanner, setShowQRScanner] = useState(false)
@@ -60,7 +61,7 @@ export default function QRCode() {
       {!ip ? (
         <TouchableOpacity style={styles.scanButton} onPress={() => setShowQRScanner(true)}>
           <View style={styles.scanButtonContent}>
-            <MaterialCommunityIcons name="qrcode-scan" size={28} color="#007AFF" />
+            <MaterialCommunityIcons name="qrcode-scan" size={28} color={colors.dark.tint} />
             <View style={styles.scanButtonText}>
               <Text style={styles.scanButtonTitle}>Scanner le QR Code</Text>
               <Text style={styles.scanButtonSubtitle}>Cliquez pour scanner le code du site</Text>
@@ -88,7 +89,7 @@ export default function QRCode() {
                 {ip}
               </Text>
               <TouchableOpacity style={styles.rescanButton} onPress={handleScanAgain}>
-                <Ionicons name="refresh" size={16} color="#007AFF" />
+                <Ionicons name="refresh" size={16} color={colors.dark.tint} />
                 <Text style={styles.rescanText}>Changer</Text>
               </TouchableOpacity>
             </View>
