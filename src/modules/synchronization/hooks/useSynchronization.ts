@@ -1,17 +1,17 @@
-import { useMainContext } from "@/context/mainContext";
-import { useState } from "react";
-import { useInterestPointsApi } from "./useInterestPointsApi";
+import { useMainContext } from "@/context/mainContext"
+import { useState } from "react"
+import { useInterestPointsApi } from "./useInterestPointsApi"
 
-type SyncStatus = "idle" | "syncing" | "success" | "error";
+type SyncStatus = "idle" | "syncing" | "success" | "error"
 
 interface UseSynchronizationReturn {
   status: SyncStatus
   message: string
-  
+
   hasScannedQR: boolean
   pointsToSync: number
   canSync: boolean
-  
+
   handleSync: () => Promise<void>
 }
 
@@ -27,7 +27,7 @@ export function useSynchronization(): UseSynchronizationReturn {
   const pointsToSync = pointsToSyncList.length
   const canSync = hasScannedQR && status !== "syncing"
 
-  const syncPoint = async (interestPoint: typeof interestPoints[0]) => {
+  const syncPoint = async (interestPoint: (typeof interestPoints)[0]) => {
     if (!interestPoint.synced && interestPoint.updated) {
       try {
         await deleteIP(interestPoint.id)
@@ -44,7 +44,7 @@ export function useSynchronization(): UseSynchronizationReturn {
       longitude: interestPoint.longitude,
       images: interestPoint.images,
     }
-    
+
     await create(dataToSend)
     console.log(`Created/uploaded point: ${interestPoint.comment}`)
   }

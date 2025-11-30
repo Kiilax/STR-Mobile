@@ -1,9 +1,14 @@
 import { ScrollView, StyleSheet } from "react-native"
 import { colors } from "@/constants/theme"
-import { StepCard, PointsInfo, StatusMessage, SyncCard, QRCodeCard } from "@/modules/synchronization/components"
+import {
+  StepCard,
+  PointsInfo,
+  StatusMessage,
+  SyncCard,
+  QRCodeCard,
+} from "@/modules/synchronization/components"
 
 export default function SynchronizationScreen() {
-
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       {/* Header */}
@@ -11,7 +16,7 @@ export default function SynchronizationScreen() {
 
       {/* Section QR Code */}
       <QRCodeCard />
-      
+
       {/* Section Points à synchroniser */}
       <PointsInfo />
 
@@ -20,7 +25,6 @@ export default function SynchronizationScreen() {
 
       {/* Status Message */}
       <StatusMessage />
-
     </ScrollView>
   )
 }
@@ -33,5 +37,5 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 16,
     paddingBottom: 40,
-  }
+  },
 })

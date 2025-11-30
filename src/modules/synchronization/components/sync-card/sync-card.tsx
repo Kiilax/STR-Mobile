@@ -10,22 +10,22 @@ export default function SyncCard() {
   const hasScannedQR = !!ip
 
   return (
-      <View style={commonStyles.section}>
-        <View style={commonStyles.sectionHeader}>
-          <Ionicons name="sync-outline" size={24} color="#333" />
-          <Text style={commonStyles.sectionTitle}>Étape 3: Synchronisation</Text>
-        </View>
+    <View style={commonStyles.section}>
+      <View style={commonStyles.sectionHeader}>
+        <Ionicons name="sync-outline" size={24} color="#333" />
+        <Text style={commonStyles.sectionTitle}>Étape 3: Synchronisation</Text>
+      </View>
 
-        {!hasScannedQR ? (
-          <View style={styles.disabledSyncCard}>
-            <Ionicons name="lock-closed" size={24} color="#999" />
-            <Text style={styles.disabledSyncText}>
-              Scannez un QR Code pour débloquer la synchronisation
-            </Text>
-          </View>
-        ) : (
-          <SyncButton />
-        )}
+      {!hasScannedQR ? (
+        <View style={styles.disabledSyncCard}>
+          <Ionicons name="lock-closed" size={24} color="#999" />
+          <Text style={styles.disabledSyncText}>
+            Scannez un QR Code pour débloquer la synchronisation
+          </Text>
         </View>
-    )
+      ) : (
+        <SyncButton />
+      )}
+    </View>
+  )
 }
