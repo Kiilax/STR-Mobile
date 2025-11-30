@@ -3,6 +3,12 @@ import { fetch } from "expo/fetch"
 import { ImageStorage } from "./imageStorage"
 
 export class FileDownloader {
+  /**
+   * Downloads a file from the given URL and endpoint, saves it locally, and returns the local URI.
+   * @param url Base URL to download the file from
+   * @param endpoint Endpoint of the file to be downloaded
+   * @returns Local URI of the downloaded file
+   */
   static async download(url: string, endpoint: string) {
     try {
       const response = await fetch(`${url}${endpoint}`)
