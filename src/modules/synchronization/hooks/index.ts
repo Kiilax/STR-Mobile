@@ -1,2 +1,2 @@
 export * from "./useInterestPointsApi"
-export * from "../../synchronization/hooks/useQRScanner"
+export * from "./useQRScanner"
