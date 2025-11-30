@@ -4,14 +4,22 @@ include:
       - '/.gitlab-ci-templates/lint.yml'
       - '/.gitlab-ci-templates/format.yml'
       - '/.gitlab-ci-templates/test.yml'
+      - '/.gitlab-ci-templates/build.yml'
     ref: prod
 
 stages:
   - lint
   - test
+  - build
 
 lint:
   extends: .lint-template
 
+format:
+  extends: .format-template
+
 test:
   extends: .test-template
+
+build:
+  extends: .build-template
