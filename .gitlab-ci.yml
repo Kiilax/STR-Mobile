@@ -21,5 +21,31 @@ format:
 test:
   extends: .test-template
 
-build:
-  extends: .build-template
+build_apk:
+  stage: build
+  image: alpine:3.19
+  variables:
+    DOCKER_HOST: "unix:///var/run/docker.sock"
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - apk add --no-cache docker-cli bash curl jq
+    - docker version
+
+  script:
+    - docker build -t apk-builder -f Dockerfile.prod .
+    - mkdir -p output
+    - docker run --rm \
+        -e EXPO_TOKEN="$EXPO_TOKEN" \
+        -v "$CI_PROJECT_DIR/output:/output" \
+        apk-builder
+
+  artifacts:
+    paths:
+      - output/app.apk
+    name: "strm-apk-$CI_COMMIT_SHORT_SHA"
+    expire_in: 7 days
+
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+    - when: always
