@@ -4,23 +4,20 @@ import { Pressable, Text, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useQRScanner } from "@/modules/synchronization/hooks/useQRScanner"
 import { colors } from "@/constants/theme"
-import ModalWrapper from "@/components/modal"
 import { useState } from "react"
-import SynchronizationScreen from "@/app/(tabs)/synchronization"
 import { styles } from "./qr-code-scanner.styles"
+import { useRouter } from "expo-router"
 
-interface QRCodeScannerProps {
-  onScanResult: (ip: string) => void
-  onClose: () => void
-}
 
-export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerProps) {
+export default function QRCodeScanner() {
+  const router = useRouter()
+  const onClose = () => {
+    router.back()
+  }
   const { isGranted, loading, error } = useQRScanner()
-  const [showModal, setShowModal] = useState(false)
 
   const handleScanResult = ({ data }: { data: string }) => {
-    setShowModal(true)
-    onScanResult(data)
+    router.back()
   }
 
   if (loading) {
@@ -66,9 +63,6 @@ export default function QRCodeScanner({ onScanResult, onClose }: QRCodeScannerPr
           onBarcodeScanned={handleScanResult}
         />
       </View>
-      <ModalWrapper visible={showModal} onClose={() => setShowModal(false)} fullScreen>
-        <SynchronizationScreen />
-      </ModalWrapper>
     </View>
   )
 }

@@ -1,14 +1,12 @@
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"
 import { TouchableOpacity, View, Text } from "react-native"
-import QRCodeScanner from "../qr-code-scanner/qr-code-scanner"
 import { useState } from "react"
-import { ModalWrapper } from "@/components"
 import { useMainContext } from "@/context/mainContext"
 import { styles } from "./qr-code.styles"
 import { colors } from "@/constants/theme"
+import { router } from "expo-router"
 
 export default function QRCode() {
-  const [showQRScanner, setShowQRScanner] = useState(false)
   const { ip, setIp } = useMainContext()
   const [isFetching, setIsFetching] = useState(false)
   const fetchWithTimeout = (url: string, options: any = {}, timeout = 800) => {
@@ -36,7 +34,7 @@ export default function QRCode() {
         if (response.ok) {
           neo = `http://${ip}`
           setIp(neo)
-          setShowQRScanner(false)
+          router.push("/synchronization/qr-code-scanner")
           break
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
@@ -48,7 +46,7 @@ export default function QRCode() {
   }
 
   const handleCloseScanner = () => {
-    setShowQRScanner(false)
+    router.push("/synchronization/qr-code-scanner")
   }
 
   const handleScanAgain = () => {
@@ -59,7 +57,7 @@ export default function QRCode() {
     <View style={styles.container}>
       {/* Bouton principal Scan QR Code */}
       {!ip ? (
-        <TouchableOpacity style={styles.scanButton} onPress={() => setShowQRScanner(true)}>
+        <TouchableOpacity style={styles.scanButton} onPress={() => router.push("/synchronization/qr-code-scanner")}>
           <View style={styles.scanButtonContent}>
             <MaterialCommunityIcons name="qrcode-scan" size={28} color={colors.dark.tint} />
             <View style={styles.scanButtonText}>
@@ -96,11 +94,6 @@ export default function QRCode() {
           </View>
         </View>
       )}
-
-      {/* Modal du scanner QR Code */}
-      <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner} fullScreen>
-        <QRCodeScanner onScanResult={handleQRScanResult} onClose={handleCloseScanner} />
-      </ModalWrapper>
     </View>
   )
 }
