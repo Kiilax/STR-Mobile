@@ -34,10 +34,7 @@ build_apk:
   script:
     - docker build -t apk-builder -f Dockerfile.prod .
     - mkdir -p output
-    - docker run --rm \
-        -e EXPO_TOKEN="$EXPO_TOKEN" \
-        -v "$CI_PROJECT_DIR/output:/output" \
-        apk-builder
+    - docker run --rm -e EXPO_TOKEN=${EXPO_TOKEN} -v ${CI_PROJECT_DIR}/output:/output apk-builder
 
   artifacts:
     paths:
