@@ -4,9 +4,9 @@ import { Pressable, Text, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useQRScanner } from "@/modules/synchronization/hooks/useQRScanner"
 import { colors } from "@/constants/theme"
-import { useState } from "react"
 import { styles } from "./qr-code-scanner.styles"
 import { useRouter } from "expo-router"
+import useQRCodeStore from "@/hooks/useQRCodeStore"
 
 
 export default function QRCodeScanner() {
@@ -17,6 +17,7 @@ export default function QRCodeScanner() {
   const { isGranted, loading, error } = useQRScanner()
 
   const handleScanResult = ({ data }: { data: string }) => {
+    useQRCodeStore.getState().setResult(data)
     router.back()
   }
 
