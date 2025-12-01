@@ -8,7 +8,6 @@ import { styles } from "./qr-code-scanner.styles"
 import { useRouter } from "expo-router"
 import useQRCodeStore from "@/hooks/useQRCodeStore"
 
-
 export default function QRCodeScanner() {
   const router = useRouter()
   const onClose = () => {

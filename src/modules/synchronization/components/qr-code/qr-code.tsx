@@ -48,7 +48,7 @@ export default function QRCode() {
       }
     }
     checkQRCodeData()
-  }, [useQRCodeStore.getState().result]);
+  }, [useQRCodeStore.getState().result])
 
   const handleScanAgain = () => {
     setIp("") // Reset the IP to allow scanning again
@@ -58,7 +58,10 @@ export default function QRCode() {
     <View style={styles.container}>
       {/* Bouton principal Scan QR Code */}
       {!ip ? (
-        <TouchableOpacity style={styles.scanButton} onPress={() => router.push("/synchronization/qr-code-scanner")}>
+        <TouchableOpacity
+          style={styles.scanButton}
+          onPress={() => router.push("/synchronization/qr-code-scanner")}
+        >
           <View style={styles.scanButtonContent}>
             <MaterialCommunityIcons name="qrcode-scan" size={28} color={colors.dark.tint} />
             <View style={styles.scanButtonText}>
