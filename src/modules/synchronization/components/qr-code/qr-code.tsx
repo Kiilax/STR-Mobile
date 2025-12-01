@@ -10,6 +10,8 @@ import useQRCodeStore from "@/hooks/useQRCodeStore"
 export default function QRCode() {
   const { ip, setIp } = useMainContext()
   const [isFetching, setIsFetching] = useState(false)
+  const qrResult = useQRCodeStore.getState().result
+
   const fetchWithTimeout = (url: string, options: any = {}, timeout = 800) => {
     return Promise.race([
       fetch(url, options),
@@ -48,7 +50,7 @@ export default function QRCode() {
       }
     }
     checkQRCodeData()
-  }, [useQRCodeStore.getState().result])
+  }, [qrResult, isFetching, setIp])
 
   const handleScanAgain = () => {
     setIp("") // Reset the IP to allow scanning again
