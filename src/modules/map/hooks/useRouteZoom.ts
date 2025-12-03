@@ -26,8 +26,8 @@ export function useRouteZoom({ mapRef, selectedPoint, userLocation }: UseRouteZo
           longitude: userLocation.coords.longitude,
         },
         {
-          latitude: selectedPoint.latitude,
-          longitude: selectedPoint.longitude,
+          latitude: selectedPoint.coordinates.latitude,
+          longitude: selectedPoint.coordinates.longitude,
         },
       ]
 

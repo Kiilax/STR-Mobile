@@ -5,52 +5,101 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.dark.background,
-    color: colors.dark.text,
-    alignItems: "center",
-    justifyContent: "center",
   },
   header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
+    padding: 20,
+    paddingTop: 60,
     borderBottomWidth: 1,
-    borderBottomColor: colors.dark.inverted,
-    width: "100%",
+    borderBottomColor: colors.dark.accent,
   },
-
-  btnCancel: {
-    backgroundColor: "#ff4444",
-  },
-
-  mainText: {
+  title: {
     fontSize: 20,
     fontWeight: "bold",
+    color: colors.dark.text,
+  },
+  closeButton: {
+    padding: 8,
+  },
+  content: {
     flex: 1,
-    textAlign: "center",
-    color: colors.dark.inverted,
+    padding: 20,
   },
-  description: {
-    fontSize: 16,
-    textAlign: "center",
-    marginHorizontal: 20,
-    color: colors.dark.inverted,
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  camStyle: {
+  loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
   },
-
-  errorText: {
-    color: "red",
-    marginTop: 10,
+  loadingText: {
+    fontSize: 16,
+    color: colors.dark.text,
+    marginTop: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 32,
+  },
+  errorTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: colors.dark.text,
+    marginTop: 24,
+    marginBottom: 12,
     textAlign: "center",
   },
-  cameraSquare: {
-    width: Platform.OS === "web" ? 400 : 300,
-    height: Platform.OS === "web" ? 400 : 300,
+  errorDescription: {
+    fontSize: 16,
+    color: colors.dark.accent,
+    textAlign: "center",
+    lineHeight: 24,
+    marginBottom: 20,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    textAlign: "center",
+    marginTop: 12,
+  },
+  instructionContainer: {
+    marginBottom: 24,
+  },
+  instructionText: {
+    fontSize: 16,
+    color: colors.dark.text,
+    textAlign: "center",
+    lineHeight: 22,
+  },
+  cameraContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  camera: {
+    width: Platform.OS === "web" ? 350 : 280,
+    height: Platform.OS === "web" ? 350 : 280,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scanArea: {
+    width: Platform.OS === "web" ? 350 : 280,
+    height: Platform.OS === "web" ? 350 : 280,
+    borderWidth: 2,
+    borderColor: colors.dark.tint,
+    borderRadius: 16,
+    backgroundColor: "transparent",
   },
 })

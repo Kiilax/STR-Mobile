@@ -1,18 +1,19 @@
 import { EquipmentPlacement } from "./equipment"
+import { Coordinates } from "./coordinates"
 
 export interface InterestPoint {
   id: number
-  latitude: number
-  longitude: number
-  comment: string
+  address?: string
+  coordinates: Coordinates
+  comment?: string
   images: string[]
-  createdAt: Date
-  updatedAt: Date
   isVisited: boolean
   synced: boolean
   updated: boolean
-  address?: string
   equipmentPlacements?: EquipmentPlacement[]
+  eventIp?: number
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface InterestPointRequest {

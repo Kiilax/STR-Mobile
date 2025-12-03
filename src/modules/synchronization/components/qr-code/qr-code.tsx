@@ -99,7 +99,11 @@ export default function QRCode() {
 
       {/* Modal du scanner QR Code */}
       <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner} fullScreen>
-        <QRCodeScanner onScanResult={handleQRScanResult} onClose={handleCloseScanner} />
+        <QRCodeScanner
+          title="My ass"
+          onScanResult={handleQRScanResult}
+          onClose={handleCloseScanner}
+        />
       </ModalWrapper>
     </View>
   )

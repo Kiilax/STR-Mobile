@@ -60,8 +60,7 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
     const poiData: InterestPoint = {
       id: Date.now(),
       comment: data.comment,
-      latitude: data.coordinates.latitude,
-      longitude: data.coordinates.longitude,
+      coordinates: data.coordinates,
       images: data.images,
       synced: false,
       updated: false,
@@ -93,7 +92,6 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
           <Controller
             control={control}
             name="comment"
-            rules={{ required: "Le commentaire est obligatoire" }}
             render={({ field: { onChange, value } }) => (
               <TextInput
                 style={styles.textInput}
