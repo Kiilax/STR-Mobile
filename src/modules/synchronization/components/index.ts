@@ -1,4 +1,3 @@
-export { default as QRCodeScanner } from "./qr-code-scanner/qr-code-scanner"
 export { default as QRCode } from "./qr-code/qr-code"
 export { default as StepCard } from "./step-card/step-card"
 export { default as PointsInfo } from "./points-info/points-info"
