@@ -23,11 +23,11 @@ export function useMarkers({ userLocation }: { userLocation: Location.LocationOb
     const sorted = [...markers].sort((a, b) => {
       const distA = geolib.getDistance(
         { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
-        { latitude: a.latitude, longitude: a.longitude }
+        { latitude: a.coordinates.latitude, longitude: a.coordinates.longitude }
       )
       const distB = geolib.getDistance(
         { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
-        { latitude: b.latitude, longitude: b.longitude }
+        { latitude: b.coordinates.latitude, longitude: b.coordinates.longitude }
       )
       return distA - distB
     })
@@ -40,7 +40,7 @@ export function useMarkers({ userLocation }: { userLocation: Location.LocationOb
       if (!userLocation) return Infinity
       return geolib.getDistance(
         { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
-        { latitude: point.latitude, longitude: point.longitude }
+        { latitude: point.coordinates.latitude, longitude: point.coordinates.longitude }
       )
     }
     if (!userLocation || routeMarkers.length === 0) return

@@ -1,6 +1,13 @@
 import { ApiResponse } from "../types"
 
 export class ProxyApi {
+  /**
+   * Makes an HTTP request to the specified URL and endpoint with given options.
+   * @param url Base URL of the API
+   * @param endpoint Specific endpoint to hit
+   * @param options Fetch options including method, headers, and body
+   * @returns Parsed response data of type T
+   */
   static async request<T>(url: string, endpoint: string, options: RequestInit = {}): Promise<T> {
     const headers: Record<string, string> = {
       ...(options.headers as any),

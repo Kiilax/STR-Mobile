@@ -13,7 +13,7 @@ import {
 import { colors } from "@/constants/theme"
 import { Ionicons } from "@expo/vector-icons"
 import InterestPointForm from "@/modules/interest-point-form"
-import ModalWrapper from "@/components/modal"
+import { ModalWrapper } from "@/components"
 import { useMainContext } from "@/context/mainContext"
 import { useRouter } from "expo-router"
 
@@ -24,22 +24,22 @@ export default function InterestPointListScreen() {
     interestPoints,
     addInterestPoint,
     deleteInterestPoint,
-    error,
-    loading,
-    clearError,
+    interestPointsError,
+    interestPointsLoading,
+    clearInterestPointsError,
     refreshInterestPoints,
   } = useMainContext()
 
-  if (error) {
-    Alert.alert("Erreur de chargement", error.message, [
+  if (interestPointsError) {
+    Alert.alert("Erreur de chargement", interestPointsError.message, [
       { text: "Réessayer", onPress: refreshInterestPoints },
-      { text: "Ignorer", onPress: clearError, style: "cancel" },
+      { text: "Ignorer", onPress: clearInterestPointsError, style: "cancel" },
     ])
   }
 
   return (
     <View style={styles.container}>
-      {loading ? (
+      {interestPointsLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.dark.tint} />
           <Text style={styles.loadingText}>Chargement des points d&apos;intérêt...</Text>

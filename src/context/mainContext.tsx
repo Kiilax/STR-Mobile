@@ -5,22 +5,26 @@ import { useReactiveAsyncStore } from "@/hooks"
 import { ImageStorage } from "@/utils"
 
 type MainContextType = {
-  ip: string | null
-  setIp: (ip: string) => void
-
+  url: string | null
+  setUrl: (url: string) => void
+  eventId: number | null
+  setEventId: (eventId: number | null) => void
+  deleteEventId: () => void
+  refreshEvent: () => Promise<void>
   interestPoints: InterestPoint[]
   setInterestPoints: (points: InterestPoint[]) => void
   addInterestPoint: (point: InterestPoint) => void
   deleteInterestPoint: (id: number) => void
   deleteAllInterestPoints: () => void
-
   equipments: Equipment[]
   setEquipments: (equipments: Equipment[]) => void
-
-  loading: boolean
-  error: Error | null
+  eventLoading: boolean
+  interestPointsLoading: boolean
+  eventError: Error | null
+  interestPointsError: Error | null
   refreshInterestPoints: () => Promise<void>
-  clearError: () => void
+  clearInterestPointsError: () => void
+  clearEventError: () => void
 }
 
 const mainContext = createContext<MainContextType | undefined>(undefined)
@@ -30,51 +34,76 @@ type MainProviderProps = {
 }
 
 export function MainProvider({ children }: MainProviderProps) {
-  const [ip, setIp] = useState<string | null>(null)
-  const { value, setValue, loading, error, clearError, refresh } = useReactiveAsyncStore<
-    InterestPoint[]
-  >(keys.interestPoints, [])
+  const [url, setUrl] = useState<string | null>(null)
+  const {
+    value: interestPoints,
+    setValue: setInterestPoints,
+    loading: interestPointsLoading,
+    error: interestPointsError,
+    clearError: clearInterestPointsError,
+    refresh: refreshInterestPoints,
+  } = useReactiveAsyncStore<InterestPoint[]>(keys.interestPoints, [])
+  const {
+    value: eventId,
+    setValue: setEventId,
+    loading: eventLoading,
+    error: eventError,
+    clearError: clearEventError,
+    refresh: refreshEvent,
+  } = useReactiveAsyncStore<number | null>(keys.eventId, null)
   const { value: equipments, setValue: setEquipments } = useReactiveAsyncStore<Equipment[]>(
     keys.equipments,
     []
   )
 
-  function addInterestPoint(point: InterestPoint) {
-    setValue((prev) => [...prev, point])
+  function deleteEventId() {
+    setEventId(null)
   }
+
+  function addInterestPoint(point: InterestPoint) {
+    setInterestPoints((prev) => [...prev, point])
+  }
+
   function deleteInterestPoint(id: number) {
-    const interestPoint = value.find((poi) => poi.id === id)
+    const interestPoint = interestPoints.find((poi) => poi.id === id)
     for (const uri of interestPoint?.images || []) {
       ImageStorage.remove(uri)
     }
-    setValue((prev) => prev.filter((poi) => poi.id !== id))
+    setInterestPoints((prev) => prev.filter((poi) => poi.id !== id))
   }
 
   function deleteAllInterestPoints() {
-    for (const interestPoint of value) {
+    for (const interestPoint of interestPoints) {
       for (const uri of interestPoint.images) {
         ImageStorage.remove(uri)
       }
     }
-    setValue([])
+    setInterestPoints([])
   }
 
   return (
     <mainContext.Provider
       value={{
-        ip,
-        interestPoints: value,
-        loading,
-        equipments,
-        setEquipments,
-        error,
-        setIp,
-        setInterestPoints: setValue,
-        refreshInterestPoints: refresh,
+        url,
+        setUrl,
+        eventId,
+        setEventId,
+        deleteEventId,
+        refreshEvent,
+        interestPoints,
+        setInterestPoints,
+        refreshInterestPoints,
         addInterestPoint,
         deleteInterestPoint,
         deleteAllInterestPoints,
-        clearError,
+        equipments,
+        setEquipments,
+        eventLoading,
+        interestPointsLoading,
+        eventError,
+        interestPointsError,
+        clearInterestPointsError,
+        clearEventError,
       }}
     >
       {children}

@@ -38,8 +38,8 @@ export default function MapScreen() {
           <Marker
             key={marker.id}
             coordinate={{
-              latitude: marker.latitude,
-              longitude: marker.longitude,
+              latitude: marker.coordinates.latitude,
+              longitude: marker.coordinates.longitude,
             }}
             title={marker.comment}
             image={
@@ -55,10 +55,17 @@ export default function MapScreen() {
               latitude: routeOrigin.coords.latitude,
               longitude: routeOrigin.coords.longitude,
             }}
-            waypoints={routeMarkers.length > 1 ? routeMarkers.slice(0, -1) : []}
+            waypoints={
+              routeMarkers.length > 1
+                ? routeMarkers.slice(0, -1).map((marker) => ({
+                    latitude: marker.coordinates.latitude,
+                    longitude: marker.coordinates.longitude,
+                  }))
+                : []
+            }
             destination={{
-              latitude: routeMarkers[routeMarkers.length - 1].latitude,
-              longitude: routeMarkers[routeMarkers.length - 1].longitude,
+              latitude: routeMarkers[routeMarkers.length - 1].coordinates.latitude,
+              longitude: routeMarkers[routeMarkers.length - 1].coordinates.longitude,
             }}
             splitWaypoints={true}
             apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!}

@@ -4,13 +4,13 @@ import { useEffect, useState } from "react"
 import { useMainContext } from "@/context/mainContext"
 import { styles } from "./qr-code.styles"
 import { colors } from "@/constants/theme"
-import { router } from "expo-router"
 import useQRCodeStore from "@/hooks/useQRCodeStore"
+import { ModalWrapper, QRCodeScanner } from "@/components"
 
 export default function QRCode() {
-  const { ip, setIp } = useMainContext()
-  const [isFetching, setIsFetching] = useState(false)
-  const qrResult = useQRCodeStore.getState().result
+  const [showQRScanner, setShowQRScanner] = useState(false)
+  const { url, setUrl } = useMainContext()
+  const [qrResult, setQrResult] = useState("")
 
   const fetchWithTimeout = (url: string, options: any = {}, timeout = 800) => {
     return Promise.race([
@@ -19,16 +19,27 @@ export default function QRCode() {
     ])
   }
 
+  const handleCloseScanner = () => {
+    setShowQRScanner(false)
+  }
+
+  const handleQRScanResult = (data: string) => {
+    setShowQRScanner(false)
+    const eventId = data.split(";")[0]
+    const ips = data.substring(eventId.length + 1)
+    console.log("Extracted eventId:", eventId)
+    console.log("Extracted IPs:", ips)
+    useQRCodeStore.getState().setResult(ips)
+    setQrResult(ips)
+  }
+
   useEffect(() => {
     const checkQRCodeData = async () => {
-      const qrData = useQRCodeStore.getState().result
-      if (!qrData || qrData.trim() === "") return
-      const ips = qrData.split(";")
+      if (!qrResult || qrResult.trim() === "") return
+      const ips = qrResult.split(";")
       let neo: string | null = null
       for (const ip of ips) {
-        if (isFetching) break
         try {
-          setIsFetching(true)
           const response = (await fetchWithTimeout(
             `http://${ip}`,
             {
@@ -38,32 +49,26 @@ export default function QRCode() {
           )) as Response
           if (response.ok) {
             neo = `http://${ip}`
-            setIp(neo)
-            router.push("/synchronization/qr-code-scanner")
+            console.log("Valid IP found:", neo)
+            setUrl(neo)
             break
           }
           // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-        } catch (err) {
-        } finally {
-          setIsFetching(false)
-        }
+        } catch (err) {}
       }
     }
     checkQRCodeData()
-  }, [qrResult, isFetching, setIp])
+  }, [qrResult, setUrl])
 
   const handleScanAgain = () => {
-    setIp("") // Reset the IP to allow scanning again
+    setUrl("")
   }
 
   return (
     <View style={styles.container}>
       {/* Bouton principal Scan QR Code */}
-      {!ip ? (
-        <TouchableOpacity
-          style={styles.scanButton}
-          onPress={() => router.push("/synchronization/qr-code-scanner")}
-        >
+      {!url ? (
+        <TouchableOpacity style={styles.scanButton} onPress={() => setShowQRScanner(true)}>
           <View style={styles.scanButtonContent}>
             <MaterialCommunityIcons name="qrcode-scan" size={28} color={colors.dark.tint} />
             <View style={styles.scanButtonText}>
@@ -90,7 +95,7 @@ export default function QRCode() {
             <Text style={styles.ipLabel}>Adresse du site:</Text>
             <View style={styles.ipValueContainer}>
               <Text style={styles.ipValue} numberOfLines={1} ellipsizeMode="middle">
-                {ip}
+                {url}
               </Text>
               <TouchableOpacity style={styles.rescanButton} onPress={handleScanAgain}>
                 <Ionicons name="refresh" size={16} color={colors.dark.tint} />
@@ -100,6 +105,11 @@ export default function QRCode() {
           </View>
         </View>
       )}
+
+      {/* Modal du scanner QR Code */}
+      <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner}>
+        <QRCodeScanner title="Synchroniser" onScanResult={handleQRScanResult} />
+      </ModalWrapper>
     </View>
   )
 }

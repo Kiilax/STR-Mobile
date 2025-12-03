@@ -1,6 +1,11 @@
 import Geocoder from "react-native-geocoding"
 import { Coordinates } from "@/types"
 
+/**
+ * Convert geographic coordinates (latitude and longitude) to a human-readable address.
+ * @param param0 Coordinates object containing latitude and longitude
+ * @returns Formatted address string
+ */
 export async function convertToAddress({ latitude, longitude }: Coordinates) {
   try {
     Geocoder.init(process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!)
@@ -11,6 +16,11 @@ export async function convertToAddress({ latitude, longitude }: Coordinates) {
   }
 }
 
+/**
+ * Convert an address string to geographic coordinates (latitude and longitude).
+ * @param address The address to be converted
+ * @returns Coordinates object containing latitude and longitude
+ */
 export async function convertToCoordinates(address: string) {
   try {
     Geocoder.init(process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!)

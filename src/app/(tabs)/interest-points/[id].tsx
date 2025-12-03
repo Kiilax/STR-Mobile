@@ -40,7 +40,7 @@ export default function InterestPointDetailsScreen() {
   useEffect(() => {
     if (selectedInterestPoint) {
       setInterestPoint(selectedInterestPoint)
-      setEditedComment(selectedInterestPoint.comment)
+      setEditedComment(selectedInterestPoint.comment || "")
       setSelectedEquipments([])
       for (const placement of selectedInterestPoint.equipmentPlacements || []) {
         for (const equipment of equipments) {
