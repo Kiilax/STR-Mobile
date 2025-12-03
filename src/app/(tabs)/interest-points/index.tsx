@@ -13,7 +13,7 @@ import {
 import { colors } from "@/constants/theme"
 import { Ionicons } from "@expo/vector-icons"
 import InterestPointForm from "@/modules/interest-point-form"
-import ModalWrapper from "@/components/modal"
+import { ModalWrapper } from "@/components"
 import { useMainContext } from "@/context/mainContext"
 import { useRouter } from "expo-router"
 
