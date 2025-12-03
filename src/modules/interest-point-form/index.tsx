@@ -8,6 +8,7 @@ import CoordinateSelector from "./components/coordinate-selector"
 import ImageSelector from "./components/image-selector"
 import { Coordinates } from "@/types"
 import { convertToAddress } from "@/utils"
+import { useMainContext } from "@/context/mainContext"
 
 interface InterestPointFormProps {
   onClose?: () => void
@@ -23,6 +24,7 @@ interface InterestPointFormData {
 export default function InterestPointForm({ onClose, onSubmit }: InterestPointFormProps) {
   const [selectedImages, setSelectedImages] = useState<string[]>([])
   const [imageError, setImageError] = useState<string | undefined>()
+  const { eventId, eventIdLoading } = useMainContext()
 
   const {
     control,
@@ -57,18 +59,23 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
       return
     }
 
+    if (eventIdLoading) {
+      return
+    }
+
     const poiData: InterestPoint = {
       id: Date.now(),
-      comment: data.comment,
       coordinates: data.coordinates,
+      address: (await convertToAddress(data.coordinates)) ?? "Adresse inconnue",
+      comment: data.comment,
       images: data.images,
+      isVisited: false,
       synced: false,
       updated: false,
+      equipmentPlacements: [],
+      eventId: eventId!,
       createdAt: new Date(),
       updatedAt: new Date(),
-      isVisited: false,
-      address: (await convertToAddress(data.coordinates)) ?? "Adresse inconnue",
-      equipmentPlacements: [],
     }
     onSubmit?.(poiData)
     onClose?.()

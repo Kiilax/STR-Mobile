@@ -8,7 +8,7 @@ import { colors } from "@/constants/theme"
 
 export default function EventScanner() {
   const [showQRScanner, setShowQRScanner] = useState(false)
-  const { eventId, eventLoading } = useMainContext()
+  const { eventId, eventIdLoading } = useMainContext()
   const hasNavigated = useRef(false)
   const router = useRouter()
   const { setEventId } = useMainContext()
@@ -33,14 +33,14 @@ export default function EventScanner() {
   }
 
   useEffect(() => {
-    if (eventLoading) return
+    if (eventIdLoading) return
 
     if (!eventId) {
       setShowQRScanner(true)
     } else {
       router.replace("/(tabs)")
     }
-  }, [eventLoading, eventId, router])
+  }, [eventIdLoading, eventId, router])
 
   return (
     <View style={styles.loadingContainer}>
