@@ -25,5 +25,7 @@ if [ -z "$ARTIFACT_URL" ]; then
 fi
 
 echo "Downloading APK from: $ARTIFACT_URL"
-curl -L -o /app/app.apk "$ARTIFACT_URL"
-ls -lh /app/app.apk
+mkdir -p output
+curl -L -o output/app.apk "$ARTIFACT_URL"
+ls -lh output/app.apk
+pwd
