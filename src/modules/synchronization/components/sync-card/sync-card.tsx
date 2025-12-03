@@ -6,8 +6,8 @@ import { commonStyles } from "../../styles/common.styles"
 import { useMainContext } from "@/context/mainContext"
 
 export default function SyncCard() {
-  const { ip } = useMainContext()
-  const hasScannedQR = !!ip
+  const { url } = useMainContext()
+  const hasScannedQR = !!url
 
   return (
     <View style={commonStyles.section}>

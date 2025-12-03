@@ -5,11 +5,10 @@ import { useReactiveAsyncStore } from "@/hooks"
 import { ImageStorage } from "@/utils"
 
 type MainContextType = {
-  ip: string | null
-  setIp: (ip: string) => void
+  url: string | null
+  setUrl: (url: string) => void
   eventId: number | null
   setEventId: (eventId: number | null) => void
-  addEventId: (id: number) => void
   deleteEventId: () => void
   refreshEvent: () => Promise<void>
   interestPoints: InterestPoint[]
@@ -35,7 +34,7 @@ type MainProviderProps = {
 }
 
 export function MainProvider({ children }: MainProviderProps) {
-  const [ip, setIp] = useState<string | null>(null)
+  const [url, setUrl] = useState<string | null>(null)
   const {
     value: interestPoints,
     setValue: setInterestPoints,
@@ -56,10 +55,6 @@ export function MainProvider({ children }: MainProviderProps) {
     keys.equipments,
     []
   )
-
-  function addEventId(id: number) {
-    setEventId(id)
-  }
 
   function deleteEventId() {
     setEventId(null)
@@ -89,11 +84,10 @@ export function MainProvider({ children }: MainProviderProps) {
   return (
     <mainContext.Provider
       value={{
-        ip,
-        setIp,
+        url,
+        setUrl,
         eventId,
         setEventId,
-        addEventId,
         deleteEventId,
         refreshEvent,
         interestPoints,

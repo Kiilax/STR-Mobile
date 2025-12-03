@@ -16,13 +16,13 @@ interface UseSynchronizationReturn {
 }
 
 export function useSynchronization(): UseSynchronizationReturn {
-  const { ip, interestPoints, setInterestPoints, deleteAllInterestPoints } = useMainContext()
+  const { url, interestPoints, setInterestPoints, deleteAllInterestPoints } = useMainContext()
   const { fetchAll, create, deleteIP } = useInterestPointsApi()
 
   const [status, setStatus] = useState<SyncStatus>("idle")
   const [message, setMessage] = useState("")
 
-  const hasScannedQR = !!ip
+  const hasScannedQR = !!url
   const pointsToSyncList = interestPoints.filter((point) => !point.synced || point.updated)
   const pointsToSync = pointsToSyncList.length
   const canSync = hasScannedQR && status !== "syncing"
@@ -40,8 +40,8 @@ export function useSynchronization(): UseSynchronizationReturn {
 
     const dataToSend = {
       comment: interestPoint.comment,
-      latitude: interestPoint.latitude,
-      longitude: interestPoint.longitude,
+      address: interestPoint.address,
+      coordinates: interestPoint.coordinates,
       images: interestPoint.images,
     }
 

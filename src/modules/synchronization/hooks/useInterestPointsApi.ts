@@ -4,24 +4,24 @@ import { Equipment, InterestPoint, InterestPointRequest } from "@/types"
 import { FileDownloader, ProxyApi } from "@/utils"
 
 export function useInterestPointsApi() {
-  const { ip, setEquipments } = useMainContext()
+  const { url, setEquipments } = useMainContext()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
     setError(null)
-    if (!ip || ip.trim() === "") {
+    if (!url || url.trim() === "") {
       setError("IP address is not set")
       setLoading(false)
       return []
     }
     try {
-      const newEquipments = await ProxyApi.get<Equipment[]>(ip, "/equipments")
+      const newEquipments = await ProxyApi.get<Equipment[]>(url, "/equipments")
       setEquipments([])
       const finalEquipments = []
       for (const equip of newEquipments) {
-        const localUri = await FileDownloader.download(ip + "/files/", equip.image)
+        const localUri = await FileDownloader.download(url + "/files/", equip.image)
         if (localUri) equip.image = localUri
         finalEquipments.push(equip)
       }
@@ -30,12 +30,12 @@ export function useInterestPointsApi() {
     } catch (error) {}
 
     try {
-      const points = await ProxyApi.get<InterestPoint[]>(ip, "/interest-points")
+      const points = await ProxyApi.get<InterestPoint[]>(url, "/interest-points")
       for (const point of points) {
         const downloadedImages: string[] = []
         for (const imagePath of point.images) {
           try {
-            const localUri = await FileDownloader.download(ip + "/files/", imagePath)
+            const localUri = await FileDownloader.download(url + "/files/", imagePath)
             if (localUri) downloadedImages.push(localUri)
           } catch (err) {
             console.error(`Failed to download image ${imagePath}:`, err)
@@ -53,19 +53,19 @@ export function useInterestPointsApi() {
     } finally {
       setLoading(false)
     }
-  }, [ip, setEquipments])
+  }, [url, setEquipments])
 
   const fetchById = useCallback(
     async (id: number) => {
       setLoading(true)
       setError(null)
-      if (!ip) {
+      if (!url) {
         setError("IP address is not set")
         setLoading(false)
         return []
       }
       try {
-        const point = await ProxyApi.get<InterestPoint>(ip, `/interest-points/${id}`)
+        const point = await ProxyApi.get<InterestPoint>(url, `/interest-points/${id}`)
         return point
       } catch (err: any) {
         setError(err.message || `Failed to fetch interest point with id ${id}`)
@@ -74,14 +74,14 @@ export function useInterestPointsApi() {
         setLoading(false)
       }
     },
-    [ip]
+    [url]
   )
 
   const create = useCallback(
     async (data: Partial<InterestPointRequest>) => {
       setLoading(true)
       setError(null)
-      if (!ip) {
+      if (!url) {
         setError("IP address is not set")
         setLoading(false)
         return []
@@ -101,7 +101,7 @@ export function useInterestPointsApi() {
             name: uri.split("/").pop() || `image-${index}.jpg`,
           } as any)
         )
-        return await ProxyApi.post(ip, "/interest-points/single", formData)
+        return await ProxyApi.post(url, "/interest-points/single", formData)
       } catch (err: any) {
         setError(err.message || "Failed to create interest point")
         throw err
@@ -109,20 +109,20 @@ export function useInterestPointsApi() {
         setLoading(false)
       }
     },
-    [ip]
+    [url]
   )
 
   const deleteIP = useCallback(
     async (id: number) => {
       setLoading(true)
       setError(null)
-      if (!ip) {
+      if (!url) {
         setError("IP address is not set")
         setLoading(false)
         return []
       }
       try {
-        return await ProxyApi.delete(ip, `/interest-points/${id}`)
+        return await ProxyApi.delete(url, `/interest-points/${id}`)
       } catch (err: any) {
         setError(err.message || `Failed to delete interest point with id ${id}`)
         throw err
@@ -130,7 +130,7 @@ export function useInterestPointsApi() {
         setLoading(false)
       }
     },
-    [ip]
+    [url]
   )
 
   const clearError = useCallback(() => setError(null), [])
