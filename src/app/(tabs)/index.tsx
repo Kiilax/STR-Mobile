@@ -16,7 +16,8 @@ const mapStyle = [
 
 export default function MapScreen() {
   const { mapRef, region, isFollowing, userLocation, handleMapDrag, handleCenterOnUser } = useMap()
-  const { routeMarkers, routeOrigin, nextMarker, distanceNextMarker } = useMarkers({ userLocation })
+  const { interestPointMarkers, routeMarkers, routeOrigin, nextMarker, distanceNextMarker } =
+    useMarkers({ userLocation })
 
   return (
     <View style={styles.container}>
@@ -34,38 +35,35 @@ export default function MapScreen() {
         userInterfaceStyle="dark"
         toolbarEnabled={false}
       >
+        {interestPointMarkers.map((marker) => (
+          <Marker
+            key={marker.id}
+            coordinate={{
+              ...marker.coordinates,
+            }}
+          />
+        ))}
         {routeMarkers.map((marker) => (
           <Marker
             key={marker.id}
             coordinate={{
-              latitude: marker.coordinates.latitude,
-              longitude: marker.coordinates.longitude,
+              ...marker.coordinates,
             }}
-            title={marker.comment}
+            title={marker.quantity.toString()}
             image={
               marker.isVisited
                 ? require("@/assets/markers/md-gr.png")
-                : require("@/assets/markers/md-red.png")
+                : require("@/assets/markers/item-sm.png")
             }
           />
         ))}
         {routeMarkers.length > 0 && routeOrigin && (
           <MapViewDirections
             origin={{
-              latitude: routeOrigin.coords.latitude,
-              longitude: routeOrigin.coords.longitude,
+              ...routeOrigin.coords,
             }}
-            waypoints={
-              routeMarkers.length > 1
-                ? routeMarkers.slice(0, -1).map((marker) => ({
-                    latitude: marker.coordinates.latitude,
-                    longitude: marker.coordinates.longitude,
-                  }))
-                : []
-            }
             destination={{
-              latitude: routeMarkers[routeMarkers.length - 1].coordinates.latitude,
-              longitude: routeMarkers[routeMarkers.length - 1].coordinates.longitude,
+              ...routeMarkers[routeMarkers.length - 1].coordinates,
             }}
             splitWaypoints={true}
             apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!}
@@ -78,7 +76,7 @@ export default function MapScreen() {
       </MapView>
       <View style={styles.infoContainer}>
         <Text style={styles.addressText}>
-          {distanceNextMarker !== null ? nextMarker?.address : "Aucun point d'intérêt à visiter"}
+          {distanceNextMarker !== null ? nextMarker?.updatedAt : "Aucun point d'intérêt à visiter"}
         </Text>
         <Text style={styles.distanceText}>
           {distanceNextMarker !== null ? `${distanceNextMarker}m` : ""}
