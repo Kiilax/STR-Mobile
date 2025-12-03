@@ -1,5 +1,6 @@
 import { ReactNode } from "react"
 import { GestureResponderEvent, Modal, Pressable, StyleSheet } from "react-native"
+import { colors } from "@/constants/theme"
 
 interface ModalWrapperProps {
   visible: boolean
@@ -41,13 +42,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(0, 0, 0, 0.78)",
   },
   content: {
-    width: 300,
+    width: "80%",
+    height: "60%",
     padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 10,
     alignItems: "center",
+    borderRadius: 30,
+    backgroundColor: colors.dark.background,
   },
 })
