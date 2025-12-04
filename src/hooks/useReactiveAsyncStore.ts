@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
-import { AsyncStore } from "../utils/AsyncStore"
+import { AsyncStore } from "@/utils/asyncStore"
 import { Keys } from "@config/index"
 
 interface UseReactiveAsyncStoreResult<T> {
@@ -27,7 +27,6 @@ interface UseReactiveAsyncStoreResult<T> {
  *   - clearError: Function to clear the error state.
  *   - refresh: Function to reload the value from storage.
  */
-
 export function useReactiveAsyncStore<T>(
   key: Keys,
   defaultValue: T

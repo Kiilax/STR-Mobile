@@ -4,14 +4,56 @@ include:
       - '/.gitlab-ci-templates/lint.yml'
       - '/.gitlab-ci-templates/format.yml'
       - '/.gitlab-ci-templates/test.yml'
+      - '/.gitlab-ci-templates/build.yml'
     ref: prod
 
 stages:
   - lint
   - test
+  - build
 
 lint:
   extends: .lint-template
 
+format:
+  extends: .format-template
+
 test:
   extends: .test-template
+
+build_apk:
+  stage: build
+  image: alpine:3.19
+  variables:
+    DOCKER_HOST: "unix:///var/run/docker.sock"
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - apk add --no-cache docker-cli bash curl jq
+    - docker version
+
+  script:
+    - docker rm -f apk_run_container 2>/dev/null || true
+    - docker build -t apk-builder -f Dockerfile.prod .
+    - rm -rf output/* || true
+    - mkdir -p output
+    - cid=$(docker create -e EXPO_TOKEN="${EXPO_TOKEN}" apk-builder)
+    - docker start -a "$cid"
+    - docker cp "$cid":/output/app.apk "$CI_PROJECT_DIR/output/app.apk" || { echo "docker cp failed — listing /output in container:"; docker run --rm --entrypoint ls apk-builder -la /output || true; exit 1; }
+    - docker rm -f "$cid" 2>/dev/null || true
+
+  artifacts:
+    paths:
+      - output/app.apk
+    name: "strm-apk-$CI_COMMIT_SHORT_SHA"
+    expire_in: 7 days
+
+  tags:
+    - docker
+    - prod
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "prod" && $CI_PIPELINE_SOURCE == "push"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == "prod" && $CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+    - when: never
