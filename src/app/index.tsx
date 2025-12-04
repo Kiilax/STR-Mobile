@@ -24,9 +24,6 @@ export default function EventScanner() {
     const eventId = data.split(";")[0]
     const ips = data.substring(eventId.length + 1)
 
-    console.log("Extracted eventId:", eventId)
-    console.log("Extracted IPs:", ips)
-
     setEventId(Number(eventId))
     useQRCodeStore.getState().setResult(ips)
     router.navigate("/(tabs)")

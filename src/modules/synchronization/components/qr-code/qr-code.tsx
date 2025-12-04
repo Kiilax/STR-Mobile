@@ -27,8 +27,6 @@ export default function QRCode() {
     setShowQRScanner(false)
     const eventId = data.split(";")[0]
     const ips = data.substring(eventId.length + 1)
-    console.log("Extracted eventId:", eventId)
-    console.log("Extracted IPs:", ips)
     useQRCodeStore.getState().setResult(ips)
     setQrResult(ips)
   }
@@ -49,7 +47,6 @@ export default function QRCode() {
           )) as Response
           if (response.ok) {
             neo = `http://${ip}`
-            console.log("Valid IP found:", neo)
             setUrl(neo)
             break
           }

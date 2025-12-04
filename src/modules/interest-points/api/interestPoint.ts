@@ -48,6 +48,5 @@ export async function createInterestPoint(data: Partial<InterestPointRequest>) {
 }
 
 export async function deleteInterestPoint(id: number) {
-  console.log(`Deleting interest point with id ${id} wth url: ${url}/interest-points/${id}`)
   return await ProxyApi.delete(url, `/interest-points/${id}`)
 }
