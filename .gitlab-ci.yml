@@ -34,13 +34,12 @@ build_apk:
   script:
     - docker rm -f apk_run_container 2>/dev/null || true
     - docker build -t apk-builder -f Dockerfile.prod .
+    - rm -rf output/* || true
     - mkdir -p output
     - cid=$(docker create -e EXPO_TOKEN="${EXPO_TOKEN}" apk-builder)
     - docker start -a "$cid"
-    - echo "Container finished, copying APK from container id $cid"
     - docker cp "$cid":/output/app.apk "$CI_PROJECT_DIR/output/app.apk" || { echo "docker cp failed — listing /output in container:"; docker run --rm --entrypoint ls apk-builder -la /output || true; exit 1; }
     - docker rm -f "$cid" 2>/dev/null || true
-    - ls -lh output
 
   artifacts:
     paths:
@@ -49,6 +48,8 @@ build_apk:
     expire_in: 7 days
 
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "prod" && $CI_PIPELINE_SOURCE == "push"'
       when: always
-    - when: always
+    - if: '$CI_COMMIT_BRANCH == "prod" && $CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+    - when: never
