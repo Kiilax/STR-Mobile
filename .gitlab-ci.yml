@@ -47,6 +47,10 @@ build_apk:
     name: "strm-apk-$CI_COMMIT_SHORT_SHA"
     expire_in: 7 days
 
+  tags:
+    - docker
+    - prod
+
   rules:
     - if: '$CI_COMMIT_BRANCH == "prod" && $CI_PIPELINE_SOURCE == "push"'
       when: always
