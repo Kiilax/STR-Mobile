@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react"
 import { useMainContext } from "@/context/mainContext"
-import { Equipment, InterestPoint, InterestPointRequest } from "@/types"
+import { InterestPoint, InterestPointRequest } from "@/types"
 import { FileDownloader, ProxyApi } from "@/utils"
 
 export function useInterestPointsApi() {
-  const { url, setEquipments } = useMainContext()
+  const { url } = useMainContext()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -16,18 +16,6 @@ export function useInterestPointsApi() {
       setLoading(false)
       return []
     }
-    try {
-      const newEquipments = await ProxyApi.get<Equipment[]>(url, "/equipments")
-      setEquipments([])
-      const finalEquipments = []
-      for (const equip of newEquipments) {
-        const localUri = await FileDownloader.download(url + "/files/", equip.image)
-        if (localUri) equip.image = localUri
-        finalEquipments.push(equip)
-      }
-      setEquipments(finalEquipments)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    } catch (error) {}
 
     try {
       const points = await ProxyApi.get<InterestPoint[]>(url, "/interest-points")
@@ -53,7 +41,7 @@ export function useInterestPointsApi() {
     } finally {
       setLoading(false)
     }
-  }, [url, setEquipments])
+  }, [url])
 
   const fetchById = useCallback(
     async (id: number) => {

@@ -1,7 +1,6 @@
-import { Route } from "./route"
-import { Geometry } from "./geometry"
 import { EquipmentPlacement } from "./equipment"
 import { InterestPoint } from "./interestPoint"
+import { Coordinates } from "./coordinates"
 
 export interface Event {
   id: number
@@ -9,8 +8,8 @@ export interface Event {
   endDate: string
   title: string
   description: string
-  eventRoute: Route
-  geometries: Geometry[]
+  eventRoute: Coordinates[][]
+  geometries: Coordinates[][]
   equipmentPlacements: EquipmentPlacement[]
   interestPoints: InterestPoint[]
   createdAt: string
