@@ -1,7 +1,8 @@
 import { View, Text } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { styles } from "./sync-card.styles"
-import SyncButton from "../sync-button/sync-button"
+import SyncButton from "../send-button/send-button"
+import ReceiveButton from "../receive-button/receive-button"
 import { commonStyles } from "../../styles/common.styles"
 import { useMainContext } from "@/context/mainContext"
 
@@ -24,7 +25,10 @@ export default function SyncCard() {
           </Text>
         </View>
       ) : (
-        <SyncButton />
+        <View style={styles.buttonsContainer}>
+          <SyncButton />
+          <ReceiveButton />
+        </View>
       )}
     </View>
   )

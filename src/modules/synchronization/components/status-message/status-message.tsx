@@ -1,10 +1,10 @@
 import { Text, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import { useSynchronization } from "@/modules/synchronization/hooks/useSynchronization"
+import { useSendInterestPoints } from "@/modules/synchronization/hooks/useSynchronization"
 import { styles } from "./status-message.styles"
 
 export default function StatusMessage() {
-  const { status, message } = useSynchronization()
+  const { status, message } = useSendInterestPoints()
   return (
     <View>
       {status !== "idle" && (

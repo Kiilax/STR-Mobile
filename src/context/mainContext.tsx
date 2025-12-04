@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from "react"
-import { Equipment, InterestPoint } from "@/types"
+import { Equipment, Event, InterestPoint } from "@/types"
 import { keys } from "@/config"
 import { useReactiveAsyncStore } from "@/hooks"
 import { ImageStorage } from "@/utils"
@@ -10,21 +10,28 @@ type MainContextType = {
   eventId: number | null
   setEventId: (eventId: number | null) => void
   deleteEventId: () => void
-  refreshEvent: () => Promise<void>
+  refreshEventId: () => Promise<void>
   interestPoints: InterestPoint[]
   setInterestPoints: (points: InterestPoint[]) => void
   addInterestPoint: (point: InterestPoint) => void
   deleteInterestPoint: (id: number) => void
   deleteAllInterestPoints: () => void
+  eventData: Event | null
+  setEventData: (event: Event | null) => void
+  deleteEventData: () => void
+  refreshEventData: () => Promise<void>
   equipments: Equipment[]
   setEquipments: (equipments: Equipment[]) => void
-  eventLoading: boolean
+  eventIdLoading: boolean
   interestPointsLoading: boolean
-  eventError: Error | null
+  eventDataLoading: boolean
+  eventIdError: Error | null
   interestPointsError: Error | null
+  eventDataError: Error | null
   refreshInterestPoints: () => Promise<void>
   clearInterestPointsError: () => void
-  clearEventError: () => void
+  clearEventIdError: () => void
+  clearEventDataError: () => void
 }
 
 const mainContext = createContext<MainContextType | undefined>(undefined)
@@ -43,14 +50,25 @@ export function MainProvider({ children }: MainProviderProps) {
     clearError: clearInterestPointsError,
     refresh: refreshInterestPoints,
   } = useReactiveAsyncStore<InterestPoint[]>(keys.interestPoints, [])
+
   const {
     value: eventId,
     setValue: setEventId,
-    loading: eventLoading,
-    error: eventError,
-    clearError: clearEventError,
-    refresh: refreshEvent,
+    loading: eventIdLoading,
+    error: eventIdError,
+    clearError: clearEventIdError,
+    refresh: refreshEventId,
   } = useReactiveAsyncStore<number | null>(keys.eventId, null)
+
+  const {
+    value: eventData,
+    setValue: setEventData,
+    loading: eventDataLoading,
+    error: eventDataError,
+    clearError: clearEventDataError,
+    refresh: refreshEventData,
+  } = useReactiveAsyncStore<Event | null>(keys.eventData, null)
+
   const { value: equipments, setValue: setEquipments } = useReactiveAsyncStore<Equipment[]>(
     keys.equipments,
     []
@@ -81,6 +99,10 @@ export function MainProvider({ children }: MainProviderProps) {
     setInterestPoints([])
   }
 
+  function deleteEventData() {
+    setEventData(null)
+  }
+
   return (
     <mainContext.Provider
       value={{
@@ -89,21 +111,28 @@ export function MainProvider({ children }: MainProviderProps) {
         eventId,
         setEventId,
         deleteEventId,
-        refreshEvent,
+        refreshEventId,
         interestPoints,
         setInterestPoints,
         refreshInterestPoints,
         addInterestPoint,
         deleteInterestPoint,
         deleteAllInterestPoints,
+        deleteEventData,
+        eventData,
+        setEventData,
+        refreshEventData,
         equipments,
         setEquipments,
-        eventLoading,
+        eventIdLoading,
         interestPointsLoading,
-        eventError,
+        eventDataLoading,
+        eventIdError,
         interestPointsError,
+        eventDataError,
         clearInterestPointsError,
-        clearEventError,
+        clearEventIdError,
+        clearEventDataError,
       }}
     >
       {children}

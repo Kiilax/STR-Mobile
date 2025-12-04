@@ -1,15 +1,27 @@
-import { InterestPoint } from "@/types"
+import { EquipmentPlacement } from "@/types"
 import { useEffect, useState } from "react"
 import * as geolib from "geolib"
 import * as Location from "expo-location"
 import { useMainContext } from "@/context/mainContext"
 
 export function useMarkers({ userLocation }: { userLocation: Location.LocationObject | null }) {
-  const [routeMarkers, setRouteMarkers] = useState<InterestPoint[]>([])
+  const [routeMarkers, setRouteMarkers] = useState<EquipmentPlacement[]>([])
   const [routeOrigin, setRouteOrigin] = useState<Location.LocationObject | null>(null)
-  const [nextMarker, setNextMarker] = useState<InterestPoint | null>(null)
+  const [nextMarker, setNextMarker] = useState<EquipmentPlacement | null>(null)
   const [distanceNextMarker, setDistanceNextMarker] = useState<number | null>(null)
-  const { interestPoints: markers, refreshInterestPoints } = useMainContext()
+  const [equipmentPlacements, setEquipmentPlacements] = useState<EquipmentPlacement[]>([])
+  const {
+    interestPoints: interestPointMarkers,
+    refreshInterestPoints,
+    eventData,
+    eventDataLoading,
+  } = useMainContext()
+
+  useEffect(() => {
+    if (eventData && !eventDataLoading) {
+      setEquipmentPlacements(eventData.equipmentPlacements)
+    }
+  }, [eventData, eventDataLoading])
 
   /**
    * Refresh markers when interest points change
@@ -19,29 +31,20 @@ export function useMarkers({ userLocation }: { userLocation: Location.LocationOb
   }, [refreshInterestPoints])
 
   useEffect(() => {
-    if (!userLocation || markers.length === 0) return
-    const sorted = [...markers].sort((a, b) => {
-      const distA = geolib.getDistance(
-        { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
-        { latitude: a.coordinates.latitude, longitude: a.coordinates.longitude }
-      )
-      const distB = geolib.getDistance(
-        { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
-        { latitude: b.coordinates.latitude, longitude: b.coordinates.longitude }
-      )
+    if (!userLocation || equipmentPlacements.length === 0) return
+    const sorted = [...equipmentPlacements].sort((a, b) => {
+      const distA = geolib.getDistance({ ...userLocation.coords }, { ...a.coordinates })
+      const distB = geolib.getDistance({ ...userLocation.coords }, { ...b.coordinates })
       return distA - distB
     })
     setRouteMarkers(sorted)
     setRouteOrigin(userLocation)
-  }, [markers, userLocation, routeMarkers.length])
+  }, [equipmentPlacements, userLocation, routeMarkers.length])
 
   useEffect(() => {
-    const getDistanceToUser = (point: InterestPoint) => {
+    const getDistanceToUser = (point: EquipmentPlacement) => {
       if (!userLocation) return Infinity
-      return geolib.getDistance(
-        { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
-        { latitude: point.coordinates.latitude, longitude: point.coordinates.longitude }
-      )
+      return geolib.getDistance({ ...userLocation.coords }, { ...point.coordinates })
     }
     if (!userLocation || routeMarkers.length === 0) return
 
@@ -67,5 +70,5 @@ export function useMarkers({ userLocation }: { userLocation: Location.LocationOb
     }
   }, [userLocation, routeMarkers])
 
-  return { routeMarkers, routeOrigin, nextMarker, distanceNextMarker }
+  return { interestPointMarkers, routeMarkers, routeOrigin, nextMarker, distanceNextMarker }
 }

@@ -1,6 +1,16 @@
+import { Coordinates } from "./coordinates"
+
 export interface EquipmentPlacement {
   id: number
   equipmentId: number
+  interestPointId: number
+  quantity: number
+  coordinates: Coordinates
+  dropOffDate: string
+  removalDate: string
+  createdAt: string
+  updatedAt: string
+  isVisited: boolean
 }
 
 export interface Equipment {
@@ -11,4 +21,6 @@ export interface Equipment {
   width: number
   height: number
   image: string
+  createdAt: string
+  updatedAt: string
 }

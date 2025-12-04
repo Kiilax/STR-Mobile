@@ -19,4 +19,7 @@ export const styles = StyleSheet.create({
     marginLeft: 8,
     textAlign: "center",
   },
+  buttonsContainer: {
+    gap: 12,
+  },
 })

@@ -88,12 +88,15 @@ export function useInterestPointsApi() {
       }
       try {
         const formData = new FormData()
-        const { images, ...fields } = data
+        const { images, coordinates, ...fields } = data
 
         Object.entries(fields).forEach(([key, value]) => {
           if (value !== undefined) formData.append(key, String(value))
         })
-
+        if (coordinates) {
+          formData.append("coordinates[longitude]", String(coordinates.longitude))
+          formData.append("coordinates[latitude]", String(coordinates.latitude))
+        }
         images?.forEach((uri, index) =>
           formData.append("images", {
             uri,
