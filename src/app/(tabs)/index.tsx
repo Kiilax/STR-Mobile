@@ -2,7 +2,7 @@ import { View, TouchableOpacity, ActivityIndicator, Text, StyleSheet } from "rea
 import { Ionicons } from "@expo/vector-icons"
 import { useMap } from "@/modules/map/hooks"
 import { colors, darkTheme } from "@/constants/theme"
-import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps"
+import MapView, { Marker, Polygon, Polyline, PROVIDER_DEFAULT } from "react-native-maps"
 import MapViewDirections from "react-native-maps-directions"
 import { useMarkers } from "@/modules/map/hooks/useMarkers"
 
@@ -15,7 +15,16 @@ const mapStyle = [
 ]
 
 export default function MapScreen() {
-  const { mapRef, region, isFollowing, userLocation, handleMapDrag, handleCenterOnUser } = useMap()
+  const {
+    geometries,
+    route,
+    mapRef,
+    region,
+    isFollowing,
+    userLocation,
+    handleMapDrag,
+    handleCenterOnUser,
+  } = useMap()
   const { interestPointMarkers, routeMarkers, routeOrigin, nextMarker, distanceNextMarker } =
     useMarkers({ userLocation })
 
@@ -35,29 +44,35 @@ export default function MapScreen() {
         userInterfaceStyle="dark"
         toolbarEnabled={false}
       >
-        {interestPointMarkers.map((marker) => (
-          <Marker
-            key={marker.id}
-            coordinate={{
-              ...marker.coordinates,
-            }}
-          />
-        ))}
-        {routeMarkers.map((marker) => (
-          <Marker
-            key={marker.id}
-            coordinate={{
-              ...marker.coordinates,
-            }}
-            title={marker.quantity.toString()}
-            image={
-              marker.isVisited
-                ? require("@/assets/markers/md-gr.png")
-                : require("@/assets/markers/item-sm.png")
-            }
-          />
-        ))}
-        {routeMarkers.length > 0 && routeOrigin && (
+        {interestPointMarkers?.map((marker) =>
+          marker?.coordinates ? (
+            <Marker
+              key={marker.id}
+              coordinate={{
+                ...marker.coordinates,
+              }}
+            />
+          ) : null
+        )}
+        {routeMarkers &&
+          routeMarkers.length > 0 &&
+          routeMarkers.map((marker) =>
+            marker?.coordinates ? (
+              <Marker
+                key={marker.id}
+                coordinate={{
+                  ...marker.coordinates,
+                }}
+                title={marker.quantity?.toString() || ""}
+                image={
+                  marker.isVisited
+                    ? require("@/assets/markers/md-gr.png")
+                    : require("@/assets/markers/item-sm.png")
+                }
+              />
+            ) : null
+          )}
+        {routeMarkers.length > 0 && routeOrigin?.coords && (
           <MapViewDirections
             origin={{
               ...routeOrigin.coords,
@@ -73,6 +88,22 @@ export default function MapScreen() {
             onError={(e) => console.log("MapDirections error :", e)}
           />
         )}
+        {route &&
+          route.length > 0 &&
+          route.map((segment, index) => (
+            <Polyline key={index} coordinates={segment} strokeColor="red" strokeWidth={4} />
+          ))}
+        {geometries &&
+          geometries.length > 0 &&
+          geometries.map((segment, index) => (
+            <Polygon
+              key={index}
+              coordinates={segment}
+              strokeColor="green"
+              fillColor="rgba(0,255,0,0.3)"
+              strokeWidth={2}
+            />
+          ))}
       </MapView>
       <View style={styles.infoContainer}>
         <Text style={styles.addressText}>

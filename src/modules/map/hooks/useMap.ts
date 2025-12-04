@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react"
 import MapView from "react-native-maps"
 import * as Location from "expo-location"
 import { STRASBOURG_COORDINATES, USER_DELTA } from "@/constants/coordinates"
+import { useMainContext } from "@/context/mainContext"
+import { Coordinates } from "@/types"
 
 export function useMap() {
   const mapRef = useRef<MapView | null>(null)
@@ -9,6 +11,16 @@ export function useMap() {
   const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null)
   const [isFollowing, setIsFollowing] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const { eventData, eventDataLoading } = useMainContext()
+  const [route, setRoute] = useState<Coordinates[][]>([])
+  const [geometries, setGeometries] = useState<Coordinates[][]>([])
+
+  useEffect(() => {
+    if (eventData && !eventDataLoading && eventData.eventRoute) {
+      setRoute(eventData.eventRoute)
+      setGeometries(eventData.geometries)
+    }
+  }, [eventData, eventDataLoading])
 
   useEffect(() => {
     async function getCurrentLocation() {
@@ -52,6 +64,8 @@ export function useMap() {
   }
 
   return {
+    geometries,
+    route,
     mapRef,
     region,
     isFollowing,
