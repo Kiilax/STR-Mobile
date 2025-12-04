@@ -1,15 +1,17 @@
 import { useMainContext } from "@/context/mainContext"
 import { Event } from "@/types"
 import { ProxyApi } from "@/utils"
-import { useState } from "react"
+import { useCallback, useState } from "react"
+import { useEquipmentApi } from "./useEquipmentApi"
 
 export function useEventApi() {
   const { eventId } = useMainContext()
   const { url } = useMainContext()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { fetchAll } = useEquipmentApi()
 
-  const fetchEventById = async () => {
+  const fetchEventById = useCallback(async () => {
     setLoading(true)
     setError(null)
     if (!url || url.trim() === "") {
@@ -19,7 +21,7 @@ export function useEventApi() {
     }
     try {
       const response: Event = await ProxyApi.get<Event>(url, `/event/${eventId}`)
-      console.log("Fetched event:", response)
+      await fetchAll()
       return response
     } catch (err: any) {
       setError(err.message || "Failed to fetch event")
@@ -27,7 +29,7 @@ export function useEventApi() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [url, eventId, fetchAll])
 
   return {
     fetchEventById,

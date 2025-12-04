@@ -65,30 +65,22 @@ export function useSendInterestPoints(): UseSynchronizationReturn {
     setMessage("")
 
     try {
-      console.log(`Starting sync for ${interestPoints.length} total points`)
-
       for (const interestPoint of interestPoints) {
         if (interestPoint.synced && !interestPoint.updated) {
-          console.log(`Skipping point ${interestPoint.id} - already synced and not updated`)
           continue
         }
 
         try {
-          console.log(`Starting sync for point ${interestPoint.id}: ${interestPoint.comment}`)
           await syncPoint(interestPoint)
-          console.log(`Successfully synced point ${interestPoint.id}`)
-        } catch (pointError) {
-          console.error(`Failed to sync point ${interestPoint.id}:`, pointError)
+        } catch {
           setStatus("error")
           setMessage(`Échec de la synchronisation du point: ${interestPoint.comment}`)
           return
         }
       }
 
-      console.log("All points synced, deleting local points")
       try {
         deleteAllInterestPoints()
-        console.log("Local points deleted successfully")
       } catch (deleteError) {
         console.error("Failed to delete local points:", deleteError)
         setStatus("error")
