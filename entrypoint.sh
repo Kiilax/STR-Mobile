@@ -1,5 +1,13 @@
 #!/bin/sh
 
+if [ -n "$EXPO_TOKEN" ]; then
+  echo "Logging in with EXPO_TOKEN..."
+  echo "$EXPO_TOKEN" | eas login --token-stdin || {
+    echo "Failed to login with EXPO_TOKEN"
+    exit 1
+  }
+fi
+
 JSON=$(eas build --platform android --profile apk --non-interactive --json) || {
   echo "eas build failed"
   echo "$JSON"
