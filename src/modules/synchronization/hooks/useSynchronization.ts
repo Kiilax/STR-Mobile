@@ -48,6 +48,7 @@ export function useSendInterestPoints(): UseSynchronizationReturn {
       address: interestPoint.address,
       comment: interestPoint.comment,
       eventId: interestPoint.eventId,
+      images: interestPoint.images,
     }
 
     try {
