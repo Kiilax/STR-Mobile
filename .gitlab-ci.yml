@@ -56,4 +56,4 @@ build_apk:
       when: always
     - if: '$CI_COMMIT_BRANCH == "prod" && $CI_PIPELINE_SOURCE == "schedule"'
       when: always
-    - when: always
+    - when: never
