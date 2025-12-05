@@ -17,8 +17,8 @@
 #   exit 1
 # fi
 
-$ARTIFACT_URL="https://expo.dev/artifacts/eas/mbAtaEwYYCgoSJ5DGBkdjn.apk"
+#$ARTIFACT_URL="https://expo.dev/artifacts/eas/mbAtaEwYYCgoSJ5DGBkdjn.apk"
 
-echo "Downloading APK from: $ARTIFACT_URL"
+echo "Downloading APK from: https://expo.dev/artifacts/eas/mbAtaEwYYCgoSJ5DGBkdjn.apk"
 mkdir -p /output
-curl -L -o /output/app.apk "$ARTIFACT_URL"
+curl -L -o /output/app.apk "https://expo.dev/artifacts/eas/mbAtaEwYYCgoSJ5DGBkdjn.apk"
