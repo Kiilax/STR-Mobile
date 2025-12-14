@@ -1,3 +1,5 @@
+[![pipeline status](https://git.unistra.fr/nidhoggr-25/str-mobile/badges/prod/pipeline.svg)](https://git.unistra.fr/nidhoggr-25/str-mobile/-/commits/prod) [![coverage report](https://git.unistra.fr/nidhoggr-25/str-mobile/badges/release/coverage.svg)](https://git.unistra.fr/nidhoggr-25/str-mobile/-/commits/release)
+
 # STR-Mobile
 
 ## Lancement de l'application
