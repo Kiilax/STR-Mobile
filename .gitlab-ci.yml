@@ -7,7 +7,7 @@ include:
       - '/.gitlab-ci-templates/coverage.yml'
       - '/.gitlab-ci-templates/deps.yml'
       - '/.gitlab-ci-templates/sast.yml'
-      - '/.gitlab-ci-templates/quality-pages.yml'
+      - '/.gitlab-ci-templates/pages.yml'
     ref: release
 
 
@@ -32,9 +32,6 @@ sec:deps:
 
 sec:sast:
   extends: .sast-template
-
-pages:quality:
-  extends: .quality-pages-template
 
 
 # Jobs lancés uniquement sur main/prod
@@ -71,3 +68,6 @@ build:apk:
 
   tags:
     - raspi
+
+pages:
+  extends: .pages-template
