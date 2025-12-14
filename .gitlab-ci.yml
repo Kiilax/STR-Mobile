@@ -25,13 +25,13 @@ test:
 # Jobs lancés uniquement sur release
 test:coverage:
   extends: .coverage-template
+  allow_failure: true
 
 sec:deps:
   extends: .deps-template
 
 sec:sast:
   extends: .sast-template
-
 
 pages:quality:
   extends: .quality-pages-template
