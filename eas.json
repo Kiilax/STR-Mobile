@@ -16,8 +16,11 @@
     },
     "apk": {
       "android": {
-        "buildType": "apk"
-      }
+        "buildType": "apk",
+        "credentialsSource": "remote",
+        "withoutCredentials": true
+      },
+      "autoIncrement": true
     }
   }
 }
