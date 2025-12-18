@@ -28,6 +28,9 @@ test:coverage:
   extends: .coverage-template
   allow_failure: true
 
+code:quality:
+  extends: .quality-template
+
 sec:deps:
   extends: .deps-template
 
@@ -57,7 +60,6 @@ build:apk:
     - mkdir -p output
     - docker build -t apk-builder -f Dockerfile.prod .
     - docker run --rm -e EXPO_TOKEN="$EXPO_TOKEN" -v "$CI_PROJECT_DIR/output:/output" apk-builder
-
 
   artifacts:
     paths:
