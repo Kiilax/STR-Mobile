@@ -30,25 +30,31 @@ JSON=$(eas build --platform android --profile apk --non-interactive --json) || {
 
 BUILD_ID=$(echo "$JSON" | jq -r '.id // .buildId')
 
-RESULT=$(eas build:view "$BUILD_ID" --json 2>&1)
+echo "Fetching build details for ID: $BUILD_ID"
+RESULT_OUTPUT=$(eas build:view "$BUILD_ID" 2>&1)
 
-if echo "$RESULT" | jq empty >/dev/null 2>&1; then
-    ARTIFACT_URL=$(echo "$RESULT" | jq -r '.artifacts.buildUrl // .artifacts.applicationArchiveUrl // empty')
-else
-    echo "Warning: JSON parsing failed, trying alternative extraction method..."
-    ARTIFACT_URL=$(echo "$RESULT" | grep -o '"buildUrl":"[^"]*"' | head -1 | sed 's/"buildUrl":"\([^"]*\)"/\1/')
-    
-    if [ -z "$ARTIFACT_URL" ]; then
-        ARTIFACT_URL=$(echo "$RESULT" | grep -o '"applicationArchiveUrl":"[^"]*"' | head -1 | sed 's/"applicationArchiveUrl":"\([^"]*\)"/\1/')
-    fi
+ARTIFACT_URL=$(echo "$RESULT_OUTPUT" | grep -o 'https://[^ ]*\.apk' | head -1)
+
+if [ -z "$ARTIFACT_URL" ]; then
+    ARTIFACT_URL=$(echo "$RESULT_OUTPUT" | grep -o 'https://expo\.dev/artifacts/eas/[^ ]*' | head -1 | sed 's/"$//')
 fi
+
+ARTIFACT_URL=$(echo "$ARTIFACT_URL" | sed 's/[" ,]*$//')
 
 if [ -z "$ARTIFACT_URL" ]; then
   echo "No artifact URL found. Raw output:"
-  echo "$RESULT"
+  echo "$RESULT_OUTPUT"
   exit 1
 fi
 
 echo "Downloading APK from: $ARTIFACT_URL"
 mkdir -p /output
 curl -L -o /output/app.apk "$ARTIFACT_URL"
+
+if [ $? -eq 0 ] && [ -f /output/app.apk ]; then
+    echo "Download successful! APK saved to /output/app.apk"
+    ls -lh /output/app.apk
+else
+    echo "Download failed!"
+    exit 1
+fi
