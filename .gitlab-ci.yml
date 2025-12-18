@@ -57,9 +57,14 @@ build:apk:
     - docker version
 
   script:
-    - mkdir -p output
+    - docker rm -f apk_run_container 2>/dev/null || true
     - docker build -t apk-builder -f Dockerfile.prod .
-    - docker run --rm -e EXPO_TOKEN="$EXPO_TOKEN" -v "$CI_PROJECT_DIR/output:/output" apk-builder
+    - rm -rf output/* || true
+    - mkdir -p output
+    - cid=$(docker create -e EXPO_TOKEN="${EXPO_TOKEN}" apk-builder)
+    - docker start -a "$cid"
+    - docker cp "$cid":/output/app.apk "$CI_PROJECT_DIR/output/app.apk" || { echo "docker cp failed — listing /output in container:"; docker run --rm --entrypoint ls apk-builder -la /output || true; exit 1; }
+    - docker rm -f "$cid" 2>/dev/null || true
 
   artifacts:
     paths:
