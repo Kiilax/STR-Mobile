@@ -54,7 +54,10 @@ curl -L -o /output/app.apk "$ARTIFACT_URL"
 if [ $? -eq 0 ] && [ -f /output/app.apk ]; then
     echo "Download successful! APK saved to /output/app.apk"
     ls -lh /output/app.apk
+    echo "File size: $(du -h /output/app.apk | cut -f1)"
+    echo "File exists and is readable"
 else
-    echo "Download failed!"
+    echo "Download failed! Checking /output directory:"
+    ls -la /output/
     exit 1
 fi
