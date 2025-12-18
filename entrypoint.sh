@@ -30,13 +30,21 @@ JSON=$(eas build --platform android --profile apk --non-interactive --json) || {
 
 BUILD_ID=$(echo "$JSON" | jq -r '.id // .buildId')
 
-RESULT=$(eas build:view "$BUILD_ID" --output json 2>&1)
-CLEANED_RESULT=$(echo "$RESULT" | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g' | tr -d '\r')
+RESULT=$(eas build:view "$BUILD_ID" --json 2>&1)
 
-ARTIFACT_URL=$(echo "$CLEANED_RESULT" | jq -r '.artifacts.buildUrl // .artifacts.applicationArchiveUrl // empty')
+if echo "$RESULT" | jq empty >/dev/null 2>&1; then
+    ARTIFACT_URL=$(echo "$RESULT" | jq -r '.artifacts.buildUrl // .artifacts.applicationArchiveUrl // empty')
+else
+    echo "Warning: JSON parsing failed, trying alternative extraction method..."
+    ARTIFACT_URL=$(echo "$RESULT" | grep -o '"buildUrl":"[^"]*"' | head -1 | sed 's/"buildUrl":"\([^"]*\)"/\1/')
+    
+    if [ -z "$ARTIFACT_URL" ]; then
+        ARTIFACT_URL=$(echo "$RESULT" | grep -o '"applicationArchiveUrl":"[^"]*"' | head -1 | sed 's/"applicationArchiveUrl":"\([^"]*\)"/\1/')
+    fi
+fi
 
 if [ -z "$ARTIFACT_URL" ]; then
-  echo "No artifact URL found:"
+  echo "No artifact URL found. Raw output:"
   echo "$RESULT"
   exit 1
 fi
