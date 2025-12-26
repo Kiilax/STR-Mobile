@@ -21,14 +21,14 @@ describe("ImageStorage", () => {
           ({
             uri: uri,
             move: mockMove,
-          }) as any
+          } as any)
       )
 
       mockDirectory.mockImplementation(
         (path) =>
           ({
             uri: path,
-          }) as any
+          } as any)
       )
 
       const result = await ImageStorage.save(mockUri)
@@ -64,7 +64,7 @@ describe("ImageStorage", () => {
           ({
             exists: true,
             delete: mockDelete,
-          }) as any
+          } as any)
       )
 
       const uri = "file:///test/image.jpg"
@@ -82,7 +82,7 @@ describe("ImageStorage", () => {
           ({
             exists: false,
             delete: mockDelete,
-          }) as any
+          } as any)
       )
 
       const result = ImageStorage.remove("file://test.jpg")
