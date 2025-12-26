@@ -8,7 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest --watchAll",
+    "test": "jest",
     "lint": "eslint \"src/**/*.{ts,tsx,js}\"",
     "lint:fix": "eslint src/**/*.{ts,tsx} --fix",
     "lint:check": "eslint \"src/**/*.{ts,tsx,js}\" --max-warnings=0",

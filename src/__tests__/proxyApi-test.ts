@@ -21,10 +21,13 @@ describe("ProxyApi", () => {
 
       const result = await ProxyApi.request(url, endpoint, options)
 
-      expect(mockFetch).toHaveBeenCalledWith(`${url}${endpoint}`, expect.objectContaining({
-        method: "GET",
-        headers: expect.any(Object),
-      }))
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${url}${endpoint}`,
+        expect.objectContaining({
+          method: "GET",
+          headers: expect.any(Object),
+        })
+      )
       expect(result).toEqual({ foo: "bar" })
     })
 
@@ -36,19 +39,25 @@ describe("ProxyApi", () => {
       }
       mockFetch.mockResolvedValue(mockResponse)
 
-      await expect(ProxyApi.request("https://site.com", "/404")).rejects.toThrow("HTTP 404: Not Found")
+      await expect(ProxyApi.request("https://site.com", "/404")).rejects.toThrow(
+        "HTTP 404: Not Found"
+      )
     })
 
     it("handles API error response (success: false)", async () => {
       const mockResponse = {
         ok: true,
-        text: jest.fn().mockResolvedValue(JSON.stringify({ success: false, error: "Custom Logic Error" })),
+        text: jest
+          .fn()
+          .mockResolvedValue(JSON.stringify({ success: false, error: "Custom Logic Error" })),
       }
       mockFetch.mockResolvedValue(mockResponse)
 
       const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {})
-      await expect(ProxyApi.request("https://site.com", "/err")).rejects.toThrow("Custom Logic Error")
-      
+      await expect(ProxyApi.request("https://site.com", "/err")).rejects.toThrow(
+        "Custom Logic Error"
+      )
+
       expect(consoleSpy).toHaveBeenCalledWith("API Error:", "Custom Logic Error")
       consoleSpy.mockRestore()
     })
@@ -76,29 +85,41 @@ describe("ProxyApi", () => {
       const spy = jest.spyOn(ProxyApi, "request").mockResolvedValue({})
       const body = { a: 1 }
       await ProxyApi.post("url", "/end", body)
-      expect(spy).toHaveBeenCalledWith("url", "/end", expect.objectContaining({
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: expect.objectContaining({ "Content-Type": "application/json" })
-      }))
+      expect(spy).toHaveBeenCalledWith(
+        "url",
+        "/end",
+        expect.objectContaining({
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: expect.objectContaining({ "Content-Type": "application/json" }),
+        })
+      )
     })
 
     it("patch calls request with PATCH", async () => {
       const spy = jest.spyOn(ProxyApi, "request").mockResolvedValue({})
       const body = { a: 1 }
       await ProxyApi.patch("url", "/end", body)
-      expect(spy).toHaveBeenCalledWith("url", "/end", expect.objectContaining({
-        method: "PATCH",
-        body: JSON.stringify(body),
-      }))
+      expect(spy).toHaveBeenCalledWith(
+        "url",
+        "/end",
+        expect.objectContaining({
+          method: "PATCH",
+          body: JSON.stringify(body),
+        })
+      )
     })
-    
+
     it("delete calls request with DELETE", async () => {
       const spy = jest.spyOn(ProxyApi, "request").mockResolvedValue({})
       await ProxyApi.delete("url", "/end")
-      expect(spy).toHaveBeenCalledWith("url", "/end", expect.objectContaining({
-        method: "DELETE",
-      }))
+      expect(spy).toHaveBeenCalledWith(
+        "url",
+        "/end",
+        expect.objectContaining({
+          method: "DELETE",
+        })
+      )
     })
   })
 })

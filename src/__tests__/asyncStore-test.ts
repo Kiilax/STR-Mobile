@@ -65,7 +65,10 @@ describe("AsyncStore", () => {
 
       await AsyncStore.set(key, value)
 
-      expect(consoleSpy).toHaveBeenCalledWith(`AsyncStore.set error for key "${key}":`, expect.any(Error))
+      expect(consoleSpy).toHaveBeenCalledWith(
+        `AsyncStore.set error for key "${key}":`,
+        expect.any(Error)
+      )
       consoleSpy.mockRestore()
     })
   })

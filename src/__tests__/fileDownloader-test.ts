@@ -1,6 +1,6 @@
 import { FileDownloader } from "@/utils/fileDownloader"
 import { ImageStorage } from "@/utils/imageStorage"
-import { Paths } from "expo-file-system"
+import { fetch } from "expo/fetch"
 
 // Mock expo-file-system usage from jest.setup.js
 // Mock expo/fetch usage from jest.setup.js
@@ -12,7 +12,7 @@ jest.mock("@/utils/imageStorage", () => ({
 }))
 
 describe("FileDownloader", () => {
-  const mockFetch = require("expo/fetch").fetch
+  const mockFetch = fetch as jest.Mock
   const mockImageStorageSave = ImageStorage.save as jest.Mock
 
   beforeEach(() => {
@@ -20,7 +20,6 @@ describe("FileDownloader", () => {
   })
 
   describe("download", () => {
-
     it("downloads file and returns local uri", async () => {
       const url = "https://example.com"
       const endpoint = "/file.jpg"
@@ -47,6 +46,7 @@ describe("FileDownloader", () => {
       const mockResponse = {
         ok: true,
         headers: {
+          // eslint-disable-next-line
           get: jest.fn().mockReturnValue('attachment; filename="testResponse.jpg"'),
         },
         bytes: jest.fn().mockResolvedValue(new Uint8Array([1, 2, 3])),
@@ -62,7 +62,9 @@ describe("FileDownloader", () => {
     it("throws error on network failure", async () => {
       mockFetch.mockRejectedValue(new Error("Network Error"))
 
-      await expect(FileDownloader.download("http://site.com", "/img")).rejects.toThrow("Network Error")
+      await expect(FileDownloader.download("http://site.com", "/img")).rejects.toThrow(
+        "Network Error"
+      )
     })
 
     it("throws error on non-ok response", async () => {
@@ -72,7 +74,9 @@ describe("FileDownloader", () => {
       }
       mockFetch.mockResolvedValue(mockResponse)
 
-      await expect(FileDownloader.download("http://site.com", "/img")).rejects.toThrow("HTTP 404: Failed to download file")
+      await expect(FileDownloader.download("http://site.com", "/img")).rejects.toThrow(
+        "HTTP 404: Failed to download file"
+      )
     })
   })
 })
