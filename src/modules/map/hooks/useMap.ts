@@ -38,7 +38,7 @@ export function useMap() {
         },
         (location) => {
           setUserLocation(location)
-        }
+        },
       )
     }
     getCurrentLocation()

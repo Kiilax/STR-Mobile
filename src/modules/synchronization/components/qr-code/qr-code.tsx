@@ -43,7 +43,7 @@ export default function QRCode() {
             {
               method: "GET",
             },
-            400
+            400,
           )) as Response
           if (response.ok) {
             neo = `http://${ip}`

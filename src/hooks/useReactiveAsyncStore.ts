@@ -29,7 +29,7 @@ interface UseReactiveAsyncStoreResult<T> {
  */
 export function useReactiveAsyncStore<T>(
   key: Keys,
-  defaultValue: T
+  defaultValue: T,
 ): UseReactiveAsyncStoreResult<T> {
   const [storedValue, setStoredValue] = useState<T>(defaultValue)
   const [loading, setLoading] = useState<boolean>(true)
@@ -62,7 +62,7 @@ export function useReactiveAsyncStore<T>(
 
         if (nextValue === undefined) {
           console.warn(
-            `Attempted to store undefined value for key "${key}". Using defaultValue instead.`
+            `Attempted to store undefined value for key "${key}". Using defaultValue instead.`,
           )
           setStoredValue(defaultValue)
           await AsyncStore.set(key, defaultValue)
@@ -77,7 +77,7 @@ export function useReactiveAsyncStore<T>(
         await loadStoredValue()
       }
     },
-    [key, storedValue, loadStoredValue, defaultValue]
+    [key, storedValue, loadStoredValue, defaultValue],
   )
 
   const clearError = useCallback(() => setError(null), [])

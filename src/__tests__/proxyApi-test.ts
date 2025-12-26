@@ -26,7 +26,7 @@ describe("ProxyApi", () => {
         expect.objectContaining({
           method: "GET",
           headers: expect.any(Object),
-        })
+        }),
       )
       expect(result).toEqual({ foo: "bar" })
     })
@@ -40,7 +40,7 @@ describe("ProxyApi", () => {
       mockFetch.mockResolvedValue(mockResponse)
 
       await expect(ProxyApi.request("https://site.com", "/404")).rejects.toThrow(
-        "HTTP 404: Not Found"
+        "HTTP 404: Not Found",
       )
     })
 
@@ -55,7 +55,7 @@ describe("ProxyApi", () => {
 
       const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {})
       await expect(ProxyApi.request("https://site.com", "/err")).rejects.toThrow(
-        "Custom Logic Error"
+        "Custom Logic Error",
       )
 
       expect(consoleSpy).toHaveBeenCalledWith("API Error:", "Custom Logic Error")
@@ -92,7 +92,7 @@ describe("ProxyApi", () => {
           method: "POST",
           body: JSON.stringify(body),
           headers: expect.objectContaining({ "Content-Type": "application/json" }),
-        })
+        }),
       )
     })
 
@@ -106,7 +106,7 @@ describe("ProxyApi", () => {
         expect.objectContaining({
           method: "PATCH",
           body: JSON.stringify(body),
-        })
+        }),
       )
     })
 
@@ -118,7 +118,7 @@ describe("ProxyApi", () => {
         "/end",
         expect.objectContaining({
           method: "DELETE",
-        })
+        }),
       )
     })
   })

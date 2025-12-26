@@ -64,7 +64,7 @@ export function useMarkers({ userLocation }: { userLocation: Location.LocationOb
 
     if (foundNext && dist !== null && dist <= 50) {
       const updatedRoute = routeMarkers.map((m) =>
-        m.id === foundNext.id ? { ...m, isVisited: true } : m
+        m.id === foundNext.id ? { ...m, isVisited: true } : m,
       )
       setRouteMarkers(updatedRoute)
     }

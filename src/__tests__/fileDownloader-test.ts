@@ -63,7 +63,7 @@ describe("FileDownloader", () => {
       mockFetch.mockRejectedValue(new Error("Network Error"))
 
       await expect(FileDownloader.download("http://site.com", "/img")).rejects.toThrow(
-        "Network Error"
+        "Network Error",
       )
     })
 
@@ -75,7 +75,7 @@ describe("FileDownloader", () => {
       mockFetch.mockResolvedValue(mockResponse)
 
       await expect(FileDownloader.download("http://site.com", "/img")).rejects.toThrow(
-        "HTTP 404: Failed to download file"
+        "HTTP 404: Failed to download file",
       )
     })
   })

@@ -21,14 +21,14 @@ describe("ImageStorage", () => {
           ({
             uri: uri,
             move: mockMove,
-          } as any)
+          }) as any,
       )
 
       mockDirectory.mockImplementation(
         (path) =>
           ({
             uri: path,
-          } as any)
+          }) as any,
       )
 
       const result = await ImageStorage.save(mockUri)
@@ -50,7 +50,7 @@ describe("ImageStorage", () => {
       expect(result).toBeNull()
       expect(consoleSpy).toHaveBeenCalledWith(
         "Error saving image to persistent storage:",
-        expect.any(Error)
+        expect.any(Error),
       )
       consoleSpy.mockRestore()
     })
@@ -64,7 +64,7 @@ describe("ImageStorage", () => {
           ({
             exists: true,
             delete: mockDelete,
-          } as any)
+          }) as any,
       )
 
       const uri = "file:///test/image.jpg"
@@ -82,7 +82,7 @@ describe("ImageStorage", () => {
           ({
             exists: false,
             delete: mockDelete,
-          } as any)
+          }) as any,
       )
 
       const result = ImageStorage.remove("file://test.jpg")
@@ -102,7 +102,7 @@ describe("ImageStorage", () => {
       expect(result).toBe(false)
       expect(consoleSpy).toHaveBeenCalledWith(
         "Error removing image from persistent storage:",
-        expect.any(Error)
+        expect.any(Error),
       )
       consoleSpy.mockRestore()
     })

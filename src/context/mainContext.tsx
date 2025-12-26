@@ -71,7 +71,7 @@ export function MainProvider({ children }: MainProviderProps) {
 
   const { value: equipments, setValue: setEquipments } = useReactiveAsyncStore<Equipment[]>(
     keys.equipments,
-    []
+    [],
   )
 
   function deleteEventId() {

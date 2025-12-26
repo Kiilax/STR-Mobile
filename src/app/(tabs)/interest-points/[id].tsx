@@ -88,7 +88,7 @@ export default function InterestPointDetailsScreen() {
     updatedPoint.synced = false
     updatedPoint.updated = true
     const updatedPoints = interestPoints.map((point: InterestPoint) =>
-      point.id === updatedPoint.id ? updatedPoint : point
+      point.id === updatedPoint.id ? updatedPoint : point,
     )
     setInterestPoints(updatedPoints)
     setInterestPoint(updatedPoint)
@@ -112,7 +112,7 @@ export default function InterestPointDetailsScreen() {
       if (status !== "granted") {
         Alert.alert(
           "Permission requise",
-          "L'accès à la galerie est nécessaire pour sélectionner des images."
+          "L'accès à la galerie est nécessaire pour sélectionner des images.",
         )
         return
       }
@@ -191,7 +191,7 @@ export default function InterestPointDetailsScreen() {
             router.back()
           },
         },
-      ]
+      ],
     )
   }
   console.log("Selected equipments:", selectedEquipments)

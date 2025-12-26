@@ -41,7 +41,7 @@ export async function createInterestPoint(data: Partial<InterestPointRequest>) {
       uri,
       type: "image/jpeg",
       name: uri.split("/").pop() || `image-${index}.jpg`,
-    } as any)
+    } as any),
   )
 
   return ProxyApi.post(url, "/interest-points/single", formData)

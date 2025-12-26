@@ -49,8 +49,6 @@ module.exports = defineConfig([
       "no-unused-vars": "warn",
       quotes: ["error", "double"],
       "prefer-const": "error",
-      "linebreak-style": "off",
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },
 ])

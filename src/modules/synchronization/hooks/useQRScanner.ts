@@ -7,7 +7,7 @@ export function useQRScanner() {
   const [permission, requestPermission] = useCameraPermissions()
   const cameraPermissionStorage = useReactiveAsyncStore<boolean>(
     keys.cameraPermissionGranted,
-    false
+    false,
   )
 
   useEffect(() => {

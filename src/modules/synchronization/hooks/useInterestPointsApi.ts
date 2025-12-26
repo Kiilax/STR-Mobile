@@ -62,7 +62,7 @@ export function useInterestPointsApi() {
         setLoading(false)
       }
     },
-    [url]
+    [url],
   )
 
   const create = useCallback(
@@ -90,7 +90,7 @@ export function useInterestPointsApi() {
             uri,
             type: "image/jpeg",
             name: uri.split("/").pop() || `image-${index}.jpg`,
-          } as any)
+          } as any),
         )
         return await ProxyApi.post(url, "/interest-points/single", formData)
       } catch (err: any) {
@@ -100,7 +100,7 @@ export function useInterestPointsApi() {
         setLoading(false)
       }
     },
-    [url]
+    [url],
   )
 
   const deleteIP = useCallback(
@@ -121,7 +121,7 @@ export function useInterestPointsApi() {
         setLoading(false)
       }
     },
-    [url]
+    [url],
   )
 
   const clearError = useCallback(() => setError(null), [])

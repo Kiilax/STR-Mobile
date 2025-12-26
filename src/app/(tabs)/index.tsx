@@ -52,7 +52,7 @@ export default function MapScreen() {
                 ...marker.coordinates,
               }}
             />
-          ) : null
+          ) : null,
         )}
         {routeMarkers &&
           routeMarkers.length > 0 &&
@@ -70,7 +70,7 @@ export default function MapScreen() {
                     : require("@/assets/markers/item-sm.png")
                 }
               />
-            ) : null
+            ) : null,
           )}
         {routeMarkers.length > 0 && routeOrigin?.coords && (
           <MapViewDirections
