@@ -44,7 +44,8 @@
         {
           "locationAlwaysAndWhenInUsePermissions": "Allow STRMOBILE to use your location."
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
