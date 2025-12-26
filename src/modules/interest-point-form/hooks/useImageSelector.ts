@@ -1,15 +1,18 @@
-import { useState } from "react"
-import { Alert } from "react-native"
-import * as ImagePicker from "expo-image-picker"
-import { ImageStorage } from "@/utils"
+import { useState } from "react";
+import { Alert } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { ImageStorage } from "@/utils";
 
 interface UseImageSelectorProps {
-  selectedImages: string[]
-  onImagesChange: (images: string[]) => void
+  selectedImages: string[];
+  onImagesChange: (images: string[]) => void;
 }
 
-export function useImageSelector({ selectedImages, onImagesChange }: UseImageSelectorProps) {
-  const [isLoading, setIsLoading] = useState(false)
+export function useImageSelector({
+  selectedImages,
+  onImagesChange,
+}: UseImageSelectorProps) {
+  const [isLoading, setIsLoading] = useState(false);
 
   /**
    * Permet de sélectionner ou prendre des images et de les sauvegarder localement.
@@ -17,89 +20,92 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
    * @returns {Object} - { isLoading, pickImage, takePhoto, removeImage }
    */
   async function requestMediaPermission() {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== "granted") {
-      Alert.alert("Permission requise", "L'accès à la galerie est nécessaire.")
-      return false
+      Alert.alert("Permission requise", "L'accès à la galerie est nécessaire.");
+      return false;
     }
-    return true
+    return true;
   }
 
   async function requestCameraPermission() {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync()
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
 
     if (status !== "granted") {
-      Alert.alert("Permission requise", "L'accès à la caméra est nécessaire.")
-      return false
+      Alert.alert("Permission requise", "L'accès à la caméra est nécessaire.");
+      return false;
     }
-    return true
+    return true;
   }
 
   async function pickImage() {
-    const allowed = await requestMediaPermission()
-    if (!allowed) return
+    const allowed = await requestMediaPermission();
+    if (!allowed) return;
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsMultipleSelection: true,
         quality: 0.8,
-      })
+      });
 
       if (!result.canceled) {
-        const savedUris: string[] = []
+        const savedUris: string[] = [];
         for (const asset of result.assets) {
-          const savedUri = await ImageStorage.save(asset.uri)
-          if (savedUri) savedUris.push(savedUri)
+          const savedUri = await ImageStorage.save(asset.uri);
+          if (savedUri) savedUris.push(savedUri);
           else {
-            Alert.alert("Erreur", "Impossible de sauvegarder une ou plusieurs images.")
-            break
+            Alert.alert(
+              "Erreur",
+              "Impossible de sauvegarder une ou plusieurs images."
+            );
+            break;
           }
         }
-        onImagesChange([...selectedImages, ...savedUris])
+        onImagesChange([...selectedImages, ...savedUris]);
       }
     } catch {
-      Alert.alert("Erreur", "Impossible de sélectionner les images.")
+      Alert.alert("Erreur", "Impossible de sélectionner les images.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   async function takePhoto() {
-    const allowed = await requestCameraPermission()
-    if (!allowed) return
-    setIsLoading(true)
+    const allowed = await requestCameraPermission();
+    if (!allowed) return;
+    setIsLoading(true);
     try {
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ["images", "videos"],
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
-      })
+      });
 
       if (!result.canceled) {
-        const uri = result.assets[0].uri
-        const savedUri = await ImageStorage.save(uri)
+        const uri = result.assets[0].uri;
+        const savedUri = await ImageStorage.save(uri);
         if (!savedUri) {
-          Alert.alert("Erreur", "Impossible de sauvegarder la photo.")
-          return
+          Alert.alert("Erreur", "Impossible de sauvegarder la photo.");
+          return;
         }
-        onImagesChange([...selectedImages, savedUri])
+        onImagesChange([...selectedImages, savedUri]);
       }
     } catch {
-      Alert.alert("Erreur", "Impossible de prendre la photo.")
+      Alert.alert("Erreur", "Impossible de prendre la photo.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   async function removeImage(index: number) {
-    const uri = selectedImages[index]
-    ImageStorage.remove(uri)
-    const updated = selectedImages.filter((_, i) => i !== index)
-    onImagesChange(updated)
+    const uri = selectedImages[index];
+    ImageStorage.remove(uri);
+    const updated = selectedImages.filter((_, i) => i !== index);
+    onImagesChange(updated);
   }
 
   return {
@@ -107,5 +113,5 @@ export function useImageSelector({ selectedImages, onImagesChange }: UseImageSel
     pickImage,
     takePhoto,
     removeImage,
-  }
+  };
 }

@@ -1,14 +1,18 @@
-import { Pressable, Text, View, ActivityIndicator } from "react-native"
-import { styles } from "./receive-button.styles"
-import { useReceiveEvent } from "@/modules/synchronization/hooks/useSynchronization"
-import { Ionicons } from "@expo/vector-icons"
+import { Pressable, Text, View, ActivityIndicator } from "react-native";
+import { styles } from "./receive-button.styles";
+import { useReceiveEvent } from "@/modules/synchronization/hooks/useSynchronization";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ReceiveButton() {
-  const { status: receiveStatus, handleSync: handleReceiveSync } = useReceiveEvent()
+  const { status: receiveStatus, handleSync: handleReceiveSync } =
+    useReceiveEvent();
 
   return (
     <Pressable
-      style={[styles.receiveButton, receiveStatus !== "idle" && styles.receiveButtonDisabled]}
+      style={[
+        styles.receiveButton,
+        receiveStatus !== "idle" && styles.receiveButtonDisabled,
+      ]}
       onPress={handleReceiveSync}
       disabled={receiveStatus !== "idle"}
     >
@@ -20,9 +24,11 @@ export default function ReceiveButton() {
       ) : (
         <>
           <Ionicons name="cloud-download" size={20} color="#FFFFFF" />
-          <Text style={styles.receiveButtonText}>Récupérer les données d&apos;événement</Text>
+          <Text style={styles.receiveButtonText}>
+            Récupérer les données d&apos;événement
+          </Text>
         </>
       )}
     </Pressable>
-  )
+  );
 }

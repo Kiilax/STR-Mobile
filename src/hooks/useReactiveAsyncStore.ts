@@ -1,15 +1,15 @@
-import { useState, useEffect, useCallback } from "react"
-import { AsyncStore } from "@/utils/asyncStore"
-import { Keys } from "@config/index"
+import { useState, useEffect, useCallback } from "react";
+import { AsyncStore } from "@/utils/asyncStore";
+import { Keys } from "@config/index";
 
 interface UseReactiveAsyncStoreResult<T> {
-  value: T
-  setValue: (value: T | ((prev: T) => T)) => Promise<void>
-  loading: boolean
-  error: Error | null
-  clearError: () => void
-  refresh: () => Promise<void>
-  deleteValue: () => Promise<void>
+  value: T;
+  setValue: (value: T | ((prev: T) => T)) => Promise<void>;
+  loading: boolean;
+  error: Error | null;
+  clearError: () => void;
+  refresh: () => Promise<void>;
+  deleteValue: () => Promise<void>;
 }
 /**
  * useReactiveAsyncStore is a custom React hook for managing a value in AsyncStore
@@ -29,62 +29,65 @@ interface UseReactiveAsyncStoreResult<T> {
  */
 export function useReactiveAsyncStore<T>(
   key: Keys,
-  defaultValue: T,
+  defaultValue: T
 ): UseReactiveAsyncStoreResult<T> {
-  const [storedValue, setStoredValue] = useState<T>(defaultValue)
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [storedValue, setStoredValue] = useState<T>(defaultValue);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
   const loadStoredValue = useCallback(async (): Promise<void> => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
-      const value = await AsyncStore.get<T>(key, defaultValue)
-      setStoredValue(value)
+      const value = await AsyncStore.get<T>(key, defaultValue);
+      setStoredValue(value);
     } catch (err) {
-      const storageError = err instanceof Error ? err : new Error("Unknown error occurred")
-      setError(storageError)
-      console.error(`Error loading ${key} from storage:`, storageError)
+      const storageError =
+        err instanceof Error ? err : new Error("Unknown error occurred");
+      setError(storageError);
+      console.error(`Error loading ${key} from storage:`, storageError);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [key, defaultValue])
+  }, [key, defaultValue]);
 
   useEffect(() => {
-    loadStoredValue()
-  }, [loadStoredValue])
+    loadStoredValue();
+  }, [loadStoredValue]);
 
   const setValue = useCallback(
     async (value: T | ((prev: T) => T)) => {
-      setError(null)
+      setError(null);
       try {
-        const nextValue = value instanceof Function ? value(storedValue) : value
+        const nextValue =
+          value instanceof Function ? value(storedValue) : value;
 
         if (nextValue === undefined) {
           console.warn(
-            `Attempted to store undefined value for key "${key}". Using defaultValue instead.`,
-          )
-          setStoredValue(defaultValue)
-          await AsyncStore.set(key, defaultValue)
+            `Attempted to store undefined value for key "${key}". Using defaultValue instead.`
+          );
+          setStoredValue(defaultValue);
+          await AsyncStore.set(key, defaultValue);
         } else {
-          setStoredValue(nextValue)
-          await AsyncStore.set(key, nextValue)
+          setStoredValue(nextValue);
+          await AsyncStore.set(key, nextValue);
         }
       } catch (err) {
-        const storageError = err instanceof Error ? err : new Error("Unknown error occurred")
-        setError(storageError)
-        console.error(`Error saving ${key} to storage:`, storageError)
-        await loadStoredValue()
+        const storageError =
+          err instanceof Error ? err : new Error("Unknown error occurred");
+        setError(storageError);
+        console.error(`Error saving ${key} to storage:`, storageError);
+        await loadStoredValue();
       }
     },
-    [key, storedValue, loadStoredValue, defaultValue],
-  )
+    [key, storedValue, loadStoredValue, defaultValue]
+  );
 
-  const clearError = useCallback(() => setError(null), [])
+  const clearError = useCallback(() => setError(null), []);
 
   function deleteValue() {
-    setError(null)
-    return AsyncStore.remove(key)
+    setError(null);
+    return AsyncStore.remove(key);
   }
 
   return {
@@ -95,5 +98,5 @@ export function useReactiveAsyncStore<T>(
     clearError,
     refresh: loadStoredValue,
     deleteValue,
-  }
+  };
 }

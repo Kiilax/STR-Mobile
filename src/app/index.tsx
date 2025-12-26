@@ -1,43 +1,43 @@
-import { ModalWrapper, QRCodeScanner } from "@/components"
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native"
-import { useRouter } from "expo-router"
-import { useEffect, useRef, useState } from "react"
-import { useMainContext } from "@/context/mainContext"
-import useQRCodeStore from "@/hooks/useQRCodeStore"
-import { colors } from "@/constants/theme"
+import { ModalWrapper, QRCodeScanner } from "@/components";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import { useMainContext } from "@/context/mainContext";
+import useQRCodeStore from "@/hooks/useQRCodeStore";
+import { colors } from "@/constants/theme";
 
 export default function EventScanner() {
-  const [showQRScanner, setShowQRScanner] = useState(false)
-  const { eventId, eventIdLoading } = useMainContext()
-  const hasNavigated = useRef(false)
-  const router = useRouter()
-  const { setEventId } = useMainContext()
+  const [showQRScanner, setShowQRScanner] = useState(false);
+  const { eventId, eventIdLoading } = useMainContext();
+  const hasNavigated = useRef(false);
+  const router = useRouter();
+  const { setEventId } = useMainContext();
 
   const handleCloseScanner = () => {
-    setShowQRScanner(false)
-  }
+    setShowQRScanner(false);
+  };
 
   const handleScanResult = (data: string) => {
-    if (hasNavigated.current) return
+    if (hasNavigated.current) return;
 
-    hasNavigated.current = true
-    const eventId = data.split(";")[0]
-    const ips = data.substring(eventId.length + 1)
+    hasNavigated.current = true;
+    const eventId = data.split(";")[0];
+    const ips = data.substring(eventId.length + 1);
 
-    setEventId(Number(eventId))
-    useQRCodeStore.getState().setResult(ips)
-    router.navigate("/(tabs)")
-  }
+    setEventId(Number(eventId));
+    useQRCodeStore.getState().setResult(ips);
+    router.navigate("/(tabs)");
+  };
 
   useEffect(() => {
-    if (eventIdLoading) return
+    if (eventIdLoading) return;
 
     if (!eventId) {
-      setShowQRScanner(true)
+      setShowQRScanner(true);
     } else {
-      router.replace("/(tabs)")
+      router.replace("/(tabs)");
     }
-  }, [eventIdLoading, eventId, router])
+  }, [eventIdLoading, eventId, router]);
 
   return (
     <View style={styles.loadingContainer}>
@@ -49,7 +49,7 @@ export default function EventScanner() {
         </ModalWrapper>
       )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -65,4 +65,4 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: colors.dark.text,
   },
-})
+});

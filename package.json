@@ -22,7 +22,6 @@
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
     "@types/jest": "29.5.14",
-    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -73,6 +72,7 @@
     "@typescript-eslint/parser": "^8.46.4",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
+    "eslint-config-prettier": "^10.1.8",
     "expo-module-scripts": "^5.0.7",
     "typescript": "~5.9.2"
   },

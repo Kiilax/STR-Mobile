@@ -1,5 +1,5 @@
-import { StyleSheet, Platform } from "react-native"
-import { colors } from "@/constants/theme"
+import { StyleSheet, Platform } from "react-native";
+import { colors } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   container: {
@@ -102,4 +102,4 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "transparent",
   },
-})
+});

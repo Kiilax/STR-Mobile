@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,17 +9,17 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
-} from "react-native"
-import { colors } from "@/constants/theme"
-import { Ionicons } from "@expo/vector-icons"
-import InterestPointForm from "@/modules/interest-point-form"
-import { ModalWrapper } from "@/components"
-import { useMainContext } from "@/context/mainContext"
-import { useRouter } from "expo-router"
+} from "react-native";
+import { colors } from "@/constants/theme";
+import { Ionicons } from "@expo/vector-icons";
+import InterestPointForm from "@/modules/interest-point-form";
+import { ModalWrapper } from "@/components";
+import { useMainContext } from "@/context/mainContext";
+import { useRouter } from "expo-router";
 
 export default function InterestPointListScreen() {
-  const [showPOIForm, setShowPOIForm] = useState(false)
-  const router = useRouter()
+  const [showPOIForm, setShowPOIForm] = useState(false);
+  const router = useRouter();
   const {
     interestPoints,
     addInterestPoint,
@@ -28,13 +28,13 @@ export default function InterestPointListScreen() {
     interestPointsLoading,
     clearInterestPointsError,
     refreshInterestPoints,
-  } = useMainContext()
+  } = useMainContext();
 
   if (interestPointsError) {
     Alert.alert("Erreur de chargement", interestPointsError.message, [
       { text: "Réessayer", onPress: refreshInterestPoints },
       { text: "Ignorer", onPress: clearInterestPointsError, style: "cancel" },
-    ])
+    ]);
   }
 
   return (
@@ -42,17 +42,32 @@ export default function InterestPointListScreen() {
       {interestPointsLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.dark.tint} />
-          <Text style={styles.loadingText}>Chargement des points d&apos;intérêt...</Text>
+          <Text style={styles.loadingText}>
+            Chargement des points d&apos;intérêt...
+          </Text>
         </View>
       ) : (
-        <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 80 }}>
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={{ paddingBottom: 80 }}
+        >
           {interestPoints.length === 0 ? (
-            <Text style={styles.emptyText}>Aucun point d&apos;intérêt disponible.</Text>
+            <Text style={styles.emptyText}>
+              Aucun point d&apos;intérêt disponible.
+            </Text>
           ) : (
             interestPoints.map((poi) => (
-              <Pressable key={poi.id} onPress={() => router.push(`/interest-points/${poi.id}`)}>
+              <Pressable
+                key={poi.id}
+                onPress={() => router.push(`/interest-points/${poi.id}`)}
+              >
                 <View style={styles.item}>
-                  {poi.images[0] && <Image source={{ uri: poi.images[0] }} style={styles.icon} />}
+                  {poi.images[0] && (
+                    <Image
+                      source={{ uri: poi.images[0] }}
+                      style={styles.icon}
+                    />
+                  )}
                   <Text style={styles.text}>{poi.comment}</Text>
 
                   <Pressable onPress={() => deleteInterestPoint(poi.id)}>
@@ -69,11 +84,18 @@ export default function InterestPointListScreen() {
         <Ionicons name="add" size={26} color="white" />
       </TouchableOpacity>
 
-      <ModalWrapper visible={showPOIForm} onClose={() => setShowPOIForm(false)} fullScreen={true}>
-        <InterestPointForm onClose={() => setShowPOIForm(false)} onSubmit={addInterestPoint} />
+      <ModalWrapper
+        visible={showPOIForm}
+        onClose={() => setShowPOIForm(false)}
+        fullScreen={true}
+      >
+        <InterestPointForm
+          onClose={() => setShowPOIForm(false)}
+          onSubmit={addInterestPoint}
+        />
       </ModalWrapper>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -144,4 +166,4 @@ const styles = StyleSheet.create({
     color: colors.dark.inverted,
     fontSize: 16,
   },
-})
+});

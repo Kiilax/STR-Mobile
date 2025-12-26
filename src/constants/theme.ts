@@ -3,21 +3,21 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-import { Platform } from "react-native"
+import { Platform } from "react-native";
 
 const dark = {
   primary: "#171C22",
   secondary: "#20272F",
   accent: "#2AD783",
   white: "#FDFDFD",
-}
+};
 
 const light = {
   primary: "#fff",
   secondary: "#F7F9FA",
   accent: "#2AD783",
   black: "#11181C",
-}
+};
 
 export const colors = {
   light: {
@@ -44,7 +44,7 @@ export const colors = {
     accent: "#2AD783",
     inverted: "#FDFDFD",
   },
-}
+};
 
 export const fonts = Platform.select({
   ios: {
@@ -66,10 +66,11 @@ export const fonts = Platform.select({
   web: {
     sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
     serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
+    rounded:
+      "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
-})
+});
 
 export const darkTheme = {
   dark: true,
@@ -82,13 +83,28 @@ export const darkTheme = {
     notification: dark.accent,
   },
   fonts: {
-    light: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "300" as const },
-    regular: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "normal" as const },
-    medium: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "500" as const },
-    bold: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "bold" as const },
-    heavy: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "700" as const },
+    light: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "300" as const,
+    },
+    regular: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "normal" as const,
+    },
+    medium: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "500" as const,
+    },
+    bold: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "bold" as const,
+    },
+    heavy: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "700" as const,
+    },
   },
-}
+};
 
 export const lightTheme = {
   dark: false,
@@ -101,10 +117,25 @@ export const lightTheme = {
     notification: light.accent,
   },
   fonts: {
-    light: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "300" as const },
-    regular: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "normal" as const },
-    medium: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "500" as const },
-    bold: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "bold" as const },
-    heavy: { fontFamily: "Inter, Arial, sans-serif", fontWeight: "700" as const },
+    light: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "300" as const,
+    },
+    regular: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "normal" as const,
+    },
+    medium: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "500" as const,
+    },
+    bold: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "bold" as const,
+    },
+    heavy: {
+      fontFamily: "Inter, Arial, sans-serif",
+      fontWeight: "700" as const,
+    },
   },
-}
+};

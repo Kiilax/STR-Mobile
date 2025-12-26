@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { colors } from "@/constants/theme"
+import { StyleSheet } from "react-native";
+import { colors } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   pointsCard: {
@@ -32,4 +32,4 @@ export const styles = StyleSheet.create({
     color: colors.dark.text,
     lineHeight: 18,
   },
-})
+});

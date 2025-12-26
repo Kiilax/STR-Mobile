@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { colors } from "@/constants/theme"
+import { StyleSheet } from "react-native";
+import { colors } from "@/constants/theme";
 
 export const commonStyles = StyleSheet.create({
   sectionHeader: {
@@ -24,4 +24,4 @@ export const commonStyles = StyleSheet.create({
     color: colors.dark.inverted,
     marginLeft: 8,
   },
-})
+});

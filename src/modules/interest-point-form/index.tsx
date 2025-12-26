@@ -1,30 +1,40 @@
-import React, { useState } from "react"
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from "react-native"
-import { useForm, Controller } from "react-hook-form"
-import { Ionicons } from "@expo/vector-icons"
-import { colors } from "@/constants/theme"
-import { InterestPoint } from "@/types/interestPoint"
-import CoordinateSelector from "./components/coordinate-selector"
-import ImageSelector from "./components/image-selector"
-import { Coordinates } from "@/types"
-import { convertToAddress } from "@/utils"
-import { useMainContext } from "@/context/mainContext"
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { Ionicons } from "@expo/vector-icons";
+import { colors } from "@/constants/theme";
+import { InterestPoint } from "@/types/interestPoint";
+import CoordinateSelector from "./components/coordinate-selector";
+import ImageSelector from "./components/image-selector";
+import { Coordinates } from "@/types";
+import { convertToAddress } from "@/utils";
+import { useMainContext } from "@/context/mainContext";
 
 interface InterestPointFormProps {
-  onClose?: () => void
-  onSubmit?: (data: InterestPoint) => void
+  onClose?: () => void;
+  onSubmit?: (data: InterestPoint) => void;
 }
 
 interface InterestPointFormData {
-  comment: string
-  coordinates: Coordinates
-  images: string[]
+  comment: string;
+  coordinates: Coordinates;
+  images: string[];
 }
 
-export default function InterestPointForm({ onClose, onSubmit }: InterestPointFormProps) {
-  const [selectedImages, setSelectedImages] = useState<string[]>([])
-  const [imageError, setImageError] = useState<string | undefined>()
-  const { eventId, eventIdLoading } = useMainContext()
+export default function InterestPointForm({
+  onClose,
+  onSubmit,
+}: InterestPointFormProps) {
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [imageError, setImageError] = useState<string | undefined>();
+  const { eventId, eventIdLoading } = useMainContext();
 
   const {
     control,
@@ -38,29 +48,29 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
       coordinates: { latitude: 0, longitude: 0 },
       images: [],
     },
-  })
-  const coordinates = watch("coordinates")
+  });
+  const coordinates = watch("coordinates");
 
   const handleCoordinatesChange = (coords: Coordinates) => {
-    setValue("coordinates", coords)
-  }
+    setValue("coordinates", coords);
+  };
 
   const handleImagesChange = (images: string[]) => {
-    setSelectedImages(images)
-    setValue("images", images)
+    setSelectedImages(images);
+    setValue("images", images);
     if (images.length > 0) {
-      setImageError(undefined)
+      setImageError(undefined);
     }
-  }
+  };
 
   const onFormSubmit = async (data: InterestPointFormData) => {
     if (!data.images || data.images.length === 0) {
-      setImageError("Veuillez ajouter au moins une image.")
-      return
+      setImageError("Veuillez ajouter au moins une image.");
+      return;
     }
 
     if (eventIdLoading) {
-      return
+      return;
     }
 
     const poiData: InterestPoint = {
@@ -76,10 +86,10 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
       eventId: eventId!,
       createdAt: new Date(),
       updatedAt: new Date(),
-    }
-    onSubmit?.(poiData)
-    onClose?.()
-  }
+    };
+    onSubmit?.(poiData);
+    onClose?.();
+  };
 
   return (
     <View style={styles.container}>
@@ -111,14 +121,18 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
               />
             )}
           />
-          {errors.comment && <Text style={styles.errorText}>{errors.comment.message}</Text>}
+          {errors.comment && (
+            <Text style={styles.errorText}>{errors.comment.message}</Text>
+          )}
         </View>
 
         {/* Minimap */}
         <CoordinateSelector
           coordinates={coordinates}
           onCoordinatesChange={handleCoordinatesChange}
-          error={errors.coordinates ? "Les coordonnées sont obligatoires" : undefined}
+          error={
+            errors.coordinates ? "Les coordonnées sont obligatoires" : undefined
+          }
         />
 
         {/* Images */}
@@ -130,7 +144,10 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
 
         {/* Submit Button */}
         <TouchableOpacity
-          style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
+          style={[
+            styles.submitButton,
+            isSubmitting && styles.submitButtonDisabled,
+          ]}
           onPress={handleSubmit(onFormSubmit)}
           disabled={isSubmitting}
         >
@@ -140,7 +157,7 @@ export default function InterestPointForm({ onClose, onSubmit }: InterestPointFo
         </TouchableOpacity>
       </ScrollView>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -208,4 +225,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
   },
-})
+});
