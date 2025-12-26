@@ -1,10 +1,21 @@
-import { View, TouchableOpacity, ActivityIndicator, Text, StyleSheet } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import { useMap } from "@/modules/map/hooks"
-import { colors, darkTheme } from "@/constants/theme"
-import MapView, { Marker, Polygon, Polyline, PROVIDER_DEFAULT } from "react-native-maps"
-import MapViewDirections from "react-native-maps-directions"
-import { useMarkers } from "@/modules/map/hooks/useMarkers"
+import {
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  Text,
+  StyleSheet,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useMap } from "@/modules/map/hooks";
+import { colors, darkTheme } from "@/constants/theme";
+import MapView, {
+  Marker,
+  Polygon,
+  Polyline,
+  PROVIDER_DEFAULT,
+} from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
+import { useMarkers } from "@/modules/map/hooks/useMarkers";
 
 const mapStyle = [
   {
@@ -12,7 +23,7 @@ const mapStyle = [
     elementType: "labels",
     stylers: [{ visibility: "off" }],
   },
-]
+];
 
 export default function MapScreen() {
   const {
@@ -24,9 +35,14 @@ export default function MapScreen() {
     userLocation,
     handleMapDrag,
     handleCenterOnUser,
-  } = useMap()
-  const { interestPointMarkers, routeMarkers, routeOrigin, nextMarker, distanceNextMarker } =
-    useMarkers({ userLocation })
+  } = useMap();
+  const {
+    interestPointMarkers,
+    routeMarkers,
+    routeOrigin,
+    nextMarker,
+    distanceNextMarker,
+  } = useMarkers({ userLocation });
 
   return (
     <View style={styles.container}>
@@ -91,7 +107,12 @@ export default function MapScreen() {
         {route &&
           route.length > 0 &&
           route.map((segment, index) => (
-            <Polyline key={index} coordinates={segment} strokeColor="red" strokeWidth={4} />
+            <Polyline
+              key={index}
+              coordinates={segment}
+              strokeColor="red"
+              strokeWidth={4}
+            />
           ))}
         {geometries &&
           geometries.length > 0 &&
@@ -107,7 +128,9 @@ export default function MapScreen() {
       </MapView>
       <View style={styles.infoContainer}>
         <Text style={styles.addressText}>
-          {distanceNextMarker !== null ? nextMarker?.updatedAt : "Aucun point d'intérêt à visiter"}
+          {distanceNextMarker !== null
+            ? nextMarker?.updatedAt
+            : "Aucun point d'intérêt à visiter"}
         </Text>
         <Text style={styles.distanceText}>
           {distanceNextMarker !== null ? `${distanceNextMarker}m` : ""}
@@ -125,7 +148,7 @@ export default function MapScreen() {
         </TouchableOpacity>
       )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -175,4 +198,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-})
+});

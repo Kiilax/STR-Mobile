@@ -1,4 +1,4 @@
-import { InterestPoint } from "@/types"
+import { InterestPoint } from "@/types";
 import {
   Text,
   View,
@@ -12,53 +12,57 @@ import {
   Modal,
   TextInput,
   Pressable,
-} from "react-native"
-import { colors } from "@/constants/theme"
-import { useLocalSearchParams, router, Stack } from "expo-router"
-import { useEffect, useState } from "react"
-import Carousel from "react-native-reanimated-carousel"
-import { Ionicons } from "@expo/vector-icons"
-import * as ImagePicker from "expo-image-picker"
-import { ImageStorage } from "@/utils"
-import { useMainContext } from "@/context/mainContext"
+} from "react-native";
+import { colors } from "@/constants/theme";
+import { useLocalSearchParams, router, Stack } from "expo-router";
+import { useEffect, useState } from "react";
+import Carousel from "react-native-reanimated-carousel";
+import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { ImageStorage } from "@/utils";
+import { useMainContext } from "@/context/mainContext";
 
 export default function InterestPointDetailsScreen() {
-  const { id } = useLocalSearchParams()
-  const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(null)
-  const [selectedEquipments, setSelectedEquipments] = useState<any[]>([])
-  const [editModalVisible, setEditModalVisible] = useState(false)
-  const [editedComment, setEditedComment] = useState("")
-  const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const { width } = useWindowDimensions()
-  const { interestPoints, setInterestPoints, equipments } = useMainContext()
+  const { id } = useLocalSearchParams();
+  const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(
+    null
+  );
+  const [selectedEquipments, setSelectedEquipments] = useState<any[]>([]);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editedComment, setEditedComment] = useState("");
+  const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { width } = useWindowDimensions();
+  const { interestPoints, setInterestPoints, equipments } = useMainContext();
 
   const selectedInterestPoint = interestPoints.find((item) => {
-    return item.id === Number(id)
-  })
+    return item.id === Number(id);
+  });
 
   useEffect(() => {
     if (selectedInterestPoint) {
-      setInterestPoint(selectedInterestPoint)
-      setEditedComment(selectedInterestPoint.comment || "")
-      setSelectedEquipments([])
+      setInterestPoint(selectedInterestPoint);
+      setEditedComment(selectedInterestPoint.comment || "");
+      setSelectedEquipments([]);
       for (const placement of selectedInterestPoint.equipmentPlacements || []) {
         for (const equipment of equipments) {
           if (equipment.id === placement.equipmentId) {
-            setSelectedEquipments((prev) => [...prev, equipment])
+            setSelectedEquipments((prev) => [...prev, equipment]);
           }
         }
       }
     }
-  }, [selectedInterestPoint, equipments])
+  }, [selectedInterestPoint, equipments]);
 
   if (!interestPoints || interestPoints.length === 0) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
-        <Text style={styles.loadingText}>Chargement du point d&apos;intérêt...</Text>
+        <Text style={styles.loadingText}>
+          Chargement du point d&apos;intérêt...
+        </Text>
       </View>
-    )
+    );
   }
 
   if (!selectedInterestPoint) {
@@ -67,54 +71,60 @@ export default function InterestPointDetailsScreen() {
         <View style={styles.errorContainer}>
           <Ionicons name="alert-circle" size={48} color={colors.dark.accent} />
           <Text style={styles.errorText}>Point d&apos;intérêt non trouvé</Text>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
             <Text style={styles.backButtonText}>Retour</Text>
           </TouchableOpacity>
         </View>
       </View>
-    )
+    );
   }
 
   if (!interestPoint) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
-        <Text style={styles.loadingText}>Chargement du point d&apos;intérêt...</Text>
+        <Text style={styles.loadingText}>
+          Chargement du point d&apos;intérêt...
+        </Text>
       </View>
-    )
+    );
   }
 
   const updateInterestPoint = (updatedPoint: InterestPoint) => {
-    updatedPoint.synced = false
-    updatedPoint.updated = true
+    updatedPoint.synced = false;
+    updatedPoint.updated = true;
     const updatedPoints = interestPoints.map((point: InterestPoint) =>
       point.id === updatedPoint.id ? updatedPoint : point
-    )
-    setInterestPoints(updatedPoints)
-    setInterestPoint(updatedPoint)
-  }
+    );
+    setInterestPoints(updatedPoints);
+    setInterestPoint(updatedPoint);
+  };
 
   const handleEditComment = () => {
-    if (!interestPoint) return
+    if (!interestPoint) return;
 
     const updatedPoint = {
       ...interestPoint,
       comment: editedComment,
-    }
+    };
 
-    updateInterestPoint(updatedPoint)
-    setEditModalVisible(false)
-  }
+    updateInterestPoint(updatedPoint);
+    setEditModalVisible(false);
+  };
 
   const pickImage = async () => {
     try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
           "Permission requise",
           "L'accès à la galerie est nécessaire pour sélectionner des images."
-        )
-        return
+        );
+        return;
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -123,54 +133,62 @@ export default function InterestPointDetailsScreen() {
         aspect: [4, 3],
         quality: 0.8,
         allowsMultipleSelection: false,
-      })
+      });
 
       if (!result.canceled && interestPoint && result.assets[0]) {
-        const newImageUri = result.assets[0].uri
+        const newImageUri = result.assets[0].uri;
 
-        const storedUri = await ImageStorage.save(newImageUri)
+        const storedUri = await ImageStorage.save(newImageUri);
 
         const updatedPoint = {
           ...interestPoint,
-          images: [...interestPoint.images, storedUri].filter((uri): uri is string => uri !== null),
-        }
+          images: [...interestPoint.images, storedUri].filter(
+            (uri): uri is string => uri !== null
+          ),
+        };
 
-        updateInterestPoint(updatedPoint)
-        Alert.alert("Succès", "Image ajoutée avec succès")
+        updateInterestPoint(updatedPoint);
+        Alert.alert("Succès", "Image ajoutée avec succès");
       }
     } catch (error) {
-      console.error("Error picking image:", error)
-      Alert.alert("Erreur", "Impossible d'ajouter l'image")
+      console.error("Error picking image:", error);
+      Alert.alert("Erreur", "Impossible d'ajouter l'image");
     }
-    setImagePickerModalVisible(false)
-  }
+    setImagePickerModalVisible(false);
+  };
 
   const deleteImage = (imageIndex: number) => {
-    if (!interestPoint) return
+    if (!interestPoint) return;
 
-    Alert.alert("Supprimer l'image", "Êtes-vous sûr de vouloir supprimer cette image ?", [
-      { text: "Annuler", style: "cancel" },
-      {
-        text: "Supprimer",
-        style: "destructive",
-        onPress: () => {
-          const imageToDelete = interestPoint.images[imageIndex]
-          ImageStorage.remove(imageToDelete)
+    Alert.alert(
+      "Supprimer l'image",
+      "Êtes-vous sûr de vouloir supprimer cette image ?",
+      [
+        { text: "Annuler", style: "cancel" },
+        {
+          text: "Supprimer",
+          style: "destructive",
+          onPress: () => {
+            const imageToDelete = interestPoint.images[imageIndex];
+            ImageStorage.remove(imageToDelete);
 
-          const updatedImages = interestPoint.images.filter((_, index) => index !== imageIndex)
-          const updatedPoint = {
-            ...interestPoint,
-            images: updatedImages,
-          }
+            const updatedImages = interestPoint.images.filter(
+              (_, index) => index !== imageIndex
+            );
+            const updatedPoint = {
+              ...interestPoint,
+              images: updatedImages,
+            };
 
-          updateInterestPoint(updatedPoint)
+            updateInterestPoint(updatedPoint);
+          },
         },
-      },
-    ])
-  }
+      ]
+    );
+  };
 
   const deleteInterestPoint = () => {
-    if (!interestPoint) return
+    if (!interestPoint) return;
 
     Alert.alert(
       "Supprimer le point d'intérêt",
@@ -182,19 +200,21 @@ export default function InterestPointDetailsScreen() {
           style: "destructive",
           onPress: () => {
             interestPoint.images.forEach((uri) => {
-              ImageStorage.remove(uri)
-            })
-            const updatedPoints = interestPoints.filter((point) => point.id !== interestPoint.id)
-            setInterestPoints(updatedPoints)
-            setInterestPoint(null)
+              ImageStorage.remove(uri);
+            });
+            const updatedPoints = interestPoints.filter(
+              (point) => point.id !== interestPoint.id
+            );
+            setInterestPoints(updatedPoints);
+            setInterestPoint(null);
 
-            router.back()
+            router.back();
           },
         },
       ]
-    )
-  }
-  console.log("Selected equipments:", selectedEquipments)
+    );
+  };
+  console.log("Selected equipments:", selectedEquipments);
 
   return (
     <>
@@ -212,7 +232,10 @@ export default function InterestPointDetailsScreen() {
                 >
                   <Ionicons name="pencil" size={20} color={colors.dark.tint} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.deleteButton} onPress={deleteInterestPoint}>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={deleteInterestPoint}
+                >
                   <Ionicons name="trash" size={20} color="#b14" />
                 </TouchableOpacity>
               </View>
@@ -242,7 +265,10 @@ export default function InterestPointDetailsScreen() {
                 <Carousel
                   width={width - 40}
                   height={250}
-                  data={interestPoint.images.map((uri, index) => ({ uri, index }))}
+                  data={interestPoint.images.map((uri, index) => ({
+                    uri,
+                    index,
+                  }))}
                   loop={interestPoint.images.length > 1}
                   autoPlay={interestPoint.images.length > 1}
                   autoPlayInterval={5000}
@@ -253,7 +279,12 @@ export default function InterestPointDetailsScreen() {
                         source={{ uri: item.uri }}
                         style={styles.image}
                         resizeMode="cover"
-                        onError={(e) => console.log("Error loading image:", e.nativeEvent.error)}
+                        onError={(e) =>
+                          console.log(
+                            "Error loading image:",
+                            e.nativeEvent.error
+                          )
+                        }
                       />
                       <TouchableOpacity
                         style={styles.deleteImageButton}
@@ -268,7 +299,9 @@ export default function InterestPointDetailsScreen() {
                   <Text style={styles.imageCounter}>
                     {currentImageIndex + 1} / {interestPoint.images.length}
                   </Text>
-                  <Text style={styles.indicatorText}>Glissez pour naviguer entre les images</Text>
+                  <Text style={styles.indicatorText}>
+                    Glissez pour naviguer entre les images
+                  </Text>
                 </View>
               </View>
             ) : (
@@ -295,17 +328,26 @@ export default function InterestPointDetailsScreen() {
                       key={equipment.id}
                       style={[
                         styles.equipmentItem,
-                        index === selectedEquipments.length - 1 && styles.lastEquipmentItem,
+                        index === selectedEquipments.length - 1 &&
+                          styles.lastEquipmentItem,
                       ]}
                     >
-                      <Image source={{ uri: equipment.image }} style={styles.equipmentImage} />
+                      <Image
+                        source={{ uri: equipment.image }}
+                        style={styles.equipmentImage}
+                      />
 
                       <View style={styles.equipmentHeader}>
-                        <Text style={styles.equipmentName}>{equipment.name}</Text>
+                        <Text style={styles.equipmentName}>
+                          {equipment.name}
+                        </Text>
                       </View>
-                      <Text style={styles.equipmentDescription}>{equipment.description}</Text>
+                      <Text style={styles.equipmentDescription}>
+                        {equipment.description}
+                      </Text>
                       <Text style={styles.equipmentDimensions}>
-                        Dimensions: {equipment.length} x {equipment.width} x {equipment.height}
+                        Dimensions: {equipment.length} x {equipment.width} x{" "}
+                        {equipment.height}
                       </Text>
                     </View>
                   ))}
@@ -363,9 +405,14 @@ export default function InterestPointDetailsScreen() {
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Ajouter une image</Text>
               <View style={styles.imagePickerOptions}>
-                <TouchableOpacity style={styles.imagePickerOption} onPress={pickImage}>
+                <TouchableOpacity
+                  style={styles.imagePickerOption}
+                  onPress={pickImage}
+                >
                   <Ionicons name="images" size={32} color={colors.dark.tint} />
-                  <Text style={styles.imagePickerOptionText}>Choisir depuis la galerie</Text>
+                  <Text style={styles.imagePickerOptionText}>
+                    Choisir depuis la galerie
+                  </Text>
                 </TouchableOpacity>
               </View>
               <Pressable
@@ -379,7 +426,7 @@ export default function InterestPointDetailsScreen() {
         </Modal>
       </ScrollView>
     </>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -685,4 +732,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-})
+});

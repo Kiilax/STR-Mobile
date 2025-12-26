@@ -1,13 +1,20 @@
-import React from "react"
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import { colors } from "@/constants/theme"
-import { useImageSelector } from "../hooks"
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors } from "@/constants/theme";
+import { useImageSelector } from "../hooks";
 
 interface ImageSelectorProps {
-  selectedImages: string[]
-  onImagesChange: (images: string[]) => void
-  error?: string
+  selectedImages: string[];
+  onImagesChange: (images: string[]) => void;
+  error?: string;
 }
 
 export default function ImageSelector({
@@ -18,7 +25,7 @@ export default function ImageSelector({
   const { isLoading, pickImage, takePhoto, removeImage } = useImageSelector({
     selectedImages,
     onImagesChange,
-  })
+  });
 
   return (
     <View style={styles.container}>
@@ -47,7 +54,8 @@ export default function ImageSelector({
       {selectedImages.length > 0 && (
         <View style={styles.previewContainer}>
           <Text style={styles.previewLabel}>
-            {selectedImages.length} image{selectedImages.length > 1 ? "s" : ""} sélectionnée
+            {selectedImages.length} image{selectedImages.length > 1 ? "s" : ""}{" "}
+            sélectionnée
             {selectedImages.length > 1 ? "s" : ""}
           </Text>
           <ScrollView
@@ -59,7 +67,10 @@ export default function ImageSelector({
             {selectedImages.map((uri, index) => (
               <View key={index} style={styles.imageContainer}>
                 <Image source={{ uri }} style={styles.imagePreview} />
-                <TouchableOpacity style={styles.removeButton} onPress={() => removeImage(index)}>
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => removeImage(index)}
+                >
                   <Ionicons name="close" size={14} color="white" />
                 </TouchableOpacity>
               </View>
@@ -73,7 +84,7 @@ export default function ImageSelector({
       )}
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -159,4 +170,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
   },
-})
+});

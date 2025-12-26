@@ -1,12 +1,17 @@
-import { ReactNode } from "react"
-import { GestureResponderEvent, Modal, Pressable, StyleSheet } from "react-native"
-import { colors } from "@/constants/theme"
+import { ReactNode } from "react";
+import {
+  GestureResponderEvent,
+  Modal,
+  Pressable,
+  StyleSheet,
+} from "react-native";
+import { colors } from "@/constants/theme";
 
 interface ModalWrapperProps {
-  visible: boolean
-  onClose: () => void
-  children: ReactNode
-  fullScreen?: boolean
+  visible: boolean;
+  onClose: () => void;
+  children: ReactNode;
+  fullScreen?: boolean;
 }
 
 export default function ModalWrapper({
@@ -20,7 +25,7 @@ export default function ModalWrapper({
       <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
         {children}
       </Modal>
-    )
+    );
   }
 
   return (
@@ -34,7 +39,7 @@ export default function ModalWrapper({
         </Pressable>
       </Pressable>
     </Modal>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -52,4 +57,4 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: colors.dark.background,
   },
-})
+});

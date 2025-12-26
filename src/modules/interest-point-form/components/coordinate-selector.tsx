@@ -1,11 +1,17 @@
-import React from "react"
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import MapView, { Marker } from "react-native-maps"
-import { colors } from "@/constants/theme"
-import { STRASBOURG_COORDINATES } from "@/constants/coordinates"
-import { useCoordinateSelector } from "@/modules/interest-point-form/hooks/useCoordinateSelector"
-import { Coordinates } from "@/types"
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import MapView, { Marker } from "react-native-maps";
+import { colors } from "@/constants/theme";
+import { STRASBOURG_COORDINATES } from "@/constants/coordinates";
+import { useCoordinateSelector } from "@/modules/interest-point-form/hooks/useCoordinateSelector";
+import { Coordinates } from "@/types";
 
 const mapStyle = [
   {
@@ -13,12 +19,12 @@ const mapStyle = [
     elementType: "labels",
     stylers: [{ visibility: "off" }],
   },
-]
+];
 
 interface CoordinateSelectorProps {
-  coordinates: Coordinates
-  onCoordinatesChange: (coords: Coordinates) => void
-  error?: string
+  coordinates: Coordinates;
+  onCoordinatesChange: (coords: Coordinates) => void;
+  error?: string;
 }
 
 export default function CoordinateSelector({
@@ -26,18 +32,26 @@ export default function CoordinateSelector({
   onCoordinatesChange,
   error,
 }: CoordinateSelectorProps) {
-  const { isLoadingLocation, region, mapRef, getCurrentLocation, handleMapPress } =
-    useCoordinateSelector({
-      coordinates,
-      onCoordinatesChange,
-    })
+  const {
+    isLoadingLocation,
+    region,
+    mapRef,
+    getCurrentLocation,
+    handleMapPress,
+  } = useCoordinateSelector({
+    coordinates,
+    onCoordinatesChange,
+  });
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.label}>Coordonnées</Text>
         <TouchableOpacity
-          style={[styles.locationButton, isLoadingLocation && styles.locationButtonDisabled]}
+          style={[
+            styles.locationButton,
+            isLoadingLocation && styles.locationButtonDisabled,
+          ]}
           onPress={getCurrentLocation}
           disabled={isLoadingLocation}
         >
@@ -68,7 +82,8 @@ export default function CoordinateSelector({
           <Marker
             coordinate={{
               latitude: coordinates.latitude || STRASBOURG_COORDINATES.latitude,
-              longitude: coordinates.longitude || STRASBOURG_COORDINATES.longitude,
+              longitude:
+                coordinates.longitude || STRASBOURG_COORDINATES.longitude,
             }}
             title="Point d'intérêt"
             description="Emplacement sélectionné"
@@ -77,12 +92,13 @@ export default function CoordinateSelector({
       </View>
 
       <Text style={styles.helpText}>
-        Appuyez sur la carte pour placer le marqueur ou utilisez &quot;Ma position&quot;
+        Appuyez sur la carte pour placer le marqueur ou utilisez &quot;Ma
+        position&quot;
       </Text>
 
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -146,4 +162,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
   },
-})
+});

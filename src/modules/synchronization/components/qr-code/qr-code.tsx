@@ -1,41 +1,43 @@
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"
-import { TouchableOpacity, View, Text } from "react-native"
-import { useEffect, useState } from "react"
-import { useMainContext } from "@/context/mainContext"
-import { styles } from "./qr-code.styles"
-import { colors } from "@/constants/theme"
-import useQRCodeStore from "@/hooks/useQRCodeStore"
-import { ModalWrapper, QRCodeScanner } from "@/components"
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity, View, Text } from "react-native";
+import { useEffect, useState } from "react";
+import { useMainContext } from "@/context/mainContext";
+import { styles } from "./qr-code.styles";
+import { colors } from "@/constants/theme";
+import useQRCodeStore from "@/hooks/useQRCodeStore";
+import { ModalWrapper, QRCodeScanner } from "@/components";
 
 export default function QRCode() {
-  const [showQRScanner, setShowQRScanner] = useState(false)
-  const { url, setUrl } = useMainContext()
-  const [qrResult, setQrResult] = useState("")
+  const [showQRScanner, setShowQRScanner] = useState(false);
+  const { url, setUrl } = useMainContext();
+  const [qrResult, setQrResult] = useState("");
 
   const fetchWithTimeout = (url: string, options: any = {}, timeout = 800) => {
     return Promise.race([
       fetch(url, options),
-      new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), timeout)),
-    ])
-  }
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), timeout)
+      ),
+    ]);
+  };
 
   const handleCloseScanner = () => {
-    setShowQRScanner(false)
-  }
+    setShowQRScanner(false);
+  };
 
   const handleQRScanResult = (data: string) => {
-    setShowQRScanner(false)
-    const eventId = data.split(";")[0]
-    const ips = data.substring(eventId.length + 1)
-    useQRCodeStore.getState().setResult(ips)
-    setQrResult(ips)
-  }
+    setShowQRScanner(false);
+    const eventId = data.split(";")[0];
+    const ips = data.substring(eventId.length + 1);
+    useQRCodeStore.getState().setResult(ips);
+    setQrResult(ips);
+  };
 
   useEffect(() => {
     const checkQRCodeData = async () => {
-      if (!qrResult || qrResult.trim() === "") return
-      const ips = qrResult.split(";")
-      let neo: string | null = null
+      if (!qrResult || qrResult.trim() === "") return;
+      const ips = qrResult.split(";");
+      let neo: string | null = null;
       for (const ip of ips) {
         try {
           const response = (await fetchWithTimeout(
@@ -44,33 +46,42 @@ export default function QRCode() {
               method: "GET",
             },
             400
-          )) as Response
+          )) as Response;
           if (response.ok) {
-            neo = `http://${ip}`
-            setUrl(neo)
-            break
+            neo = `http://${ip}`;
+            setUrl(neo);
+            break;
           }
           // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
         } catch (err) {}
       }
-    }
-    checkQRCodeData()
-  }, [qrResult, setUrl])
+    };
+    checkQRCodeData();
+  }, [qrResult, setUrl]);
 
   const handleScanAgain = () => {
-    setUrl("")
-  }
+    setUrl("");
+  };
 
   return (
     <View style={styles.container}>
       {/* Bouton principal Scan QR Code */}
       {!url ? (
-        <TouchableOpacity style={styles.scanButton} onPress={() => setShowQRScanner(true)}>
+        <TouchableOpacity
+          style={styles.scanButton}
+          onPress={() => setShowQRScanner(true)}
+        >
           <View style={styles.scanButtonContent}>
-            <MaterialCommunityIcons name="qrcode-scan" size={28} color={colors.dark.tint} />
+            <MaterialCommunityIcons
+              name="qrcode-scan"
+              size={28}
+              color={colors.dark.tint}
+            />
             <View style={styles.scanButtonText}>
               <Text style={styles.scanButtonTitle}>Scanner le QR Code</Text>
-              <Text style={styles.scanButtonSubtitle}>Cliquez pour scanner le code du site</Text>
+              <Text style={styles.scanButtonSubtitle}>
+                Cliquez pour scanner le code du site
+              </Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </View>
@@ -83,7 +94,9 @@ export default function QRCode() {
               <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
             </View>
             <View style={styles.scanSuccessText}>
-              <Text style={styles.scanSuccessTitle}>QR Code scanné avec succès</Text>
+              <Text style={styles.scanSuccessTitle}>
+                QR Code scanné avec succès
+              </Text>
               <Text style={styles.scanSuccessSubtitle}>Site connecté</Text>
             </View>
           </View>
@@ -91,10 +104,17 @@ export default function QRCode() {
           <View style={styles.ipContainer}>
             <Text style={styles.ipLabel}>Adresse du site:</Text>
             <View style={styles.ipValueContainer}>
-              <Text style={styles.ipValue} numberOfLines={1} ellipsizeMode="middle">
+              <Text
+                style={styles.ipValue}
+                numberOfLines={1}
+                ellipsizeMode="middle"
+              >
                 {url}
               </Text>
-              <TouchableOpacity style={styles.rescanButton} onPress={handleScanAgain}>
+              <TouchableOpacity
+                style={styles.rescanButton}
+                onPress={handleScanAgain}
+              >
                 <Ionicons name="refresh" size={16} color={colors.dark.tint} />
                 <Text style={styles.rescanText}>Changer</Text>
               </TouchableOpacity>
@@ -108,5 +128,5 @@ export default function QRCode() {
         <QRCodeScanner title="Synchroniser" onScanResult={handleQRScanResult} />
       </ModalWrapper>
     </View>
-  )
+  );
 }

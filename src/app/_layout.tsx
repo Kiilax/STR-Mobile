@@ -1,5 +1,5 @@
-import { MainProvider } from "@/context/mainContext"
-import { Stack } from "expo-router"
+import { MainProvider } from "@/context/mainContext";
+import { Stack } from "expo-router";
 
 function RootLayoutContent() {
   return (
@@ -8,7 +8,7 @@ function RootLayoutContent() {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="+not-found" />
     </Stack>
-  )
+  );
 }
 
 export default function RootLayout() {
@@ -16,5 +16,5 @@ export default function RootLayout() {
     <MainProvider>
       <RootLayoutContent />
     </MainProvider>
-  )
+  );
 }

@@ -1,12 +1,11 @@
 const { defineConfig } = require("eslint/config")
 const expoConfig = require("eslint-config-expo/flat")
-const eslintPluginPrettierRecommended = require("eslint-plugin-prettier/recommended")
+const prettierConfig = require("eslint-config-prettier")
 const tsPlugin = require("@typescript-eslint/eslint-plugin")
 const tsParser = require("@typescript-eslint/parser")
 
 module.exports = defineConfig([
   expoConfig,
-  eslintPluginPrettierRecommended,
   {
     languageOptions: {
       parser: tsParser,
@@ -49,8 +48,7 @@ module.exports = defineConfig([
       "no-unused-vars": "warn",
       quotes: ["error", "double"],
       "prefer-const": "error",
-      "linebreak-style": "off",
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },
+  prettierConfig,
 ])

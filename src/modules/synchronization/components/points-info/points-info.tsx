@@ -1,22 +1,31 @@
-import { View, Text } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import { useMainContext } from "@/context/mainContext"
-import { styles } from "./points-info.styles"
-import { commonStyles } from "../../styles/common.styles"
+import { View, Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useMainContext } from "@/context/mainContext";
+import { styles } from "./points-info.styles";
+import { commonStyles } from "../../styles/common.styles";
 
 export default function PointsInfo() {
-  const { interestPoints } = useMainContext()
-  const pointsToSync = interestPoints.filter((point) => !point.synced || point.updated)
-  const hasPointsToSync = pointsToSync.length > 0
+  const { interestPoints } = useMainContext();
+  const pointsToSync = interestPoints.filter(
+    (point) => !point.synced || point.updated
+  );
+  const hasPointsToSync = pointsToSync.length > 0;
 
   return (
     <View style={commonStyles.section}>
       <View style={commonStyles.sectionHeader}>
         <Ionicons name="location-outline" size={24} color="#333" />
-        <Text style={commonStyles.sectionTitle}>Étape 2: Points à synchroniser</Text>
+        <Text style={commonStyles.sectionTitle}>
+          Étape 2: Points à synchroniser
+        </Text>
       </View>
 
-      <View style={[styles.pointsCard, hasPointsToSync ? styles.pointsAvailable : styles.noPoints]}>
+      <View
+        style={[
+          styles.pointsCard,
+          hasPointsToSync ? styles.pointsAvailable : styles.noPoints,
+        ]}
+      >
         <Ionicons
           name={hasPointsToSync ? "warning" : "checkmark-done"}
           size={24}
@@ -36,5 +45,5 @@ export default function PointsInfo() {
         </View>
       </View>
     </View>
-  )
+  );
 }

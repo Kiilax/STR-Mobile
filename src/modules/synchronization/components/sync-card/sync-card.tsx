@@ -1,14 +1,14 @@
-import { View, Text } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import { styles } from "./sync-card.styles"
-import SyncButton from "../send-button/send-button"
-import ReceiveButton from "../receive-button/receive-button"
-import { commonStyles } from "../../styles/common.styles"
-import { useMainContext } from "@/context/mainContext"
+import { View, Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { styles } from "./sync-card.styles";
+import SyncButton from "../send-button/send-button";
+import ReceiveButton from "../receive-button/receive-button";
+import { commonStyles } from "../../styles/common.styles";
+import { useMainContext } from "@/context/mainContext";
 
 export default function SyncCard() {
-  const { url } = useMainContext()
-  const hasScannedQR = !!url
+  const { url } = useMainContext();
+  const hasScannedQR = !!url;
 
   return (
     <View style={commonStyles.section}>
@@ -31,5 +31,5 @@ export default function SyncCard() {
         </View>
       )}
     </View>
-  )
+  );
 }

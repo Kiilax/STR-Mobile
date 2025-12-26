@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { colors } from "@/constants/theme"
+import { StyleSheet } from "react-native";
+import { colors } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   container: {
@@ -112,4 +112,4 @@ export const styles = StyleSheet.create({
     fontWeight: "500",
     marginLeft: 4,
   },
-})
+});

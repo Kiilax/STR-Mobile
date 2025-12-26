@@ -1,10 +1,10 @@
-import { ThemeProvider } from "@react-navigation/native"
-import { Tabs } from "expo-router"
-import { StatusBar } from "expo-status-bar"
-import Entypo from "@expo/vector-icons/Entypo"
-import { darkTheme } from "@/constants/theme"
-import { SafeAreaProvider } from "react-native-safe-area-context"
-import { MainProvider } from "@/context/mainContext"
+import { ThemeProvider } from "@react-navigation/native";
+import { Tabs } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import Entypo from "@expo/vector-icons/Entypo";
+import { darkTheme } from "@/constants/theme";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { MainProvider } from "@/context/mainContext";
 
 export default function TabNav() {
   return (
@@ -22,7 +22,9 @@ export default function TabNav() {
               options={{
                 title: "Carte",
                 tabBarLabel: "Carte",
-                tabBarIcon: ({ color, size }) => <Entypo name="map" size={size} color={color} />,
+                tabBarIcon: ({ color, size }) => (
+                  <Entypo name="map" size={size} color={color} />
+                ),
               }}
             />
             <Tabs.Screen
@@ -39,7 +41,9 @@ export default function TabNav() {
               options={{
                 headerShown: true,
                 title: "Synchronisation",
-                tabBarIcon: ({ color, size }) => <Entypo name="rocket" size={size} color={color} />,
+                tabBarIcon: ({ color, size }) => (
+                  <Entypo name="rocket" size={size} color={color} />
+                ),
               }}
             />
           </Tabs>
@@ -47,5 +51,5 @@ export default function TabNav() {
         </ThemeProvider>
       </SafeAreaProvider>
     </MainProvider>
-  )
+  );
 }
