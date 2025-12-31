@@ -71,7 +71,6 @@ export default function InterestPointListScreen() {
                   <Text style={styles.text}>{poi.comment}</Text>
 
                   <Pressable onPress={() => deleteInterestPoint(poi.id)}>
-                    {/* button to delete */}
                     <Ionicons name="trash" size={24} color={"#b14"} />
                   </Pressable>
                 </View>

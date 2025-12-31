@@ -4,9 +4,12 @@ import { StatusBar } from "expo-status-bar";
 import Entypo from "@expo/vector-icons/Entypo";
 import { darkTheme } from "@/constants/theme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { MainProvider } from "@/context/mainContext";
+import { MainProvider, useMainContext } from "@/context/mainContext";
 
 export default function TabNav() {
+  const { eventData } = useMainContext();
+  const title = eventData?.title;
+
   return (
     <MainProvider>
       <SafeAreaProvider>
@@ -20,7 +23,8 @@ export default function TabNav() {
             <Tabs.Screen
               name="index"
               options={{
-                title: "Carte",
+                headerShown: true,
+                title: title ? title : "Carte",
                 tabBarLabel: "Carte",
                 tabBarIcon: ({ color, size }) => (
                   <Entypo name="map" size={size} color={color} />
@@ -30,7 +34,8 @@ export default function TabNav() {
             <Tabs.Screen
               name="interest-points"
               options={{
-                title: "Points d'intérêt",
+                title: title ? title : "Points d'intérêts",
+                tabBarLabel: "Points d'intérêts",
                 tabBarIcon: ({ color, size }) => (
                   <Entypo name="location" size={size} color={color} />
                 ),
@@ -40,7 +45,8 @@ export default function TabNav() {
               name="synchronization"
               options={{
                 headerShown: true,
-                title: "Synchronisation",
+                title: title ? title : "Synchronisation",
+                tabBarLabel: "Synchronisation",
                 tabBarIcon: ({ color, size }) => (
                   <Entypo name="rocket" size={size} color={color} />
                 ),
