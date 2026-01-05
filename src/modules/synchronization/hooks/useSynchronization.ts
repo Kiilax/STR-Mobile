@@ -27,11 +27,8 @@ export function useSynchronization(): UseSynchronizationReturn {
   const { url } = useUrlStore();
   const { eventId, deleteEventId } = useEventIdStore();
   const { setEventData, deleteEventData } = useEventDataStore();
-  const {
-    interestPoints,
-    deleteAllInterestPoints,
-  } = useInterestPointsStore();
-  
+  const { interestPoints, deleteAllInterestPoints } = useInterestPointsStore();
+
   const { create } = useInterestPointsApi();
   const { fetchEventById } = useEventApi();
 
@@ -76,7 +73,7 @@ export function useSynchronization(): UseSynchronizationReturn {
         }
 
         if (interestPoint.eventId !== eventId) {
-            continue;
+          continue;
         }
 
         try {
@@ -110,44 +107,44 @@ export function useSynchronization(): UseSynchronizationReturn {
     }
   };
 
-  const handleReceiveEvent = useCallback(async (
-    overrideUrl?: string,
-    overrideEventId?: number
-  ) => {
-    const targetUrl = overrideUrl || url;
-    if (!targetUrl) { 
-       console.warn("Cannot receive event: No URL.");
-       return;
-    }
-
-    setStatus("syncing");
-    setMessage("");
-    try {
-      const event = await fetchEventById(overrideUrl, overrideEventId);
-      if (event) {
-        setEventData(event);
-        setStatus("success");
-        setMessage("Événement reçu avec succès");
-        console.log("Event received successfully:", event);
-      } else {
-        setStatus("error");
-        setMessage("Aucun événement trouvé");
-        console.error("No event found");
+  const handleReceiveEvent = useCallback(
+    async (overrideUrl?: string, overrideEventId?: number) => {
+      const targetUrl = overrideUrl || url;
+      if (!targetUrl) {
+        console.warn("Cannot receive event: No URL.");
+        return;
       }
-    } catch (error: any) {
-      setStatus("error");
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      setMessage(`Échec de la réception: ${errorMessage}`);
-      console.error("Failed to receive event:", error);
-    }
-  }, [url, fetchEventById, setEventData]);
+
+      setStatus("syncing");
+      setMessage("");
+      try {
+        const event = await fetchEventById(overrideUrl, overrideEventId);
+        if (event) {
+          setEventData(event);
+          setStatus("success");
+          setMessage("Événement reçu avec succès");
+          console.log("Event received successfully:", event);
+        } else {
+          setStatus("error");
+          setMessage("Aucun événement trouvé");
+          console.error("No event found");
+        }
+      } catch (error: any) {
+        setStatus("error");
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        setMessage(`Échec de la réception: ${errorMessage}`);
+        console.error("Failed to receive event:", error);
+      }
+    },
+    [url, fetchEventById, setEventData]
+  );
 
   const handleClearData = () => {
     deleteEventData();
     deleteAllInterestPoints();
     deleteEventId();
-    useUrlStore.getState().setUrl(""); 
+    useUrlStore.getState().setUrl("");
     setStatus("idle");
     setMessage("");
   };

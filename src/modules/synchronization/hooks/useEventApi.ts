@@ -16,7 +16,7 @@ export function useEventApi() {
     async (overrideUrl?: string, overrideEventId?: number) => {
       setLoading(true);
       setError(null);
-      
+
       const targetUrl = overrideUrl || currentUrl;
       const targetEventId = overrideEventId || currentEventId;
 
@@ -25,11 +25,11 @@ export function useEventApi() {
         setLoading(false);
         return null;
       }
-      
+
       if (!targetEventId) {
-          setError("Event ID is not set");
-          setLoading(false);
-          return null;
+        setError("Event ID is not set");
+        setLoading(false);
+        return null;
       }
 
       try {

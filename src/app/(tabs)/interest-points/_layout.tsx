@@ -3,7 +3,7 @@ import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
 
 export default function InterestPointsLayout() {
   const { interestPoints } = useInterestPointsStore();
-  
+
   return (
     <Stack>
       <Stack.Screen

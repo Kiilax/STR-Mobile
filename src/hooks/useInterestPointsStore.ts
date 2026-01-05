@@ -15,69 +15,71 @@ interface InterestPointsState {
   clearInterestPointsError: () => void;
 }
 
-export const useInterestPointsStore = create<InterestPointsState>((set, get) => ({
-  interestPoints: [],
-  interestPointsLoading: true,
-  interestPointsError: null,
+export const useInterestPointsStore = create<InterestPointsState>(
+  (set, get) => ({
+    interestPoints: [],
+    interestPointsLoading: true,
+    interestPointsError: null,
 
-  setInterestPoints: async (points) => {
-    set({ interestPointsError: null });
-    try {
-      set({ interestPoints: points });
-      await AsyncStore.set(keys.interestPoints, points);
-    } catch (err) {
-      set({
-        interestPointsError:
-          err instanceof Error ? err : new Error("Unknown error"),
-      });
-    }
-  },
-
-  addInterestPoint: (point) => {
-    const prev = get().interestPoints;
-    const next = [...prev, point];
-    get().setInterestPoints(next);
-  },
-
-  deleteInterestPoint: (id) => {
-    const prev = get().interestPoints;
-    const pointToDelete = prev.find((p) => p.id === id);
-    if (pointToDelete) {
-      for (const uri of pointToDelete.images) {
-        ImageStorage.remove(uri);
+    setInterestPoints: async (points) => {
+      set({ interestPointsError: null });
+      try {
+        set({ interestPoints: points });
+        await AsyncStore.set(keys.interestPoints, points);
+      } catch (err) {
+        set({
+          interestPointsError:
+            err instanceof Error ? err : new Error("Unknown error"),
+        });
       }
-    }
-    const next = prev.filter((p) => p.id !== id);
-    get().setInterestPoints(next);
-  },
+    },
 
-  deleteAllInterestPoints: () => {
-    const prev = get().interestPoints;
-    for (const point of prev) {
-      for (const uri of point.images) {
-        ImageStorage.remove(uri);
+    addInterestPoint: (point) => {
+      const prev = get().interestPoints;
+      const next = [...prev, point];
+      get().setInterestPoints(next);
+    },
+
+    deleteInterestPoint: (id) => {
+      const prev = get().interestPoints;
+      const pointToDelete = prev.find((p) => p.id === id);
+      if (pointToDelete) {
+        for (const uri of pointToDelete.images) {
+          ImageStorage.remove(uri);
+        }
       }
-    }
-    get().setInterestPoints([]);
-  },
+      const next = prev.filter((p) => p.id !== id);
+      get().setInterestPoints(next);
+    },
 
-  refreshInterestPoints: async () => {
-    set({ interestPointsLoading: true, interestPointsError: null });
-    try {
-      const points = await AsyncStore.get<InterestPoint[]>(
-        keys.interestPoints,
-        []
-      );
-      set({ interestPoints: points });
-    } catch (err) {
-      set({
-        interestPointsError:
-          err instanceof Error ? err : new Error("Unknown error"),
-      });
-    } finally {
-      set({ interestPointsLoading: false });
-    }
-  },
+    deleteAllInterestPoints: () => {
+      const prev = get().interestPoints;
+      for (const point of prev) {
+        for (const uri of point.images) {
+          ImageStorage.remove(uri);
+        }
+      }
+      get().setInterestPoints([]);
+    },
 
-  clearInterestPointsError: () => set({ interestPointsError: null }),
-}));
+    refreshInterestPoints: async () => {
+      set({ interestPointsLoading: true, interestPointsError: null });
+      try {
+        const points = await AsyncStore.get<InterestPoint[]>(
+          keys.interestPoints,
+          []
+        );
+        set({ interestPoints: points });
+      } catch (err) {
+        set({
+          interestPointsError:
+            err instanceof Error ? err : new Error("Unknown error"),
+        });
+      } finally {
+        set({ interestPointsLoading: false });
+      }
+    },
+
+    clearInterestPointsError: () => set({ interestPointsError: null }),
+  })
+);

@@ -145,17 +145,17 @@ export default function InterestPointDetailsScreen() {
         const storedUri = await ImageStorage.save(newImageUri);
 
         if (storedUri) {
-            const updatedPoint = {
+          const updatedPoint = {
             ...interestPoint,
             images: [...interestPoint.images, storedUri].filter(
-                (uri): uri is string => uri !== null
+              (uri): uri is string => uri !== null
             ),
-            };
+          };
 
-            updateInterestPoint(updatedPoint);
-            Alert.alert("Succès", "Image ajoutée avec succès");
+          updateInterestPoint(updatedPoint);
+          Alert.alert("Succès", "Image ajoutée avec succès");
         } else {
-             Alert.alert("Erreur", "Impossible de sauvegarder l'image");
+          Alert.alert("Erreur", "Impossible de sauvegarder l'image");
         }
       }
     } catch (error) {

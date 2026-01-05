@@ -1,10 +1,5 @@
 import { ModalWrapper, QRCodeScanner } from "@/components";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
