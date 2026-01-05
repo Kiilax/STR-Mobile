@@ -2,7 +2,8 @@ import { EquipmentPlacement } from "@/types";
 import { useEffect, useState } from "react";
 import * as geolib from "geolib";
 import * as Location from "expo-location";
-import { useMainContext } from "@/context/mainContext";
+import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
+import { useEventDataStore } from "@/hooks/useEventDataStore";
 
 export function useMarkers({
   userLocation,
@@ -19,25 +20,19 @@ export function useMarkers({
   const [equipmentPlacements, setEquipmentPlacements] = useState<
     EquipmentPlacement[]
   >([]);
-  const {
-    interestPoints: interestPointMarkers,
-    refreshInterestPoints,
-    eventData,
-    eventDataLoading,
-  } = useMainContext();
+  const { interestPoints: interestPointMarkers } = useInterestPointsStore();
+  const { eventData, eventDataLoading } = useEventDataStore();
 
   useEffect(() => {
     if (eventData && !eventDataLoading) {
       setEquipmentPlacements(eventData.equipmentPlacements);
+    } else if (!eventData) {
+      setEquipmentPlacements([]);
+      setRouteMarkers([]);
+      setNextMarker(null);
+      setDistanceNextMarker(null);
     }
   }, [eventData, eventDataLoading]);
-
-  /**
-   * Refresh markers when interest points change
-   */
-  useEffect(() => {
-    refreshInterestPoints();
-  }, [refreshInterestPoints]);
 
   useEffect(() => {
     if (!userLocation || !equipmentPlacements || !equipmentPlacements.length)

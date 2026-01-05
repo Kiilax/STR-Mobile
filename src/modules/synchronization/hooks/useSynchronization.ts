@@ -1,5 +1,8 @@
-import { useMainContext } from "@/context/mainContext";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useUrlStore } from "@/hooks/useUrlStore";
+import { useEventIdStore } from "@/hooks/useEventIdStore";
+import { useEventDataStore } from "@/hooks/useEventDataStore";
+import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
 import { useInterestPointsApi } from "./useInterestPointsApi";
 import { useEventApi } from "./useEventApi";
 import { InterestPoint } from "@/types";
@@ -12,41 +15,36 @@ interface UseSynchronizationReturn {
   hasScannedQR: boolean;
   pointsToSync: number;
   canSync: boolean;
-
-  handleSync: () => Promise<void>;
+  handleSendInterestPoints: () => Promise<void>;
+  handleReceiveEvent: (
+    overrideUrl?: string,
+    overrideEventId?: number
+  ) => Promise<void>;
+  handleClearData: () => void;
 }
 
-/**
- * Custom hook to manage synchronization of interest points with a remote server.
- * It handles syncing local changes, fetching new data, and managing sync status.
- *
- * @returns {UseSynchronizationReturn} An object containing sync status, messages, and a sync handler.
- */
-export function useSendInterestPoints(): UseSynchronizationReturn {
-  const { url, interestPoints, deleteAllInterestPoints } = useMainContext();
-  const { create, deleteIP } = useInterestPointsApi();
+export function useSynchronization(): UseSynchronizationReturn {
+  const { url } = useUrlStore();
+  const { eventId, deleteEventId } = useEventIdStore();
+  const { setEventData, deleteEventData } = useEventDataStore();
+  const {
+    interestPoints,
+    deleteAllInterestPoints,
+  } = useInterestPointsStore();
+  
+  const { create } = useInterestPointsApi();
+  const { fetchEventById } = useEventApi();
 
   const [status, setStatus] = useState<SyncStatus>("idle");
   const [message, setMessage] = useState("");
-  const hasScannedQR = !!url;
-  const pointsToSyncList = interestPoints.filter(
-    (point) => !point.synced || point.updated
-  );
-  const pointsToSync = pointsToSyncList.length;
-  const canSync = hasScannedQR && status !== "syncing";
+
+  const hasScannedQR = !!url && !!eventId;
+  const pointsToSync = interestPoints.filter(
+    (p) => !p.synced && p.eventId === eventId
+  ).length;
+  const canSync = hasScannedQR && pointsToSync > 0;
 
   const syncPoint = async (interestPoint: InterestPoint) => {
-    if (!interestPoint.synced && interestPoint.updated) {
-      try {
-        await deleteIP(interestPoint.id);
-      } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
-        throw new Error(
-          `Échec de la suppression du point ${interestPoint.id}: ${errorMsg}`
-        );
-      }
-    }
-
     const dataToSend = {
       coordinates: { ...interestPoint.coordinates },
       address: interestPoint.address,
@@ -65,7 +63,7 @@ export function useSendInterestPoints(): UseSynchronizationReturn {
     }
   };
 
-  const handleSync = async () => {
+  const handleSendInterestPoints = async () => {
     if (!canSync) return;
 
     setStatus("syncing");
@@ -77,12 +75,16 @@ export function useSendInterestPoints(): UseSynchronizationReturn {
           continue;
         }
 
+        if (interestPoint.eventId !== eventId) {
+            continue;
+        }
+
         try {
           await syncPoint(interestPoint);
-        } catch {
+        } catch (err: any) {
           setStatus("error");
           setMessage(
-            `Échec de la synchronisation du point: ${interestPoint.comment}`
+            `Erreur: ${err instanceof Error ? err.message : String(err)}`
           );
           return;
         }
@@ -93,58 +95,72 @@ export function useSendInterestPoints(): UseSynchronizationReturn {
       } catch (deleteError) {
         console.error("Failed to delete local points:", deleteError);
         setStatus("error");
-        setMessage("Échec de la suppression des points locaux");
+        setMessage(`Échec de la suppression des points locaux: ${deleteError}`);
         return;
       }
 
       setStatus("success");
       setMessage("Points d'intérêt synchronisés avec succès");
-    } catch (error) {
+    } catch (error: any) {
       setStatus("error");
-      setMessage("Échec de la synchronisation");
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      setMessage(`Échec de la synchronisation: ${errorMessage}`);
       console.error("Failed to synchronize interest points:", error);
     }
   };
 
-  return {
-    status,
-    message,
-    hasScannedQR,
-    pointsToSync,
-    canSync,
-    handleSync,
-  };
-}
+  const handleReceiveEvent = useCallback(async (
+    overrideUrl?: string,
+    overrideEventId?: number
+  ) => {
+    const targetUrl = overrideUrl || url;
+    if (!targetUrl) { 
+       console.warn("Cannot receive event: No URL.");
+       return;
+    }
 
-export function useReceiveEvent(): UseSynchronizationReturn {
-  const { url, setEventData } = useMainContext();
-  const { fetchEventById } = useEventApi();
-  const [status, setStatus] = useState<SyncStatus>("idle");
-  const [message, setMessage] = useState("");
-  const hasScannedQR = !!url;
-  const canSync = hasScannedQR && status !== "syncing";
-  const pointsToSync = 0;
-
-  const handleSync = async () => {
-    if (!canSync) return;
     setStatus("syncing");
     setMessage("");
     try {
-      const event = await fetchEventById();
+      const event = await fetchEventById(overrideUrl, overrideEventId);
       if (event) {
         setEventData(event);
         setStatus("success");
         setMessage("Événement reçu avec succès");
+        console.log("Event received successfully:", event);
       } else {
         setStatus("error");
         setMessage("Aucun événement trouvé");
+        console.error("No event found");
       }
-    } catch (error) {
+    } catch (error: any) {
       setStatus("error");
-      setMessage("Échec de la réception de l'événement");
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      setMessage(`Échec de la réception: ${errorMessage}`);
       console.error("Failed to receive event:", error);
     }
+  }, [url, fetchEventById, setEventData]);
+
+  const handleClearData = () => {
+    deleteEventData();
+    deleteAllInterestPoints();
+    deleteEventId();
+    useUrlStore.getState().setUrl(""); 
+    setStatus("idle");
+    setMessage("");
   };
+
+  useEffect(() => {
+    if (status === "success" || status === "error") {
+      const timer = setTimeout(() => {
+        setStatus("idle");
+        setMessage("");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
 
   return {
     status,
@@ -152,6 +168,8 @@ export function useReceiveEvent(): UseSynchronizationReturn {
     hasScannedQR,
     pointsToSync,
     canSync,
-    handleSync,
+    handleSendInterestPoints,
+    handleReceiveEvent,
+    handleClearData,
   };
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -7,35 +7,25 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
   Pressable,
 } from "react-native";
-import { colors } from "@/constants/theme";
-import { Ionicons } from "@expo/vector-icons";
-import InterestPointForm from "@/modules/interest-point-form";
-import { ModalWrapper } from "@/components";
-import { useMainContext } from "@/context/mainContext";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function InterestPointListScreen() {
-  const [showPOIForm, setShowPOIForm] = useState(false);
-  const router = useRouter();
+import { colors } from "@/constants/theme";
+import { ModalWrapper } from "@/components";
+import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
+import InterestPointForm from "@/modules/interest-point-form";
+
+export default function InterestPointsScreen() {
   const {
     interestPoints,
+    interestPointsLoading: interestPointsLoading,
     addInterestPoint,
     deleteInterestPoint,
-    interestPointsError,
-    interestPointsLoading,
-    clearInterestPointsError,
-    refreshInterestPoints,
-  } = useMainContext();
-
-  if (interestPointsError) {
-    Alert.alert("Erreur de chargement", interestPointsError.message, [
-      { text: "Réessayer", onPress: refreshInterestPoints },
-      { text: "Ignorer", onPress: clearInterestPointsError, style: "cancel" },
-    ]);
-  }
+  } = useInterestPointsStore();
+  const router = useRouter();
+  const [showPOIForm, setShowPOIForm] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -59,7 +49,7 @@ export default function InterestPointListScreen() {
             interestPoints.map((poi) => (
               <Pressable
                 key={poi.id}
-                onPress={() => router.push(`/interest-points/${poi.id}`)}
+                onPress={() => router.push(`/(tabs)/interest-points/${poi.id}`)}
               >
                 <View style={styles.item}>
                   {poi.images[0] && (

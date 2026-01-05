@@ -85,9 +85,18 @@ export function useReactiveAsyncStore<T>(
 
   const clearError = useCallback(() => setError(null), []);
 
-  function deleteValue() {
+  async function deleteValue() {
     setError(null);
-    return AsyncStore.remove(key);
+    setStoredValue(defaultValue);
+    try {
+      await AsyncStore.remove(key);
+    } catch (err) {
+      const storageError =
+        err instanceof Error ? err : new Error("Unknown error occurred");
+      setError(storageError);
+      console.error(`Error removing ${key} from storage:`, storageError);
+      await loadStoredValue();
+    }
   }
 
   return {

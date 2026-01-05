@@ -1,10 +1,12 @@
-import { useMainContext } from "@/context/mainContext";
+import { useUrlStore } from "@/hooks/useUrlStore";
+import { useEquipmentsStore } from "@/hooks/useEquipmentsStore";
 import { Equipment } from "@/types";
 import { FileDownloader, ProxyApi } from "@/utils";
 import { useCallback, useState } from "react";
 
 export function useEquipmentApi() {
-  const { url, setEquipments } = useMainContext();
+  const url = useUrlStore((state) => state.url);
+  const setEquipments = useEquipmentsStore((state) => state.setEquipments);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

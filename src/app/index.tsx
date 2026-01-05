@@ -1,32 +1,42 @@
 import { ModalWrapper, QRCodeScanner } from "@/components";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { useMainContext } from "@/context/mainContext";
-import useQRCodeStore from "@/hooks/useQRCodeStore";
+import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { colors } from "@/constants/theme";
+import { useQrCode, useSynchronization } from "@/modules/synchronization/hooks";
 
 export default function EventScanner() {
   const [showQRScanner, setShowQRScanner] = useState(false);
-  const { eventId, eventIdLoading } = useMainContext();
+  const { eventId, eventIdLoading } = useEventIdStore();
   const hasNavigated = useRef(false);
   const router = useRouter();
-  const { setEventId } = useMainContext();
+  const { handleReceiveEvent } = useSynchronization();
+
+  const onUrlFound = async (foundUrl: string, foundEventId: number) => {
+    if (hasNavigated.current) return;
+
+    console.log("Valid URL found via callback, receiving event...", foundUrl);
+    hasNavigated.current = true;
+
+    await handleReceiveEvent(foundUrl, foundEventId);
+
+    router.navigate("/(tabs)");
+  };
+
+  const { handleQRScanResult } = useQrCode({ onUrlFound });
 
   const handleCloseScanner = () => {
     setShowQRScanner(false);
   };
 
   const handleScanResult = (data: string) => {
-    if (hasNavigated.current) return;
-
-    hasNavigated.current = true;
-    const eventId = data.split(";")[0];
-    const ips = data.substring(eventId.length + 1);
-
-    setEventId(Number(eventId));
-    useQRCodeStore.getState().setResult(ips);
-    router.navigate("/(tabs)");
+    handleQRScanResult(data);
   };
 
   useEffect(() => {
@@ -42,7 +52,14 @@ export default function EventScanner() {
   return (
     <View style={styles.loadingContainer}>
       <Text style={styles.title}>Stras&apos;ta route</Text>
-      <ActivityIndicator size="large" color={colors.dark.tint} />
+      {!eventId && (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setShowQRScanner(true)}
+        >
+          <Text style={styles.buttonText}>Scanner le QR Code</Text>
+        </TouchableOpacity>
+      )}
       {!eventId && (
         <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner}>
           <QRCodeScanner title="Synchroniser" onScanResult={handleScanResult} />
@@ -64,5 +81,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: colors.dark.text,
+  },
+  button: {
+    backgroundColor: colors.dark.tint,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: colors.dark.primary,
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
