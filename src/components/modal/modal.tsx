@@ -47,11 +47,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.78)",
+    backgroundColor: "rgba(0, 0, 0, 0)",
   },
   content: {
-    width: "80%",
-    height: "60%",
     padding: 20,
     alignItems: "center",
     borderRadius: 30,

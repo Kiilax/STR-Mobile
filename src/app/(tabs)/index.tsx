@@ -4,6 +4,8 @@ import {
   ActivityIndicator,
   Text,
   StyleSheet,
+  Linking,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useMap } from "@/modules/map/hooks";
@@ -14,8 +16,12 @@ import MapView, {
   Polyline,
   PROVIDER_DEFAULT,
 } from "react-native-maps";
-import MapViewDirections from "react-native-maps-directions";
 import { useMarkers } from "@/modules/map/hooks/useMarkers";
+import { useState } from "react";
+import { ModalWrapper } from "@/components";
+import EquipmentActions from "@/components/equipment-actions/equipment-actions";
+import { EquipmentPlacement } from "@/types";
+import { useEquipmentsStore } from "@/hooks";
 
 const mapStyle = [
   {
@@ -26,9 +32,12 @@ const mapStyle = [
 ];
 
 export default function MapScreen() {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPlacement, setSelectedPlacement] =
+    useState<EquipmentPlacement | null>(null);
   const {
     geometries,
-    route,
+    course,
     mapRef,
     region,
     isFollowing,
@@ -36,13 +45,54 @@ export default function MapScreen() {
     handleMapDrag,
     handleCenterOnUser,
   } = useMap();
-  const {
-    interestPointMarkers,
-    routeMarkers,
-    routeOrigin,
-    nextMarker,
-    distanceNextMarker,
-  } = useMarkers({ userLocation });
+  const { interestPointMarkers, routeMarkers } = useMarkers({
+    userLocation,
+  });
+
+  const { equipments } = useEquipmentsStore();
+
+  const getEquipmentById = (id: number) => {
+    return equipments.find((eq) => eq.id === id);
+  };
+
+  const handleStartTour = async () => {
+    const unvisited = routeMarkers.filter((m) => !m.isVisited);
+
+    if (unvisited.length === 0) {
+      Alert.alert(
+        "Tout est visité",
+        "Vous avez déjà visité tous les points de cet itinéraire !"
+      );
+      return;
+    }
+
+    const destination = unvisited[unvisited.length - 1];
+    const waypoints = unvisited.slice(0, unvisited.length - 1);
+    const destCoords = `${destination.coordinates.latitude},${destination.coordinates.longitude}`;
+
+    let url = `https://www.google.com/maps/dir/?api=1&destination=${destCoords}&travelmode=driving`;
+
+    if (waypoints.length > 0) {
+      const waypointsStr = waypoints
+        .map((p) => `${p.coordinates.latitude},${p.coordinates.longitude}`)
+        .join("|");
+      url += `&waypoints=${waypointsStr}`;
+    }
+
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        const first = unvisited[0];
+        const appleUrl = `http://maps.apple.com/?daddr=${first.coordinates.latitude},${first.coordinates.longitude}&dirflg=d`;
+        await Linking.openURL(appleUrl);
+      }
+      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    } catch (error) {
+      Alert.alert("Erreur", "Impossible d'ouvrir l'application de navigation.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -76,40 +126,27 @@ export default function MapScreen() {
             marker?.coordinates ? (
               <Marker
                 key={marker.id}
+                onPress={() => {
+                  setSelectedPlacement(marker);
+                  setShowModal(true);
+                }}
                 coordinate={{
                   ...marker.coordinates,
                 }}
-                title={marker.quantity?.toString() || ""}
                 image={
                   marker.isVisited
                     ? require("@/assets/markers/md-gr.png")
-                    : require("@/assets/markers/item-sm.png")
+                    : getEquipmentById(marker.equipmentId)?.image
                 }
               />
             ) : null
           )}
-        {routeMarkers.length > 0 && routeOrigin?.coords && (
-          <MapViewDirections
-            origin={{
-              ...routeOrigin.coords,
-            }}
-            destination={{
-              ...routeMarkers[routeMarkers.length - 1].coordinates,
-            }}
-            splitWaypoints={true}
-            apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!}
-            strokeWidth={4}
-            strokeColor="red"
-            mode="DRIVING"
-            onError={(e) => console.log("MapDirections error :", e)}
-          />
-        )}
-        {route &&
-          route.length > 0 &&
-          route.map((segment, index) => (
+        {course &&
+          course.length > 0 &&
+          course.map((segment, index) => (
             <Polyline
               key={index}
-              coordinates={segment}
+              coordinates={segment.route}
               strokeColor="red"
               strokeWidth={4}
             />
@@ -128,12 +165,8 @@ export default function MapScreen() {
       </MapView>
       <View style={styles.infoContainer}>
         <Text style={styles.addressText}>
-          {distanceNextMarker !== null
-            ? nextMarker?.updatedAt
-            : "Aucun point d'intérêt à visiter"}
-        </Text>
-        <Text style={styles.distanceText}>
-          {distanceNextMarker !== null ? `${distanceNextMarker}m` : ""}
+          Astuce : cliquer sur un point pour démarrer le GPS ou le marquer comme
+          visité
         </Text>
       </View>
 
@@ -147,6 +180,23 @@ export default function MapScreen() {
           <ActivityIndicator size="small" color="white" />
         </TouchableOpacity>
       )}
+
+      {routeMarkers.length > 0 && (
+        <TouchableOpacity
+          style={[styles.fab, styles.tourFab]}
+          onPress={handleStartTour}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="navigate" size={26} color="white" />
+        </TouchableOpacity>
+      )}
+
+      <ModalWrapper visible={showModal} onClose={() => setShowModal(false)}>
+        <EquipmentActions
+          placement={selectedPlacement}
+          onClose={() => setShowModal(false)}
+        />
+      </ModalWrapper>
     </View>
   );
 }
@@ -172,6 +222,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     elevation: 4,
   },
+  tourFab: {
+    bottom: 160,
+    backgroundColor: colors.dark.tint,
+  },
   paragraph: {
     fontSize: 18,
     textAlign: "center",
@@ -180,13 +234,7 @@ const styles = StyleSheet.create({
     color: colors.dark.tint,
     padding: 15,
     flex: 1,
-    width: "70%",
-  },
-  distanceText: {
-    color: "cyan",
-    padding: 15,
-    textAlign: "right",
-    width: "30%",
+    width: "100%",
   },
   infoContainer: {
     position: "absolute",

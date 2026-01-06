@@ -11,14 +11,15 @@ interface EventDataState {
   deleteEventData: () => Promise<void>;
   refreshEventData: () => Promise<void>;
   clearEventDataError: () => void;
+  toggleEquipmentVisited: (id: number) => Promise<void>;
 }
 
-export const useEventDataStore = create<EventDataState>((set) => ({
+export const useEventDataStore = create<EventDataState>((set, get) => ({
   eventData: null,
   eventDataLoading: true,
   eventDataError: null,
 
-  setEventData: async (event) => {
+  setEventData: async (event: Event | null) => {
     set({ eventDataError: null });
     try {
       set({ eventData: event });
@@ -27,6 +28,27 @@ export const useEventDataStore = create<EventDataState>((set) => ({
       set({
         eventDataError: err instanceof Error ? err : new Error("Unknown error"),
       });
+    }
+  },
+
+  toggleEquipmentVisited: async (id) => {
+    const currentEvent = get().eventData;
+    if (!currentEvent) return;
+
+    const updatedPlacements = currentEvent.equipmentPlacements.map((p) =>
+      p.id === id ? { ...p, isVisited: !p.isVisited } : p
+    );
+
+    const updatedEvent = {
+      ...currentEvent,
+      equipmentPlacements: updatedPlacements,
+    };
+
+    set({ eventData: updatedEvent });
+    try {
+      await AsyncStore.set(keys.eventData, updatedEvent);
+    } catch (err) {
+      console.error("Failed to persist visited state", err);
     }
   },
 
