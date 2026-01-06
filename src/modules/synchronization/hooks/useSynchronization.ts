@@ -124,6 +124,7 @@ export function useSynchronization(): UseSynchronizationReturn {
           setStatus("success");
           setMessage("Événement reçu avec succès");
           console.log("Event received successfully:", event);
+          console.log("Geometries:", event.geometries);
         } else {
           setStatus("error");
           setMessage("Aucun événement trouvé");
