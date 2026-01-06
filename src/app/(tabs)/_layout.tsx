@@ -33,6 +33,7 @@ export default function TabNav() {
           <Tabs.Screen
             name="interest-points"
             options={{
+              headerShown: true,
               title: title ? title : "Points d'intérêts",
               tabBarLabel: "Points d'intérêts",
               tabBarIcon: ({ color, size }) => (
