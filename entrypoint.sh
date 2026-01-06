@@ -30,15 +30,34 @@ JSON=$(eas build --platform android --profile apk --non-interactive --json) || {
 
 BUILD_ID=$(echo "$JSON" | jq -r '.id // .buildId')
 
-RESULT=$(eas build:view "$BUILD_ID" --json)
-ARTIFACT_URL=$(echo "$RESULT" | jq -r '.artifacts.buildUrl // .artifacts.applicationArchiveUrl // empty')
+echo "Fetching build details for ID: $BUILD_ID"
+RESULT_OUTPUT=$(eas build:view "$BUILD_ID" 2>&1)
+
+ARTIFACT_URL=$(echo "$RESULT_OUTPUT" | grep -o 'https://[^ ]*\.apk' | head -1)
 
 if [ -z "$ARTIFACT_URL" ]; then
-  echo "No artifact URL found:"
-  echo "$RESULT"
+    ARTIFACT_URL=$(echo "$RESULT_OUTPUT" | grep -o 'https://expo\.dev/artifacts/eas/[^ ]*' | head -1 | sed 's/"$//')
+fi
+
+ARTIFACT_URL=$(echo "$ARTIFACT_URL" | sed 's/[" ,]*$//')
+
+if [ -z "$ARTIFACT_URL" ]; then
+  echo "No artifact URL found. Raw output:"
+  echo "$RESULT_OUTPUT"
   exit 1
 fi
 
 echo "Downloading APK from: $ARTIFACT_URL"
 mkdir -p /output
 curl -L -o /output/app.apk "$ARTIFACT_URL"
+
+if [ $? -eq 0 ] && [ -f /output/app.apk ]; then
+    echo "Download successful! APK saved to /output/app.apk"
+    ls -lh /output/app.apk
+    echo "File size: $(du -h /output/app.apk | cut -f1)"
+    echo "File exists and is readable"
+else
+    echo "Download failed! Checking /output directory:"
+    ls -la /output/
+    exit 1
+fi
