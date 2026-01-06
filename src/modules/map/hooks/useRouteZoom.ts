@@ -1,24 +1,28 @@
-import { useEffect, useRef } from "react"
-import MapView from "react-native-maps"
-import * as Location from "expo-location"
-import { InterestPoint } from "@/types"
+import { useEffect, useRef } from "react";
+import MapView from "react-native-maps";
+import * as Location from "expo-location";
+import { InterestPoint } from "@/types";
 
 interface UseRouteZoomProps {
-  mapRef: React.RefObject<MapView | null>
-  selectedPoint: InterestPoint | null
-  userLocation: Location.LocationObject | null
+  mapRef: React.RefObject<MapView | null>;
+  selectedPoint: InterestPoint | null;
+  userLocation: Location.LocationObject | null;
 }
 
-export function useRouteZoom({ mapRef, selectedPoint, userLocation }: UseRouteZoomProps) {
-  const hasZoomedRef = useRef<number | null>(null)
+export function useRouteZoom({
+  mapRef,
+  selectedPoint,
+  userLocation,
+}: UseRouteZoomProps) {
+  const hasZoomedRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (mapRef.current && selectedPoint && userLocation) {
       if (hasZoomedRef.current === selectedPoint.id) {
-        return
+        return;
       }
 
-      hasZoomedRef.current = selectedPoint.id
+      hasZoomedRef.current = selectedPoint.id;
 
       const coordinates = [
         {
@@ -29,18 +33,18 @@ export function useRouteZoom({ mapRef, selectedPoint, userLocation }: UseRouteZo
           latitude: selectedPoint.coordinates.latitude,
           longitude: selectedPoint.coordinates.longitude,
         },
-      ]
+      ];
 
       mapRef.current.fitToCoordinates(coordinates, {
         edgePadding: { top: 100, right: 50, bottom: 200, left: 50 },
         animated: true,
-      })
+      });
     }
-  }, [mapRef, selectedPoint, userLocation])
+  }, [mapRef, selectedPoint, userLocation]);
 
   useEffect(() => {
     if (!selectedPoint) {
-      hasZoomedRef.current = null
+      hasZoomedRef.current = null;
     }
-  }, [selectedPoint])
+  }, [selectedPoint]);
 }

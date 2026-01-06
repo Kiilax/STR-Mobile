@@ -1,1 +1,1 @@
-export * from "./interestPoint"
+export * from "./interestPoint";

@@ -1,4 +1,4 @@
-import { File, Directory, Paths } from "expo-file-system"
+import { File, Directory, Paths } from "expo-file-system";
 
 export class ImageStorage {
   /**
@@ -8,12 +8,12 @@ export class ImageStorage {
    */
   static async save(uri: string) {
     try {
-      const image = new File(uri)
-      image.move(new Directory(Paths.document))
-      return image.uri
+      const image = new File(uri);
+      image.move(new Directory(Paths.document));
+      return image.uri;
     } catch (error) {
-      console.error("Error saving image to persistent storage:", error)
-      return null
+      console.error("Error saving image to persistent storage:", error);
+      return null;
     }
   }
 
@@ -24,14 +24,14 @@ export class ImageStorage {
    */
   static remove(uri: string) {
     try {
-      const image = new File(uri)
+      const image = new File(uri);
       if (image.exists) {
-        image.delete()
-        return true
+        image.delete();
+        return true;
       }
     } catch (error) {
-      console.error("Error removing image from persistent storage:", error)
-      return false
+      console.error("Error removing image from persistent storage:", error);
+      return false;
     }
   }
 }

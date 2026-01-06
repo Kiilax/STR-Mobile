@@ -1,13 +1,10 @@
-import { Stack } from "expo-router"
-import { useMemo } from "react"
+import { Stack } from "expo-router";
 
 export default function InterestPointsLayout() {
-  const screenOptions = useMemo(() => ({ headerShown: true }), [])
-
   return (
-    <Stack screenOptions={screenOptions}>
-      <Stack.Screen name="index" options={{ title: "Points d'intérêt" }} />
-      <Stack.Screen name="[id]" options={{ title: "Détail du point d'intérêt" }} />
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="[id]" options={{ title: "Détails" }} />
     </Stack>
-  )
+  );
 }

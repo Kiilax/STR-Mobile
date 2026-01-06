@@ -1,22 +1,25 @@
-import { CameraView } from "expo-camera"
-import { StatusBar } from "expo-status-bar"
-import { Text, View } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import { useQRScanner } from "@/modules/synchronization/hooks/useQRScanner"
-import { colors } from "@/constants/theme"
-import { styles } from "./qr-code-scanner.styles"
+import { CameraView } from "expo-camera";
+import { StatusBar } from "expo-status-bar";
+import { Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useQRScanner } from "@/modules/synchronization/hooks/useQRScanner";
+import { colors } from "@/constants/theme";
+import { styles } from "./qr-code-scanner.styles";
 
 interface QRCodeScannerProps {
-  title: string
-  onScanResult: (data: string) => void
+  title: string;
+  onScanResult: (data: string) => void;
 }
 
-export default function QRCodeScanner({ title, onScanResult }: QRCodeScannerProps) {
-  const { isGranted, loading, error } = useQRScanner()
+export default function QRCodeScanner({
+  title,
+  onScanResult,
+}: QRCodeScannerProps) {
+  const { isGranted, loading, error } = useQRScanner();
 
   const handleScanResult = ({ data }: { data: string }) => {
-    onScanResult(data)
-  }
+    onScanResult(data);
+  };
 
   if (loading) {
     return (
@@ -30,7 +33,7 @@ export default function QRCodeScanner({ title, onScanResult }: QRCodeScannerProp
           <Text style={styles.loadingText}>Chargement...</Text>
         </View>
       </View>
-    )
+    );
   }
 
   if (!isGranted) {
@@ -42,16 +45,22 @@ export default function QRCodeScanner({ title, onScanResult }: QRCodeScannerProp
         </View>
         <View style={styles.content}>
           <View style={styles.errorContainer}>
-            <Ionicons name="camera-outline" size={64} color={colors.dark.accent} />
+            <Ionicons
+              name="camera-outline"
+              size={64}
+              color={colors.dark.accent}
+            />
             <Text style={styles.errorTitle}>Accès caméra requis</Text>
             <Text style={styles.errorDescription}>
               L&apos;accès à la caméra est nécessaire pour scanner les codes QR.
             </Text>
-            {error && <Text style={styles.errorText}>Erreur: {error.message}</Text>}
+            {error && (
+              <Text style={styles.errorText}>Erreur: {error.message}</Text>
+            )}
           </View>
         </View>
       </View>
-    )
+    );
   }
 
   return (
@@ -79,5 +88,5 @@ export default function QRCodeScanner({ title, onScanResult }: QRCodeScannerProp
         </Text>
       </View>
     </View>
-  )
+  );
 }

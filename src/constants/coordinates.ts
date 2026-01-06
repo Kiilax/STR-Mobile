@@ -7,9 +7,9 @@ export const STRASBOURG_COORDINATES = {
   longitude: 7.7521113,
   latitudeDelta: 0.1,
   longitudeDelta: 0.1,
-}
+};
 
 export const USER_DELTA = {
   latitudeDelta: 0.004,
   longitudeDelta: 0.004,
-}
+};
