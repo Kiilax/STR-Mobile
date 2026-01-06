@@ -40,15 +40,15 @@ export const useEventDataStore = create<EventDataState>((set, get) => ({
     );
 
     const updatedEvent = {
-        ...currentEvent,
-        equipmentPlacements: updatedPlacements,
+      ...currentEvent,
+      equipmentPlacements: updatedPlacements,
     };
 
     set({ eventData: updatedEvent });
     try {
-        await AsyncStore.set(keys.eventData, updatedEvent);
+      await AsyncStore.set(keys.eventData, updatedEvent);
     } catch (err) {
-        console.error("Failed to persist visited state", err);
+      console.error("Failed to persist visited state", err);
     }
   },
 

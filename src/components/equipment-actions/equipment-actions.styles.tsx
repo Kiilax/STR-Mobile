@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: darkTheme.colors.card, 
+    backgroundColor: darkTheme.colors.card,
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 16,
