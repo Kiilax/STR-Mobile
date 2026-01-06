@@ -1,5 +1,12 @@
-import { MainProvider } from "@/context/mainContext";
 import { Stack } from "expo-router";
+import { useEffect } from "react";
+import { useEventIdStore } from "@/hooks/useEventIdStore";
+import { useEventDataStore } from "@/hooks/useEventDataStore";
+import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
+import { useEquipmentsStore } from "@/hooks/useEquipmentsStore";
+import { AsyncStore } from "@/utils";
+import { keys } from "@/config";
+import { Equipment } from "@/types";
 
 function RootLayoutContent() {
   return (
@@ -12,9 +19,15 @@ function RootLayoutContent() {
 }
 
 export default function RootLayout() {
-  return (
-    <MainProvider>
-      <RootLayoutContent />
-    </MainProvider>
-  );
+  useEffect(() => {
+    useEventIdStore.getState().refreshEventId();
+    useEventDataStore.getState().refreshEventData();
+    useInterestPointsStore.getState().refreshInterestPoints();
+
+    AsyncStore.get<Equipment[]>(keys.equipments, []).then((eq) => {
+      useEquipmentsStore.getState().setEquipments(eq);
+    });
+  }, []);
+
+  return <RootLayoutContent />;
 }

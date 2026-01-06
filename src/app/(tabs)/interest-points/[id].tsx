@@ -14,16 +14,21 @@ import {
   Pressable,
 } from "react-native";
 import { colors } from "@/constants/theme";
-import { useLocalSearchParams, router, Stack } from "expo-router";
+import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { ImageStorage } from "@/utils";
-import { useMainContext } from "@/context/mainContext";
+import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
+import { useEquipmentsStore } from "@/hooks/useEquipmentsStore";
 
 export default function InterestPointDetailsScreen() {
   const { id } = useLocalSearchParams();
+  const router = useRouter();
+  const { interestPoints, setInterestPoints } = useInterestPointsStore();
+  const { equipments } = useEquipmentsStore();
+
   const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(
     null
   );
@@ -33,7 +38,6 @@ export default function InterestPointDetailsScreen() {
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { width } = useWindowDimensions();
-  const { interestPoints, setInterestPoints, equipments } = useMainContext();
 
   const selectedInterestPoint = interestPoints.find((item) => {
     return item.id === Number(id);
@@ -54,7 +58,7 @@ export default function InterestPointDetailsScreen() {
     }
   }, [selectedInterestPoint, equipments]);
 
-  if (!interestPoints || interestPoints.length === 0) {
+  if (!interestPoints) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
@@ -140,15 +144,19 @@ export default function InterestPointDetailsScreen() {
 
         const storedUri = await ImageStorage.save(newImageUri);
 
-        const updatedPoint = {
-          ...interestPoint,
-          images: [...interestPoint.images, storedUri].filter(
-            (uri): uri is string => uri !== null
-          ),
-        };
+        if (storedUri) {
+          const updatedPoint = {
+            ...interestPoint,
+            images: [...interestPoint.images, storedUri].filter(
+              (uri): uri is string => uri !== null
+            ),
+          };
 
-        updateInterestPoint(updatedPoint);
-        Alert.alert("Succès", "Image ajoutée avec succès");
+          updateInterestPoint(updatedPoint);
+          Alert.alert("Succès", "Image ajoutée avec succès");
+        } else {
+          Alert.alert("Erreur", "Impossible de sauvegarder l'image");
+        }
       }
     } catch (error) {
       console.error("Error picking image:", error);
@@ -214,7 +222,6 @@ export default function InterestPointDetailsScreen() {
       ]
     );
   };
-  console.log("Selected equipments:", selectedEquipments);
 
   return (
     <>

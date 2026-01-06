@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import {
-  StyleSheet,
-  Text,
   View,
+  Text,
   TextInput,
-  TouchableOpacity,
   ScrollView,
+  TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/constants/theme";
-import { InterestPoint } from "@/types/interestPoint";
+import { InterestPoint, Coordinates } from "@/types";
+import { useEventIdStore } from "@/hooks/useEventIdStore";
 import CoordinateSelector from "./components/coordinate-selector";
 import ImageSelector from "./components/image-selector";
-import { Coordinates } from "@/types";
 import { convertToAddress } from "@/utils";
-import { useMainContext } from "@/context/mainContext";
 
 interface InterestPointFormProps {
   onClose?: () => void;
@@ -34,7 +33,7 @@ export default function InterestPointForm({
 }: InterestPointFormProps) {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [imageError, setImageError] = useState<string | undefined>();
-  const { eventId, eventIdLoading } = useMainContext();
+  const { eventId, eventIdLoading } = useEventIdStore();
 
   const {
     control,

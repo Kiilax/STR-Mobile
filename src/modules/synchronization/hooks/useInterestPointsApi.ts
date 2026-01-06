@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
-import { useMainContext } from "@/context/mainContext";
+import { useUrlStore } from "@/hooks/useUrlStore";
 import { InterestPoint, InterestPointRequest } from "@/types";
 import { FileDownloader, ProxyApi } from "@/utils";
 
 export function useInterestPointsApi() {
-  const { url } = useMainContext();
+  const url = useUrlStore((state) => state.url);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,6 +40,7 @@ export function useInterestPointsApi() {
       return points.map((point) => ({
         ...point,
         synced: true,
+        updated: false,
       }));
     } catch (err: any) {
       setError(err.message || "Failed to fetch interest points");

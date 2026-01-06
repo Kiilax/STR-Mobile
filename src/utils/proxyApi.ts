@@ -95,4 +95,8 @@ export class ProxyApi {
       headers: requestHeaders,
     });
   }
+
+  static async addInterestPoint(url: string, data: any) {
+    return this.post<void>(url, "/interest-points/single", data);
+  }
 }

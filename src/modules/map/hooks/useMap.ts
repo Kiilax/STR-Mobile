@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import MapView from "react-native-maps";
 import * as Location from "expo-location";
 import { STRASBOURG_COORDINATES, USER_DELTA } from "@/constants/coordinates";
-import { useMainContext } from "@/context/mainContext";
+import { useEventDataStore } from "@/hooks/useEventDataStore";
 import { Coordinates } from "@/types";
 
 export function useMap() {
@@ -12,7 +12,7 @@ export function useMap() {
     useState<Location.LocationObject | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const { eventData, eventDataLoading } = useMainContext();
+  const { eventData, eventDataLoading } = useEventDataStore();
   const [route, setRoute] = useState<Coordinates[][]>([]);
   const [geometries, setGeometries] = useState<Coordinates[][]>([]);
 
@@ -20,6 +20,9 @@ export function useMap() {
     if (eventData && !eventDataLoading && eventData.eventRoute) {
       setRoute(eventData.eventRoute);
       setGeometries(eventData.geometries);
+    } else if (!eventData) {
+      setRoute([]);
+      setGeometries([]);
     }
   }, [eventData, eventDataLoading]);
 

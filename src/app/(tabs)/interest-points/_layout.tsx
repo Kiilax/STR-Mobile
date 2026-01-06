@@ -1,22 +1,18 @@
-import { useMainContext } from "@/context/mainContext";
 import { Stack } from "expo-router";
-import { useMemo } from "react";
+import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
 
 export default function InterestPointsLayout() {
-  const screenOptions = useMemo(() => ({ headerShown: true }), []);
-  const { eventData } = useMainContext();
-  const title = eventData?.title;
+  const { interestPoints } = useInterestPointsStore();
 
   return (
-    <Stack screenOptions={screenOptions}>
+    <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: title ? title : "Points d'intérêt" }}
+        options={{
+          headerTitle: `Points d'intérêt (${interestPoints.length})`,
+        }}
       />
-      <Stack.Screen
-        name="[id]"
-        options={{ title: "Détail du point d'intérêt" }}
-      />
+      <Stack.Screen name="[id]" options={{ title: "Détails" }} />
     </Stack>
   );
 }
