@@ -3,7 +3,7 @@ import { TeamAction } from "@/types";
 import { ProxyApi } from "@/utils";
 import { useCallback, useState } from "react";
 
-export function useTeamActionsApi(teamId : number) {
+export function useTeamActionsApi(teamId: number) {
   const currentUrl = useUrlStore((state) => state.url);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
