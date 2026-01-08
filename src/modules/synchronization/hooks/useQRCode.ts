@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useUrlStore } from "@/hooks/useUrlStore";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
+import { QRCodeContent } from "@/types/QRCodeContent";
 
 interface UseQrCodeProps {
   onUrlFound?: (url: string, eventId: number) => void | Promise<void>;
@@ -10,7 +11,7 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
   const [showQRScanner, setShowQRScanner] = useState(false);
   const { url, setUrl } = useUrlStore();
   const { setEventId } = useEventIdStore();
-  const [qrResult, setQrResult] = useState<string | null>(null);
+  const [qrResult, setQrResult] = useState<string[] | null>(null);
   const scannedEventId = useRef<number | null>(null);
 
   const fetchWithTimeout = (url: string, options: any = {}, timeout = 800) => {
@@ -27,25 +28,37 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
   };
 
   const handleQRScanResult = (data: string) => {
-    // Check if data is valid format (e.g. "123;192.168.1.1")
-    if (!data.includes(";")) return;
+    try {
+      const qrContent = JSON.parse(data) as QRCodeContent;
+      console.log(qrContent)
+      
+      if (!qrContent.ips || !Array.isArray(qrContent.ips)) {
+        console.error("Invalid QR code format: missing ips array");
+        return;
+      }
 
-    const eventIdStr = data.split(";")[0];
-    const eventId = Number(eventIdStr);
+      let eventId = 0;
+      if (qrContent.eventId) {
+        eventId = Number(qrContent.eventId);
+        if (isNaN(eventId)) {
+          console.error("Invalid eventId format");
+          return;
+        }
+      }
 
-    if (isNaN(eventId)) return;
-
-    scannedEventId.current = eventId;
-    setEventId(eventId);
-    const ips = data.substring(eventIdStr.length + 1);
-
-    setQrResult(ips);
-    setShowQRScanner(false);
+      scannedEventId.current = eventId;
+      setEventId(eventId);
+      setQrResult(qrContent.ips);
+      setShowQRScanner(false);
+    } catch (error) {
+      console.error(error);
+      return;
+    }
   };
 
-  const checkIps = async (ipsString: string): Promise<string | null> => {
-    if (!ipsString || ipsString.trim() === "") return null;
-    const ips = ipsString.split(";");
+  const checkIps = async (ips: string[]): Promise<string | null> => {
+    if (!ips || ips.length === 0) return null;
+    
     for (const ip of ips) {
       try {
         const response = (await fetchWithTimeout(
@@ -57,8 +70,8 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
           console.log(`Valid URL found: http://${ip}`);
           return `http://${ip}`;
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-      } catch (err) {}
+      } catch (err) {
+      }
     }
     return null;
   };
@@ -69,14 +82,13 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
       const urlFound = await checkIps(qrResult);
       if (urlFound) {
         setUrl(urlFound);
-        if (onUrlFound && scannedEventId.current) {
+        if (onUrlFound && scannedEventId.current !== null) {
           onUrlFound(urlFound, scannedEventId.current);
         }
         setQrResult(null);
       }
     };
     checkQRCodeData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qrResult, setUrl, onUrlFound]);
 
   const handleScanAgain = () => {
