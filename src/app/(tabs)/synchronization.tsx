@@ -5,13 +5,13 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "@/modules/synchronization/styles/SynchronizationView.styles";
 import { useSynchronization } from "@/modules/synchronization/hooks/useSynchronization";
 import { useQrCode } from "@/modules/synchronization/hooks/useQRCode";
 import { ModalWrapper, QRCodeScanner } from "@/components";
-import { useRouter } from "expo-router";
+import { useNavigation } from "expo-router";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 
 export default function SynchronizationScreen() {
@@ -43,13 +43,11 @@ export default function SynchronizationScreen() {
     ),
   });
 
-  const [isDissociating, setIsDissociating] = useState(false);
-  const router = useRouter();
+  const router = useNavigation();
 
   const handleDissociateEvent = async () => {
-    setIsDissociating(true);
-    handleClearData();
-    router.replace("/");
+    await handleClearData();
+    router.getParent()?.navigate("index");
   };
 
   const handleValidatedScan = (data: string) => {
@@ -71,16 +69,6 @@ export default function SynchronizationScreen() {
     resetQrResult();
     setShowQRScanner(true);
   };
-
-  useEffect(() => {
-    if (isDissociating && !eventId) {
-      if (router.canDismiss()) {
-        router.dismissAll();
-      }
-      router.replace("/");
-    }
-  }, [eventId, isDissociating, router]);
-
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>

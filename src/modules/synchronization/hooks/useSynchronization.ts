@@ -20,7 +20,7 @@ interface UseSynchronizationReturn {
     overrideUrl?: string,
     overrideEventId?: number
   ) => Promise<void>;
-  handleClearData: () => void;
+  handleClearData: () => Promise<void>;
 }
 
 export function useSynchronization(): UseSynchronizationReturn {
@@ -141,10 +141,10 @@ export function useSynchronization(): UseSynchronizationReturn {
     [url, fetchEventById, setEventData]
   );
 
-  const handleClearData = () => {
-    deleteEventData();
+  const handleClearData = async () => {
+    await deleteEventData();
     deleteAllInterestPoints();
-    deleteEventId();
+    await deleteEventId();
     useUrlStore.getState().setUrl("");
     setStatus("idle");
     setMessage("");
