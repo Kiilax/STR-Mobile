@@ -3,9 +3,7 @@ import { colors } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.dark.background,
-    justifyContent: "flex-start",
   },
   header: {
     flexDirection: "row",
@@ -24,15 +22,14 @@ export const styles = StyleSheet.create({
     padding: 8,
   },
   content: {
-    flex: 1,
     padding: 10,
     alignItems: "center",
     justifyContent: "center",
   },
   loadingContainer: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 40,
   },
   loadingText: {
     fontSize: 16,
@@ -40,10 +37,10 @@ export const styles = StyleSheet.create({
     marginTop: 16,
   },
   errorContainer: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 32,
+    paddingVertical: 40,
   },
   errorTitle: {
     fontSize: 24,
@@ -78,6 +75,7 @@ export const styles = StyleSheet.create({
     position: "relative",
     alignSelf: "center",
     width: "100%",
+    padding: 20,
   },
   camera: {
     width: Platform.OS === "web" ? 350 : 280,
