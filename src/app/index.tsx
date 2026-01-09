@@ -56,7 +56,11 @@ export default function EventScanner() {
         </TouchableOpacity>
       )}
       {!eventId && (
-        <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner}>
+        <ModalWrapper
+          visible={showQRScanner}
+          onClose={handleCloseScanner}
+          overlayOpacity={1}
+        >
           <QRCodeScanner title="Synchroniser" onScanResult={handleScanResult} />
         </ModalWrapper>
       )}
