@@ -1,4 +1,5 @@
 import { EquipmentPlacement } from "@/types";
+import { GoogleMapsService } from "@/services/GoogleMapsService";
 import { useEffect, useState } from "react";
 import * as geolib from "geolib";
 import * as Location from "expo-location";
@@ -17,6 +18,8 @@ export function useMarkers({
   const [distanceNextMarker, setDistanceNextMarker] = useState<number | null>(
     null
   );
+  const [lastSortedLocation, setLastSortedLocation] =
+    useState<Location.LocationObject | null>(null);
   const [equipmentPlacements, setEquipmentPlacements] = useState<
     EquipmentPlacement[]
   >([]);
@@ -37,20 +40,46 @@ export function useMarkers({
   useEffect(() => {
     if (!userLocation || !equipmentPlacements || !equipmentPlacements.length)
       return;
-    const sorted = [...equipmentPlacements].sort((a, b) => {
-      const distA = geolib.getDistance(
+
+    const shouldSort =
+      !lastSortedLocation ||
+      geolib.getDistance(
         { ...userLocation.coords },
-        { ...a.coordinates }
-      );
-      const distB = geolib.getDistance(
-        { ...userLocation.coords },
-        { ...b.coordinates }
-      );
-      return distA - distB;
-    });
-    setRouteMarkers(sorted);
-    setRouteOrigin(userLocation);
-  }, [equipmentPlacements, userLocation]);
+        { ...lastSortedLocation.coords }
+      ) > 200;
+
+    if (!shouldSort && routeMarkers.length > 0) return;
+
+    const sortMarkers = async () => {
+      try {
+        const distances = await GoogleMapsService.getDrivingDistances(
+          userLocation.coords,
+          equipmentPlacements.map((e) => e.coordinates)
+        );
+
+        const sorted = equipmentPlacements
+          .map((item, index) => ({
+            item,
+            distance: distances[index].distance,
+          }))
+          .sort((a, b) => a.distance - b.distance)
+          .map((entry) => entry.item);
+
+        setRouteMarkers(sorted);
+        setRouteOrigin(userLocation);
+        setLastSortedLocation(userLocation);
+      } catch (error) {
+        console.error("Error sorting markers:", error);
+      }
+    };
+
+    sortMarkers();
+  }, [
+    equipmentPlacements,
+    lastSortedLocation,
+    routeMarkers.length,
+    userLocation,
+  ]);
 
   useEffect(() => {
     const getDistanceToUser = (point: EquipmentPlacement) => {
