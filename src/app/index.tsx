@@ -15,12 +15,8 @@ export default function EventScanner() {
 
   const onUrlFound = async (foundUrl: string, foundEventId: number) => {
     if (hasNavigated.current) return;
-
-    console.log("Valid URL found via callback, receiving event...", foundUrl);
     hasNavigated.current = true;
-
     await handleReceiveEvent(foundUrl, foundEventId);
-
     router.navigate("/(tabs)");
   };
 
