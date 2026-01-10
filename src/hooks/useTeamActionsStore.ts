@@ -3,26 +3,49 @@ import { keys } from "@/config";
 import { AsyncStore } from "@/utils";
 import { TeamAction } from "@/types";
 
-interface TeamActionState {
-  teamActions: TeamAction[];
-  setTeamActions: (teamActions: TeamAction[]) => Promise<void>;
+export interface LocalTeamAction extends TeamAction {
+  done: boolean;
 }
 
-export const useTeamActionsStore = create<TeamActionState>((set) => ({
+interface TeamActionState {
+  teamActions: LocalTeamAction[];
+  setTeamActionsFromApi: (apiActions: TeamAction[] | TeamAction) => Promise<void>;
+  toggleActionDone: (actionId: string) => void;
+  resetTeamActions: () => void;
+}
+
+export const useTeamActionsStore = create<TeamActionState>((set, get) => ({
   teamActions: [],
-  setTeamActions: async (teamActions) => {
+
+  setTeamActionsFromApi: async (apiActions) => {
     try {
-      set({ teamActions });
-      await AsyncStore.set(keys.teamActions, teamActions);
+      const actionsArray = Array.isArray(apiActions) ? apiActions : [apiActions];
+
+      const localActions: LocalTeamAction[] = actionsArray.map(action => ({
+        ...action,
+        done: false
+      }));
+
+      set({ teamActions: localActions });
+      await AsyncStore.set(keys.teamActions, localActions);
     } catch (err) {
       console.error("Error setting team actions", err);
     }
   },
-  deleteTeamActions: async () => {
+
+  toggleActionDone: (actionId: string) => {
+    set((state) => ({
+      teamActions: state.teamActions.map((action) =>
+        action.id === actionId ? { ...action, done: !action.done } : action
+      ),
+    }));
+    AsyncStore.set(keys.teamActions, get().teamActions);
+  },
+
+  resetTeamActions: async () => {
+    set({ teamActions: [] });
     try {
       await AsyncStore.remove(keys.teamActions);
-    } catch (err) {
-      console.error("Error removing team Actions", err);
-    }
-  },
+    } catch (e) { console.error(e) }
+  }
 }));
