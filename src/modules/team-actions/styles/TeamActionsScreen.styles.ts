@@ -4,219 +4,136 @@ import { colors } from "@/constants/theme";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.dark.background,
-    padding: 16,
+    backgroundColor: colors.dark.background || "#121212",
   },
-  contentContainer: {
-    flex: 1,
-  },
+  
   centerContent: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    padding: 20,
   },
+  infoText: {
+    color: colors.dark.text || "#FFFFFF",
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 30,
+    opacity: 0.9,
+  },
+
   dashboardContainer: {
     flex: 1,
+    padding: 16,
+    paddingBottom: 0,
   },
-  footerContainer: {
-    width: "100%",
-    paddingTop: 20,
-    gap: 10,
-  },
-  
-  teamHeader: {
-    backgroundColor: colors.dark.secondary,
-    borderRadius: 12,
-    padding: 20,
+
+  simpleHeader: {
     marginBottom: 20,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.1)",
   },
-  teamInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  teamIcon: {
-    marginRight: 12,
-  },
-  teamTitle: {
-    color: colors.dark.text,
-    fontSize: 20,
+  teamTitleLarge: {
+    color: colors.dark.text || "#FFFFFF",
+    fontSize: 28,
     fontWeight: "bold",
   },
-  teamUrl: {
-    color: colors.dark.text,
-    fontSize: 12,
-    opacity: 0.7,
-    marginTop: 2,
-  },
-  
-  // Stats
-  statsContainer: {
-    flexDirection: "row",
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 8,
-    padding: 12,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: "center",
-  },
-  statNumber: {
-    color: colors.dark.text,
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  statLabel: {
-    color: colors.dark.text,
-    fontSize: 12,
-    opacity: 0.7,
-    marginTop: 4,
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    marginHorizontal: 20,
-  },
-  
-  // Actions Container
-  actionsContainer: {
+
+  listContainer: {
     flex: 1,
   },
-  actionsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  actionsTitle: {
-    color: colors.dark.text,
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  refreshButton: {
-    backgroundColor: colors.dark.tint,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  
-  // Action Items
-  actionsList: {
+  actionsListContent: {
     paddingBottom: 20,
   },
+
   actionCard: {
-    backgroundColor: colors.dark.secondary,
+    backgroundColor: colors.dark.secondary || "#1E1E1E", 
     borderRadius: 12,
     padding: 16,
-  },
-  actionHeader: {
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.05)",
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    justifyContent: "space-between",
+  },
+  actionCardDone: {
+    backgroundColor: "#1E1E1E",
+    opacity: 0.7,
+    borderColor: "rgba(255,255,255,0.02)",
+  },
+
+  actionContentSide: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
   },
   actionIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
+    marginRight: 16,
   },
   dropoffIcon: {
-    backgroundColor: "#4CAF50", // Green
+    backgroundColor: "rgba(76, 175, 80, 0.2)",
+    borderWidth: 1,
+    borderColor: "#4CAF50",
   },
   removeIcon: {
-    backgroundColor: "#F44336", // Red
+    backgroundColor: "rgba(244, 67, 54, 0.2)",
+    borderWidth: 1,
+    borderColor: "#F44336",
   },
-  actionInfo: {
+  actionTexts: {
     flex: 1,
   },
   actionTitle: {
-    color: colors.dark.text,
-    fontSize: 16,
+    color: colors.dark.text || "#FFFFFF",
+    fontSize: 17,
     fontWeight: "600",
-    marginBottom: 2,
+    marginBottom: 4,
   },
   actionSubtitle: {
-    color: colors.dark.text,
-    fontSize: 12,
+    color: colors.dark.text || "#CCCCCC",
+    fontSize: 13,
     opacity: 0.7,
   },
-  actionCompleteIcon: {
-    color: '#4CAF50',
+  strikethroughText: {
+    textDecorationLine: 'line-through',
+    opacity: 0.6,
   },
-  actionHint: {
-    color: colors.dark.text,
-    fontSize: 11,
-    opacity: 0.5,
-    fontStyle: 'italic',
+
+  checkboxContainer: {
+    marginLeft: 10,
   },
-  itemSeparator: {
-    height: 12,
+
+  footerContainer: {
+    padding: 16,
+    backgroundColor: colors.dark.background || "#121212", 
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.1)",
   },
   
-  // Loading & Empty States
-  loadingContainer: {
-    flex: 1,
+  mainButton: {
+    backgroundColor: colors.dark.tint || "#2196F3",
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
   },
-  loadingText: {
-    color: colors.dark.text,
-    marginTop: 16,
-    opacity: 0.7,
+  rescanButton: {
+     backgroundColor: colors.dark.secondary || "#333",
+     borderWidth: 1,
+     borderColor: colors.dark.tint || "#2196F3",
   },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 40,
-  },
-  emptyText: {
-    color: colors.dark.text,
-    fontSize: 18,
-    fontWeight: "600",
-    marginTop: 16,
-    textAlign: "center",
-  },
-  emptySubtext: {
-    color: colors.dark.text,
-    fontSize: 14,
-    opacity: 0.7,
-    marginTop: 8,
-    textAlign: "center",
-  },
-  
-  // Buttons
-  button: {
-    backgroundColor: colors.dark.tint,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  buttonSecondary: {
-    backgroundColor: colors.dark.secondary,
-    borderWidth: 1,
-    borderColor: colors.dark.tint,
-  },
-  buttonDanger: {
-    backgroundColor: "#F44336",
-  },
-  buttonText: {
+  mainButtonText: {
     color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  
-  infoText: {
-    color: colors.dark.text,
-    fontSize: 16,
-    textAlign: "center",
-    marginBottom: 24,
-    opacity: 0.8,
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginRight: 10,
   },
 });
