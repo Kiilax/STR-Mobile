@@ -2,13 +2,15 @@ import { CameraView } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
 import { Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useQRScanner } from "@/modules/synchronization/hooks/useQRScanner";
+import { useQRScanner } from "@/hooks/useQRScanner";
 import { colors } from "@/constants/theme";
 import { styles } from "./qr-code-scanner.styles";
+import type { QRCodeContent } from "@/types/qrCodeContent";
 
 interface QRCodeScannerProps {
   title: string;
-  onScanResult: (data: string) => void;
+  onScanResult: (data: QRCodeContent | null, rawData?: string) => void;
+  showRawData?: boolean;
 }
 
 export default function QRCodeScanner({
@@ -17,8 +19,82 @@ export default function QRCodeScanner({
 }: QRCodeScannerProps) {
   const { isGranted, loading, error } = useQRScanner();
 
+  const parseQRCodeData = (data: string): QRCodeContent | null => {
+    try {
+      const parsedData = JSON.parse(data);
+
+      if (!parsedData || typeof parsedData !== "object") {
+        console.warn("Données QR Code invalides: pas un objet JSON");
+        return null;
+      }
+
+      if (!parsedData.eventId || !parsedData.ips) {
+        console.warn("Données QR Code invalides: eventId ou ips manquant");
+        return null;
+      }
+
+      if (typeof parsedData.eventId !== "string") {
+        console.warn("Données QR Code invalides: eventId doit être une string");
+        return null;
+      }
+
+      if (
+        !Array.isArray(parsedData.ips) &&
+        typeof parsedData.ips !== "string"
+      ) {
+        console.warn(
+          "Données QR Code invalides: ips doit être un tableau ou une string"
+        );
+        return null;
+      }
+
+      let normalizedIps: string[];
+      if (Array.isArray(parsedData.ips)) {
+        normalizedIps = parsedData.ips;
+      } else {
+        console.error(
+          "Données QR Code: ips est une string, conversion en tableau"
+        );
+        return null;
+      }
+
+      if ("teamId" in parsedData && parsedData.teamId) {
+        if (typeof parsedData.teamId !== "string") {
+          console.warn(
+            "Données QR Code invalides: teamId doit être une string"
+          );
+          return null;
+        }
+
+        return {
+          eventId: parsedData.eventId,
+          ips: normalizedIps,
+          teamId: parsedData.teamId,
+        };
+      }
+
+      return {
+        eventId: parsedData.eventId,
+        ips: normalizedIps,
+      };
+    } catch (error) {
+      console.error("Échec du parsing JSON du QR Code:", error);
+      return null;
+    }
+  };
+
   const handleScanResult = ({ data }: { data: string }) => {
-    onScanResult(data);
+    console.log("QR Code brut scanné:", data);
+
+    const parsedData = parseQRCodeData(data);
+
+    if (parsedData) {
+      console.log("QR Code parsé:", parsedData);
+      onScanResult(parsedData);
+    } else {
+      console.warn("QR Code invalide ou format non reconnu");
+      onScanResult(null);
+    }
   };
 
   if (loading) {
