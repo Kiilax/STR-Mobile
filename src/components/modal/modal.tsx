@@ -12,6 +12,7 @@ interface ModalWrapperProps {
   onClose: () => void;
   children: ReactNode;
   fullScreen?: boolean;
+  overlayOpacity?: number;
 }
 
 export default function ModalWrapper({
@@ -19,6 +20,7 @@ export default function ModalWrapper({
   onClose,
   children,
   fullScreen = false,
+  overlayOpacity = 0.5,
 }: ModalWrapperProps) {
   if (fullScreen) {
     return (
@@ -30,7 +32,13 @@ export default function ModalWrapper({
 
   return (
     <Modal visible={visible} transparent onRequestClose={onClose}>
-      <Pressable style={styles.overlay} onPress={onClose}>
+      <Pressable
+        style={[
+          styles.overlay,
+          { backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})` },
+        ]}
+        onPress={onClose}
+      >
         <Pressable
           style={styles.content}
           onPress={(e: GestureResponderEvent) => e.stopPropagation()}
@@ -47,7 +55,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0)",
   },
   content: {
     padding: 20,

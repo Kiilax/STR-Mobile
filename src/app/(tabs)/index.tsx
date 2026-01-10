@@ -117,6 +117,7 @@ export default function MapScreen() {
               coordinate={{
                 ...marker.coordinates,
               }}
+              image={require("@/assets/markers/md-red.png")}
             />
           ) : null
         )}
@@ -143,20 +144,20 @@ export default function MapScreen() {
           )}
         {course &&
           course.length > 0 &&
-          course.map((segment, index) => (
+          course.map((lines) => (
             <Polyline
-              key={index}
-              coordinates={segment.route}
+              key={lines.id}
+              coordinates={lines.route}
               strokeColor="red"
               strokeWidth={4}
             />
           ))}
         {geometries &&
           geometries.length > 0 &&
-          geometries.map((segment, index) => (
+          geometries.map((lines, index) => (
             <Polygon
               key={index}
-              coordinates={segment}
+              coordinates={lines}
               strokeColor="green"
               fillColor="rgba(0,255,0,0.3)"
               strokeWidth={2}
@@ -191,7 +192,11 @@ export default function MapScreen() {
         </TouchableOpacity>
       )}
 
-      <ModalWrapper visible={showModal} onClose={() => setShowModal(false)}>
+      <ModalWrapper
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        overlayOpacity={0}
+      >
         <EquipmentActions
           placement={selectedPlacement}
           onClose={() => setShowModal(false)}

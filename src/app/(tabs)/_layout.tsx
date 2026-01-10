@@ -15,7 +15,6 @@ export default function TabNav() {
       <ThemeProvider value={darkTheme}>
         <Tabs
           screenOptions={{
-            headerShown: false,
             tabBarStyle: { backgroundColor: darkTheme.colors.card },
           }}
         >
@@ -23,7 +22,7 @@ export default function TabNav() {
             name="index"
             options={{
               headerShown: true,
-              title: title ? title : "Carte",
+              title: "Événement :" + (title ? ` ${title}` : " Aucun"),
               tabBarLabel: "Carte",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="map" size={size} color={color} />
@@ -34,7 +33,7 @@ export default function TabNav() {
             name="interest-points"
             options={{
               headerShown: true,
-              title: title ? title : "Points d'intérêts",
+              title: "Événement :" + (title ? ` ${title}` : " Aucun"),
               tabBarLabel: "Points d'intérêts",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="location" size={size} color={color} />
@@ -45,7 +44,7 @@ export default function TabNav() {
             name="synchronization"
             options={{
               headerShown: true,
-              title: title ? title : "Synchronisation",
+              title: "Événement :" + (title ? ` ${title}` : " Aucun"),
               tabBarLabel: "Synchronisation",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="rocket" size={size} color={color} />
