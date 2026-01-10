@@ -5,7 +5,7 @@ export interface EquipmentPlacement {
   equipmentId: number;
   interestPointId: number;
   quantity: number;
-  coordinates: Coordinates;
+  coordinates: Coordinates[];
   dropOffDate: string;
   removalDate: string;
   createdAt: string;

@@ -5,7 +5,11 @@ import type { QRCodeContent } from "@/types/qrCodeContent";
 import { Alert } from "react-native";
 
 interface UseQrCodeProps {
-  onUrlFound?: (url: string, eventId: number, teamId: string | null) => void | Promise<void>;
+  onUrlFound?: (
+    url: string,
+    eventId: number,
+    teamId: string | null
+  ) => void | Promise<void>;
 }
 
 export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
@@ -20,7 +24,7 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
   const fetchWithTimeout = (url: string, options: any = {}, timeout = 3000) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
-    
+
     return Promise.race([
       fetch(url, { ...options, signal: controller.signal }),
       new Promise((_, reject) =>
@@ -43,17 +47,16 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
       }
 
       const eventId = Number(parsedData.eventId);
-      
+
       if (isNaN(eventId)) {
         Alert.alert("Erreur", "QR Code invalide: ID d'événement incorrect");
         return;
       }
 
-
       scannedEventId.current = eventId;
       setEventId(eventId);
-      
-      if ('teamId' in parsedData && parsedData.teamId) {
+
+      if ("teamId" in parsedData && parsedData.teamId) {
         scannedTeamId.current = parsedData.teamId;
       } else {
         scannedTeamId.current = null;
@@ -65,7 +68,6 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
       } else {
         Alert.alert("Erreur", "Format des IPs incorrect (tableau attendu)");
       }
-      
     } catch (error) {
       console.error("Erreur parsing QR:", error);
       Alert.alert("Erreur", "QR Code invalide: format JSON incorrect");
@@ -74,23 +76,27 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
 
   const checkIps = async (ips: string[]): Promise<string | null> => {
     if (!ips || ips.length === 0) return null;
-    
+
     for (const ip of ips) {
       try {
         let formattedIp = ip.trim();
-        if (!formattedIp.startsWith('http://') && !formattedIp.startsWith('https://')) {
+        if (
+          !formattedIp.startsWith("http://") &&
+          !formattedIp.startsWith("https://")
+        ) {
           formattedIp = `http://${formattedIp}`;
         }
-        
+
         const response = (await fetchWithTimeout(
           formattedIp,
-          { method: "GET", headers: { 'Accept': 'application/json' } },
+          { method: "GET", headers: { Accept: "application/json" } },
           3000
         )) as Response;
-        
+
         if (response.ok) {
           return formattedIp;
         }
+        // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
       } catch (err) {
         // Continue to next IP
       }
@@ -101,21 +107,28 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
   useEffect(() => {
     const checkQRCodeData = async () => {
       if (qrIps.length === 0) return;
-      
+
       const urlFound = await checkIps(qrIps);
-      
+
       if (urlFound) {
         setUrl(urlFound);
         if (onUrlFound && scannedEventId.current) {
-          await onUrlFound(urlFound, scannedEventId.current, scannedTeamId.current);
+          await onUrlFound(
+            urlFound,
+            scannedEventId.current,
+            scannedTeamId.current
+          );
         }
-        setQrIps([]); 
+        setQrIps([]);
       } else {
-        Alert.alert("Erreur connexion", "Aucune adresse IP du QR Code n'est joignable.");
+        Alert.alert(
+          "Erreur connexion",
+          "Aucune adresse IP du QR Code n'est joignable."
+        );
         setQrIps([]);
       }
     };
-    
+
     checkQRCodeData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qrIps, setUrl, onUrlFound]);
@@ -134,7 +147,7 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
     handleQRScanResult,
     handleScanAgain,
     url,
-    checkIps, 
+    checkIps,
     resetQrResult: () => setQrIps([]),
   };
 };

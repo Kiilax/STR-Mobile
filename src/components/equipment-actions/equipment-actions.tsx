@@ -28,7 +28,15 @@ export default function EquipmentActions({
   if (!placement) return null;
 
   const handleOpenMaps = async () => {
-    const { latitude, longitude } = placement.coordinates;
+    if (!placement.coordinates || placement.coordinates.length === 0) {
+      Alert.alert(
+        "Erreur",
+        "Aucune coordonnée disponible pour cet équipement."
+      );
+      return;
+    }
+
+    const { latitude, longitude } = placement.coordinates[0];
 
     const latLng = `${latitude},${longitude}`;
     const url = Platform.select({

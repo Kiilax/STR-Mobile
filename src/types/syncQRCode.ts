@@ -1,4 +1,4 @@
 export interface SyncQRCode {
-    eventId: string;
-    ips: string[];
-};
+  eventId: string;
+  ips: string[];
+}

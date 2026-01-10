@@ -63,7 +63,7 @@ export default function SynchronizationScreen() {
 
     if (eventId && scannedId !== eventId) {
       Alert.alert(
-        "Erreur d'événement", 
+        "Erreur d'événement",
         "Ce QR Code correspond à un événement différent de celui en cours. Veuillez dissocier l'événement actuel avant d'en changer."
       );
       setShowQRScanner(false);
@@ -84,31 +84,34 @@ export default function SynchronizationScreen() {
       "Cela effacera les données locales liées à l'événement et vous ramènera à l'accueil.",
       [
         { text: "Annuler", style: "cancel" },
-        { 
-          text: "Dissocier", 
+        {
+          text: "Dissocier",
           style: "destructive",
           onPress: async () => {
             await handleClearData();
             router.getParent()?.navigate("index");
-          }
-        }
+          },
+        },
       ]
     );
   };
 
   const getStatusIcon = () => {
     switch (status) {
-      case "syncing": return "cloud-upload";
-      case "success": return "checkmark-circle";
-      case "error": return "alert-circle";
-      default: return "cloud-offline-outline";
+      case "syncing":
+        return "cloud-upload";
+      case "success":
+        return "checkmark-circle";
+      case "error":
+        return "alert-circle";
+      default:
+        return "cloud-offline-outline";
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
-        
         {!hasScannedQR ? (
           <View style={styles.centerContent}>
             <Ionicons
@@ -118,7 +121,8 @@ export default function SynchronizationScreen() {
               style={{ opacity: 0.5, marginBottom: 24 }}
             />
             <Text style={styles.infoText}>
-              Scannez le QR Code administrateur pour synchroniser vos points d'intérêt.
+              Scannez le QR Code administrateur pour synchroniser vos points
+              d'intérêt.
             </Text>
             <TouchableOpacity
               style={styles.button}
@@ -128,35 +132,47 @@ export default function SynchronizationScreen() {
             </TouchableOpacity>
           </View>
         ) : (
-
           <View style={styles.centerContent}>
-            <View style={{ marginBottom: 40, alignItems: 'center' }}>
-                <Ionicons name="location" size={60} color={pointsToSync > 0 ? "#4CAF50" : "#ccc"} />
-                <Text style={{ color: '#FFF', fontSize: 32, fontWeight: 'bold', marginTop: 10 }}>
-                    {pointsToSync}
-                </Text>
-                <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 16 }}>
-                    Points à synchroniser
-                </Text>
+            <View style={{ marginBottom: 40, alignItems: "center" }}>
+              <Ionicons
+                name="location"
+                size={60}
+                color={pointsToSync > 0 ? "#4CAF50" : "#ccc"}
+              />
+              <Text
+                style={{
+                  color: "#FFF",
+                  fontSize: 32,
+                  fontWeight: "bold",
+                  marginTop: 10,
+                }}
+              >
+                {pointsToSync}
+              </Text>
+              <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 16 }}>
+                Points à synchroniser
+              </Text>
             </View>
 
             <TouchableOpacity
               style={[
-                styles.button, 
+                styles.button,
                 !canSync && pointsToSync > 0 && { opacity: 0.7 },
-                pointsToSync === 0 && styles.buttonSecondary
+                pointsToSync === 0 && styles.buttonSecondary,
               ]}
               onPress={handleSendInterestPoints}
               disabled={!canSync || status === "syncing"}
             >
               {status === "syncing" ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <ActivityIndicator color="#FFF" style={{ marginRight: 10 }}/>
-                    <Text style={styles.buttonText}>Synchronisation...</Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <ActivityIndicator color="#FFF" style={{ marginRight: 10 }} />
+                  <Text style={styles.buttonText}>Synchronisation...</Text>
                 </View>
               ) : (
                 <Text style={styles.buttonText}>
-                  {pointsToSync > 0 ? "Envoyer maintenant" : "Tout est synchronisé"}
+                  {pointsToSync > 0
+                    ? "Envoyer maintenant"
+                    : "Tout est synchronisé"}
                 </Text>
               )}
             </TouchableOpacity>
@@ -165,9 +181,7 @@ export default function SynchronizationScreen() {
               style={[styles.button, styles.buttonSecondary, { marginTop: 12 }]}
               onPress={handleRescanPress}
             >
-              <Text style={styles.buttonText}>
-                Mettre à jour l'événement
-              </Text>
+              <Text style={styles.buttonText}>Mettre à jour l'événement</Text>
             </TouchableOpacity>
           </View>
         )}

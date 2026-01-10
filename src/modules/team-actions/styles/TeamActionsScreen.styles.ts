@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.dark.background || "#121212",
   },
-  
+
   centerContent: {
     flex: 1,
     justifyContent: "center",
@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
   },
 
   actionCard: {
-    backgroundColor: colors.dark.secondary || "#1E1E1E", 
+    backgroundColor: colors.dark.secondary || "#1E1E1E",
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -101,7 +101,7 @@ export const styles = StyleSheet.create({
     opacity: 0.7,
   },
   strikethroughText: {
-    textDecorationLine: 'line-through',
+    textDecorationLine: "line-through",
     opacity: 0.6,
   },
 
@@ -111,11 +111,11 @@ export const styles = StyleSheet.create({
 
   footerContainer: {
     padding: 16,
-    backgroundColor: colors.dark.background || "#121212", 
+    backgroundColor: colors.dark.background || "#121212",
     borderTopWidth: 1,
     borderTopColor: "rgba(255,255,255,0.1)",
   },
-  
+
   mainButton: {
     backgroundColor: colors.dark.tint || "#2196F3",
     paddingVertical: 16,
@@ -125,9 +125,9 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   rescanButton: {
-     backgroundColor: colors.dark.secondary || "#333",
-     borderWidth: 1,
-     borderColor: colors.dark.tint || "#2196F3",
+    backgroundColor: colors.dark.secondary || "#333",
+    borderWidth: 1,
+    borderColor: colors.dark.tint || "#2196F3",
   },
   mainButtonText: {
     color: "#FFFFFF",

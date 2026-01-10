@@ -15,7 +15,7 @@ interface QRCodeScannerProps {
 
 export default function QRCodeScanner({
   title,
-  onScanResult
+  onScanResult,
 }: QRCodeScannerProps) {
   const { isGranted, loading, error } = useQRScanner();
 
@@ -23,7 +23,7 @@ export default function QRCodeScanner({
     try {
       const parsedData = JSON.parse(data);
 
-      if (!parsedData || typeof parsedData !== 'object') {
+      if (!parsedData || typeof parsedData !== "object") {
         console.warn("Données QR Code invalides: pas un objet JSON");
         return null;
       }
@@ -33,13 +33,18 @@ export default function QRCodeScanner({
         return null;
       }
 
-      if (typeof parsedData.eventId !== 'string') {
+      if (typeof parsedData.eventId !== "string") {
         console.warn("Données QR Code invalides: eventId doit être une string");
         return null;
       }
 
-      if (!Array.isArray(parsedData.ips) && typeof parsedData.ips !== 'string') {
-        console.warn("Données QR Code invalides: ips doit être un tableau ou une string");
+      if (
+        !Array.isArray(parsedData.ips) &&
+        typeof parsedData.ips !== "string"
+      ) {
+        console.warn(
+          "Données QR Code invalides: ips doit être un tableau ou une string"
+        );
         return null;
       }
 
@@ -47,16 +52,20 @@ export default function QRCodeScanner({
       if (Array.isArray(parsedData.ips)) {
         normalizedIps = parsedData.ips;
       } else {
-        console.error("Données QR Code: ips est une string, conversion en tableau");
+        console.error(
+          "Données QR Code: ips est une string, conversion en tableau"
+        );
         return null;
       }
 
-      if ('teamId' in parsedData && parsedData.teamId) {
-        if (typeof parsedData.teamId !== 'string') {
-          console.warn("Données QR Code invalides: teamId doit être une string");
+      if ("teamId" in parsedData && parsedData.teamId) {
+        if (typeof parsedData.teamId !== "string") {
+          console.warn(
+            "Données QR Code invalides: teamId doit être une string"
+          );
           return null;
         }
-        
+
         return {
           eventId: parsedData.eventId,
           ips: normalizedIps,
@@ -68,7 +77,6 @@ export default function QRCodeScanner({
         eventId: parsedData.eventId,
         ips: normalizedIps,
       };
-
     } catch (error) {
       console.error("Échec du parsing JSON du QR Code:", error);
       return null;
@@ -77,9 +85,9 @@ export default function QRCodeScanner({
 
   const handleScanResult = ({ data }: { data: string }) => {
     console.log("QR Code brut scanné:", data);
-    
+
     const parsedData = parseQRCodeData(data);
-    
+
     if (parsedData) {
       console.log("QR Code parsé:", parsedData);
       onScanResult(parsedData);

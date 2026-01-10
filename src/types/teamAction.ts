@@ -1,6 +1,6 @@
 export interface TeamAction {
   id: string;
   teamId: string;
-  equipementPlacementId: string;
+  equipmentPlacementId: string;
   action: "DROPOFF" | "REMOVE";
 }

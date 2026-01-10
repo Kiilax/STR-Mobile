@@ -31,7 +31,7 @@ export function useTeamActionsApi(teamId: number, eventId: number) {
         return response;
       } catch (err: any) {
         setError(err.message || "Failed to fetch team actions");
-        return []; 
+        return [];
       } finally {
         setLoading(false);
       }
