@@ -2,26 +2,31 @@ import { useRef, useState, useEffect } from "react";
 import { useUrlStore } from "@/hooks/useUrlStore";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import type { QRCodeContent } from "@/types/qrCodeContent";
+import { Alert } from "react-native";
 
 interface UseQrCodeProps {
-  onUrlFound?: (url: string, eventId: number) => void | Promise<void>;
+  onUrlFound?: (url: string, eventId: number, teamId: string | null) => void | Promise<void>;
 }
 
 export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
   const [showQRScanner, setShowQRScanner] = useState(false);
   const { url, setUrl } = useUrlStore();
   const { setEventId } = useEventIdStore();
-  const [qrResult, setQrResult] = useState<string | null>(null);
-  const scannedEventId = useRef<number | null>(null);
-  const [teamId, setTeamId] = useState<string | null>(null);
 
-  const fetchWithTimeout = (url: string, options: any = {}, timeout = 800) => {
+  const [qrIps, setQrIps] = useState<string[]>([]);
+  const scannedEventId = useRef<number | null>(null);
+  const scannedTeamId = useRef<string | null>(null);
+
+  const fetchWithTimeout = (url: string, options: any = {}, timeout = 3000) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    
     return Promise.race([
-      fetch(url, options),
+      fetch(url, { ...options, signal: controller.signal }),
       new Promise((_, reject) =>
         setTimeout(() => reject(new Error("timeout")), timeout)
       ),
-    ]);
+    ]).finally(() => clearTimeout(timeoutId));
   };
 
   const handleCloseScanner = () => {
@@ -33,78 +38,93 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
       const parsedData = JSON.parse(data) as QRCodeContent;
 
       if (!parsedData.eventId || !parsedData.ips) {
-        console.warn("Format QR Code invalide: eventId ou ips manquant");
+        Alert.alert("Erreur", "QR Code invalide: eventId ou ips manquant");
         return;
       }
 
       const eventId = Number(parsedData.eventId);
       
       if (isNaN(eventId)) {
-        console.warn("Format QR Code invalide: eventId n'est pas un nombre");
+        Alert.alert("Erreur", "QR Code invalide: ID d'événement incorrect");
         return;
       }
+
 
       scannedEventId.current = eventId;
       setEventId(eventId);
       
       if ('teamId' in parsedData && parsedData.teamId) {
-        setTeamId(parsedData.teamId);
+        scannedTeamId.current = parsedData.teamId;
       } else {
-        setTeamId(null);
+        scannedTeamId.current = null;
       }
 
-      const ipsString = Array.isArray(parsedData.ips) 
-        ? parsedData.ips.join(';')
-        : String(parsedData.ips);
-      
-      setQrResult(ipsString);
-      setShowQRScanner(false);
+      if (Array.isArray(parsedData.ips)) {
+        setQrIps(parsedData.ips);
+        setShowQRScanner(false);
+      } else {
+        Alert.alert("Erreur", "Format des IPs incorrect (tableau attendu)");
+      }
       
     } catch (error) {
-      console.error("Le QR Code n'est pas au format JSON valide:", error);
+      console.error("Erreur parsing QR:", error);
+      Alert.alert("Erreur", "QR Code invalide: format JSON incorrect");
     }
   };
 
-  const checkIps = async (ipsString: string): Promise<string | null> => {
-    if (!ipsString || ipsString.trim() === "") return null;
-    const ips = ipsString.split(";");
+  const checkIps = async (ips: string[]): Promise<string | null> => {
+    if (!ips || ips.length === 0) return null;
+    
     for (const ip of ips) {
       try {
-        const response = (await fetchWithTimeout(
-          `http://${ip}`,
-          { method: "GET" },
-          400
-        )) as Response;
-        if (response.ok) {
-          console.log(`Valid URL found: http://${ip}`);
-          return `http://${ip}`;
+        let formattedIp = ip.trim();
+        if (!formattedIp.startsWith('http://') && !formattedIp.startsWith('https://')) {
+          formattedIp = `http://${formattedIp}`;
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-      } catch (err) {}
+        
+        const response = (await fetchWithTimeout(
+          formattedIp,
+          { method: "GET", headers: { 'Accept': 'application/json' } },
+          3000
+        )) as Response;
+        
+        if (response.ok) {
+          return formattedIp;
+        }
+      } catch (err) {
+        // Continue to next IP
+      }
     }
     return null;
   };
 
   useEffect(() => {
     const checkQRCodeData = async () => {
-      if (!qrResult) return;
-      const urlFound = await checkIps(qrResult);
+      if (qrIps.length === 0) return;
+      
+      const urlFound = await checkIps(qrIps);
+      
       if (urlFound) {
         setUrl(urlFound);
         if (onUrlFound && scannedEventId.current) {
-          onUrlFound(urlFound, scannedEventId.current);
+          await onUrlFound(urlFound, scannedEventId.current, scannedTeamId.current);
         }
-        setQrResult(null);
+        setQrIps([]); 
+      } else {
+        Alert.alert("Erreur connexion", "Aucune adresse IP du QR Code n'est joignable.");
+        setQrIps([]);
       }
     };
+    
     checkQRCodeData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [qrResult, setUrl, onUrlFound]);
+  }, [qrIps, setUrl, onUrlFound]);
 
   const handleScanAgain = () => {
     setUrl("");
-    setQrResult(null);
-    setTeamId(null);
+    setQrIps([]);
+    scannedTeamId.current = null;
+    scannedEventId.current = null;
   };
 
   return {
@@ -114,8 +134,7 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
     handleQRScanResult,
     handleScanAgain,
     url,
-    teamId,
-    checkIps,
-    resetQrResult: () => setQrResult(null),
+    checkIps, 
+    resetQrResult: () => setQrIps([]),
   };
 };

@@ -15,8 +15,7 @@ interface QRCodeScannerProps {
 
 export default function QRCodeScanner({
   title,
-  onScanResult,
-  showRawData = false,
+  onScanResult
 }: QRCodeScannerProps) {
   const { isGranted, loading, error } = useQRScanner();
 
@@ -83,10 +82,10 @@ export default function QRCodeScanner({
     
     if (parsedData) {
       console.log("QR Code parsé:", parsedData);
-      onScanResult(parsedData, showRawData ? data : undefined);
+      onScanResult(parsedData);
     } else {
       console.warn("QR Code invalide ou format non reconnu");
-      onScanResult(null, data);
+      onScanResult(null);
     }
   };
 
