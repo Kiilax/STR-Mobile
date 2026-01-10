@@ -3,37 +3,40 @@ import { TeamAction } from "@/types";
 import { ProxyApi } from "@/utils";
 import { useCallback, useState } from "react";
 
-export function useTeamActionsApi(teamId: number) {
+export function useTeamActionsApi(teamId: number, eventId: number) {
   const currentUrl = useUrlStore((state) => state.url);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchTeamActions = useCallback(
     async (overrideUrl?: string) => {
-      setError(null);
-
-      const targetUrl = overrideUrl || currentUrl;
-
-      if (!targetUrl || targetUrl.trim() === "") {
-        setError("IP address is not set");
-        setLoading(false);
+      if (!teamId) {
         return null;
       }
 
+      setError(null);
+      const targetUrl = overrideUrl || currentUrl;
+
+      if (!targetUrl || targetUrl.trim() === "") {
+        return null;
+      }
+
+      setLoading(true);
       try {
-        const response: TeamAction = await ProxyApi.get<TeamAction>(
+        const response = await ProxyApi.get<TeamAction[]>(
           targetUrl,
-          `/team-actions/${teamId}`
+          `/team-actions`,
+          { teamId, eventId }
         );
         return response;
       } catch (err: any) {
         setError(err.message || "Failed to fetch team actions");
-        throw err;
+        return []; 
       } finally {
         setLoading(false);
       }
     },
-    [currentUrl]
+    [currentUrl, teamId]
   );
 
   return {
