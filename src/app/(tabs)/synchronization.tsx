@@ -9,10 +9,11 @@ import { useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "@/modules/synchronization/styles/SynchronizationView.styles";
 import { useSynchronization } from "@/modules/synchronization/hooks/useSynchronization";
-import { useQrCode } from "@/modules/synchronization/hooks/useQRCode";
+import { useQrCode } from "@/hooks/useQRCode";
 import { ModalWrapper, QRCodeScanner } from "@/components";
 import { useNavigation } from "expo-router";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
+import type { QRCodeContent } from "@/types/qrCodeContent";
 
 export default function SynchronizationScreen() {
   const {
@@ -50,11 +51,20 @@ export default function SynchronizationScreen() {
     router.getParent()?.navigate("index");
   };
 
-  const handleValidatedScan = (data: string) => {
-    if (!data.includes(";")) return;
+  const handleValidatedScan = (parsedData: QRCodeContent | null, rawData?: string) => {
+    if (!parsedData) {
+      Alert.alert("Erreur", "QR Code invalide ou format non reconnu");
+      setShowQRScanner(false);
+      return;
+    }
 
-    const eventIdStr = data.split(";")[0];
-    const scannedId = Number(eventIdStr);
+    const scannedId = Number(parsedData.eventId);
+
+    if (isNaN(scannedId)) {
+      Alert.alert("Erreur", "ID d'événement invalide dans le QR Code");
+      setShowQRScanner(false);
+      return;
+    }
 
     if (scannedId !== eventId) {
       Alert.alert("Erreur", "Vous vous êtes trompé d'événement");
@@ -62,13 +72,33 @@ export default function SynchronizationScreen() {
       return;
     }
 
-    handleQRScanResult(data);
+    if (rawData) {
+      handleQRScanResult(rawData);
+    } else {
+      console.error("Données brutes du QR Code non disponibles");
+      return;
+    }
+  };
+
+  const handleInitialScan = (parsedData: QRCodeContent | null, rawData?: string) => {
+    if (!parsedData) {
+      Alert.alert("Erreur", "QR Code invalide ou format non reconnu");
+      return;
+    }
+
+    if (rawData) {
+      handleQRScanResult(rawData);
+    } else {
+      console.error("Données brutes du QR Code non disponibles");
+      return;
+    }
   };
 
   const onRescanPress = () => {
     resetQrResult();
     setShowQRScanner(true);
   };
+  
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
@@ -148,7 +178,8 @@ export default function SynchronizationScreen() {
       <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner}>
         <QRCodeScanner
           title={hasScannedQR ? "Mettre à jour" : "Scanner"}
-          onScanResult={hasScannedQR ? handleValidatedScan : handleQRScanResult}
+          onScanResult={hasScannedQR ? handleValidatedScan : handleInitialScan}
+          showRawData={true}
         />
       </ModalWrapper>
     </View>
