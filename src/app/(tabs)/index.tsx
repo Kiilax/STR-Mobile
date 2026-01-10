@@ -128,6 +128,7 @@ export default function MapScreen() {
         );
         return;
       }
+      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     } catch (error) {
       Alert.alert("Erreur", "Impossible d'ouvrir l'application de navigation.");
     }

@@ -36,7 +36,7 @@ export function useTeamActionsApi(teamId: number, eventId: number) {
         setLoading(false);
       }
     },
-    [currentUrl, teamId]
+    [currentUrl, teamId, eventId]
   );
 
   return {

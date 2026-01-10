@@ -122,7 +122,7 @@ export default function SynchronizationScreen() {
             />
             <Text style={styles.infoText}>
               Scannez le QR Code administrateur pour synchroniser vos points
-              d'intérêt.
+              d&apos;intérêt.
             </Text>
             <TouchableOpacity
               style={styles.button}
@@ -181,7 +181,9 @@ export default function SynchronizationScreen() {
               style={[styles.button, styles.buttonSecondary, { marginTop: 12 }]}
               onPress={handleRescanPress}
             >
-              <Text style={styles.buttonText}>Mettre à jour l'événement</Text>
+              <Text style={styles.buttonText}>
+                Mettre à jour l&apos;événement
+              </Text>
             </TouchableOpacity>
           </View>
         )}

@@ -28,7 +28,6 @@ export default function TeamActionsScreen() {
   const [currentTeamId, setCurrentTeamId] = useState<string | null>(null);
 
   const { eventId } = useEventIdStore();
-  if (!eventId) return null;
 
   const { equipments } = useEquipmentsStore();
   const { eventData } = useEventDataStore();
@@ -45,7 +44,7 @@ export default function TeamActionsScreen() {
     fetchTeamActions,
     loading: loadingActions,
     error: apiError,
-  } = useTeamActionsApi(apiTeamId, eventId);
+  } = useTeamActionsApi(apiTeamId, eventId ? eventId : 0);
 
   const {
     showQRScanner,
@@ -72,6 +71,7 @@ export default function TeamActionsScreen() {
           handleRescanPress();
         }
       },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       []
     ),
   });
@@ -129,6 +129,16 @@ export default function TeamActionsScreen() {
     const equipment = equipments.find((e) => e.id === placement.equipmentId);
     return equipment ? equipment.name : "Équipement inconnu";
   };
+
+  if (!eventId)
+    return (
+      <View style={styles.centerContent}>
+        <Text style={styles.infoText}>
+          Aucun événement sélectionné. Veuillez sélectionner un événement pour
+          continuer.
+        </Text>
+      </View>
+    );
 
   const renderActionItem = ({ item }: { item: LocalTeamAction }) => {
     const isDropoff = item.action === "DROPOFF";

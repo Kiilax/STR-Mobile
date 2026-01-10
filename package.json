@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "test": "jest",
     "lint": "eslint \"src/**/*.{ts,tsx,js}\"",
-    "lint:fix": "eslint src/**/*.{ts,tsx} --fix",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx,js}\" --fix",
     "lint:check": "eslint \"src/**/*.{ts,tsx,js}\" --max-warnings=0",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\"",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\""
