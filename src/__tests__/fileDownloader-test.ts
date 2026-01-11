@@ -2,15 +2,6 @@ import { FileDownloader } from "@/utils/fileDownloader";
 import { ImageStorage } from "@/utils/imageStorage";
 import { fetch } from "expo/fetch";
 
-// Mock expo-file-system usage from jest.setup.js
-// Mock expo/fetch usage from jest.setup.js
-
-jest.mock("@/utils/imageStorage", () => ({
-  ImageStorage: {
-    save: jest.fn(),
-  },
-}));
-
 describe("FileDownloader", () => {
   const mockFetch = fetch as jest.Mock;
   const mockImageStorageSave = ImageStorage.save as jest.Mock;

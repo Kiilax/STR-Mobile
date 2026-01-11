@@ -1,6 +1,8 @@
 import { ImageStorage } from "@/utils/imageStorage";
 import { File, Directory, Paths } from "expo-file-system";
 
+jest.unmock("@/utils/imageStorage");
+
 describe("ImageStorage", () => {
   const mockFile = jest.mocked(File);
   const mockDirectory = jest.mocked(Directory);
