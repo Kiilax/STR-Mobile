@@ -33,11 +33,6 @@ export default function QRCodeScanner({
         return null;
       }
 
-      if (typeof parsedData.eventId !== "string") {
-        console.warn("Données QR Code invalides: eventId doit être une string");
-        return null;
-      }
-
       if (
         !Array.isArray(parsedData.ips) &&
         typeof parsedData.ips !== "string"
@@ -59,13 +54,6 @@ export default function QRCodeScanner({
       }
 
       if ("teamId" in parsedData && parsedData.teamId) {
-        if (typeof parsedData.teamId !== "string") {
-          console.warn(
-            "Données QR Code invalides: teamId doit être une string"
-          );
-          return null;
-        }
-
         return {
           eventId: parsedData.eventId,
           ips: normalizedIps,

@@ -1,10 +1,11 @@
 import { ModalWrapper, QRCodeScanner } from "@/components";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { colors } from "@/constants/theme";
 import { useQrCode, useSynchronization } from "@/modules/synchronization/hooks";
+import { QRCodeContent } from "@/types/qrCodeContent";
 
 export default function EventScanner() {
   const [showQRScanner, setShowQRScanner] = useState(false);
@@ -26,8 +27,29 @@ export default function EventScanner() {
     setShowQRScanner(false);
   };
 
-  const handleScanResult = (data: string) => {
-    handleQRScanResult(data);
+  const handleScan = (parsedData: QRCodeContent | null) => {
+    if (!parsedData) {
+      Alert.alert("Erreur", "QR Code invalide ou format non reconnu");
+      return;
+    }
+
+    const scannedId = Number(parsedData.eventId);
+
+    if (isNaN(scannedId)) {
+      Alert.alert("Erreur", "ID d'événement invalide dans le QR Code");
+      return;
+    }
+
+    if (eventId && scannedId !== eventId) {
+      Alert.alert(
+        "Erreur d'événement",
+        "Ce QR Code correspond à un événement différent de celui en cours. Veuillez dissocier l'événement actuel avant d'en changer."
+      );
+      setShowQRScanner(false);
+      return;
+    }
+
+    handleQRScanResult(JSON.stringify(parsedData));
   };
 
   useEffect(() => {
@@ -57,7 +79,7 @@ export default function EventScanner() {
           onClose={handleCloseScanner}
           overlayOpacity={1}
         >
-          <QRCodeScanner title="Synchroniser" onScanResult={handleScanResult} />
+          <QRCodeScanner title="Synchroniser" onScanResult={handleScan} />
         </ModalWrapper>
       )}
     </View>
