@@ -54,7 +54,13 @@ export class ProxyApi {
     return json.data;
   }
 
-  static get<T>(url: string, endpoint: string) {
+  static get<T>(url: string, endpoint: string, params?: Record<string, any>) {
+    if (params) {
+      const queryString = new URLSearchParams(
+        params as Record<string, string>
+      ).toString();
+      endpoint += `?${queryString}`;
+    }
     return this.request<T>(url, endpoint, { method: "GET" });
   }
 

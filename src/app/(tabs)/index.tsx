@@ -31,6 +31,17 @@ const mapStyle = [
   },
 ];
 
+const isValidCoordinate = (coord: any): boolean => {
+  return (
+    coord &&
+    typeof coord === "object" &&
+    typeof coord.latitude === "number" &&
+    !isNaN(coord.latitude) &&
+    typeof coord.longitude === "number" &&
+    !isNaN(coord.longitude)
+  );
+};
+
 export default function MapScreen() {
   const [showModal, setShowModal] = useState(false);
   const [selectedPlacement, setSelectedPlacement] =
@@ -56,7 +67,14 @@ export default function MapScreen() {
   };
 
   const handleStartTour = async () => {
-    const unvisited = routeMarkers.filter((m) => !m.isVisited);
+    const unvisited = routeMarkers.filter(
+      (m) =>
+        !m.isVisited &&
+        m.coordinates &&
+        m.coordinates.length > 0 &&
+        m.coordinates[0] &&
+        isValidCoordinate(m.coordinates[0])
+    );
 
     if (unvisited.length === 0) {
       Alert.alert(
@@ -67,16 +85,36 @@ export default function MapScreen() {
     }
 
     const destination = unvisited[unvisited.length - 1];
+    if (
+      !destination.coordinates ||
+      destination.coordinates.length === 0 ||
+      !isValidCoordinate(destination.coordinates[0])
+    ) {
+      Alert.alert("Erreur", "Coordonnées de destination non disponibles.");
+      return;
+    }
+
     const waypoints = unvisited.slice(0, unvisited.length - 1);
-    const destCoords = `${destination.coordinates.latitude},${destination.coordinates.longitude}`;
+    const destCoords = `${destination.coordinates[0].latitude},${destination.coordinates[0].longitude}`;
 
     let url = `https://www.google.com/maps/dir/?api=1&destination=${destCoords}&travelmode=driving`;
 
     if (waypoints.length > 0) {
-      const waypointsStr = waypoints
-        .map((p) => `${p.coordinates.latitude},${p.coordinates.longitude}`)
-        .join("|");
-      url += `&waypoints=${waypointsStr}`;
+      const validWaypoints = waypoints.filter(
+        (p) =>
+          p.coordinates &&
+          p.coordinates.length > 0 &&
+          isValidCoordinate(p.coordinates[0])
+      );
+
+      if (validWaypoints.length > 0) {
+        const waypointsStr = validWaypoints
+          .map(
+            (p) => `${p.coordinates[0].latitude},${p.coordinates[0].longitude}`
+          )
+          .join("|");
+        url += `&waypoints=${waypointsStr}`;
+      }
     }
 
     try {
@@ -84,9 +122,11 @@ export default function MapScreen() {
       if (supported) {
         await Linking.openURL(url);
       } else {
-        const first = unvisited[0];
-        const appleUrl = `http://maps.apple.com/?daddr=${first.coordinates.latitude},${first.coordinates.longitude}&dirflg=d`;
-        await Linking.openURL(appleUrl);
+        Alert.alert(
+          "Erreur",
+          "Impossible d'ouvrir l'application de navigation."
+        );
+        return;
       }
       // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     } catch (error) {
@@ -110,38 +150,43 @@ export default function MapScreen() {
         userInterfaceStyle="dark"
         toolbarEnabled={false}
       >
-        {interestPointMarkers?.map((marker) =>
-          marker?.coordinates ? (
+        {interestPointMarkers
+          ?.filter(
+            (marker) =>
+              marker?.coordinates && isValidCoordinate(marker.coordinates)
+          )
+          .map((marker) => (
             <Marker
               key={marker.id}
-              coordinate={{
-                ...marker.coordinates,
-              }}
+              coordinate={marker.coordinates}
               image={require("@/assets/markers/md-red.png")}
             />
-          ) : null
-        )}
+          ))}
+
         {routeMarkers &&
-          routeMarkers.length > 0 &&
-          routeMarkers.map((marker) =>
-            marker?.coordinates ? (
+          routeMarkers
+            .filter(
+              (marker) =>
+                marker.coordinates &&
+                marker.coordinates.length > 0 &&
+                isValidCoordinate(marker.coordinates[0])
+            )
+            .map((marker) => (
               <Marker
                 key={marker.id}
                 onPress={() => {
                   setSelectedPlacement(marker);
                   setShowModal(true);
                 }}
-                coordinate={{
-                  ...marker.coordinates,
-                }}
+                coordinate={marker.coordinates[0]}
                 image={
                   marker.isVisited
                     ? require("@/assets/markers/md-gr.png")
                     : getEquipmentById(marker.equipmentId)?.image
                 }
               />
-            ) : null
-          )}
+            ))}
+
         {course &&
           course.length > 0 &&
           course.map((lines) => (
@@ -152,6 +197,7 @@ export default function MapScreen() {
               strokeWidth={4}
             />
           ))}
+
         {geometries &&
           geometries.length > 0 &&
           geometries.map((lines, index) => (
@@ -164,6 +210,7 @@ export default function MapScreen() {
             />
           ))}
       </MapView>
+
       <View style={styles.infoContainer}>
         <Text style={styles.addressText}>
           Astuce : cliquer sur un point pour démarrer le GPS ou le marquer comme
@@ -176,6 +223,7 @@ export default function MapScreen() {
           <Ionicons name="locate" size={26} color="white" />
         </TouchableOpacity>
       )}
+
       {isFollowing && !userLocation && (
         <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>
           <ActivityIndicator size="small" color="white" />

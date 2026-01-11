@@ -51,6 +51,17 @@ export default function TabNav() {
               ),
             }}
           />
+          <Tabs.Screen
+            name="teamActions"
+            options={{
+              headerShown: true,
+              title: "Événement :" + (title ? ` ${title}` : " Aucun"),
+              tabBarLabel: "Planning",
+              tabBarIcon: ({ color, size }) => (
+                <Entypo name="list" size={size} color={color} />
+              ),
+            }}
+          />
         </Tabs>
         <StatusBar style="auto" />
       </ThemeProvider>
