@@ -39,7 +39,10 @@ export default function SynchronizationScreen() {
   const [teamIdState, setTeamIdState] = useState<string | null>(null);
 
   const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
-  const { fetchTeamActions } = useTeamActionsApi(apiTeamId, eventId ? eventId : 0);
+  const { fetchTeamActions } = useTeamActionsApi(
+    apiTeamId,
+    eventId ? eventId : 0
+  );
 
   const {
     showQRScanner,
@@ -49,7 +52,11 @@ export default function SynchronizationScreen() {
     handleScanAgain,
   } = useQrCode({
     onUrlFound: useCallback(
-      async (foundUrl: string, foundEventId: number, foundTeamId: string | null) => {
+      async (
+        foundUrl: string,
+        foundEventId: number,
+        foundTeamId: string | null
+      ) => {
         await handleReceiveEvent(foundUrl, foundEventId);
 
         if (foundTeamId && eventId === foundEventId) {
@@ -65,7 +72,13 @@ export default function SynchronizationScreen() {
           }
         }
       },
-      [handleReceiveEvent, eventId, fetchTeamActions, setTeamActionsFromApi, setCurrentTeamId]
+      [
+        handleReceiveEvent,
+        eventId,
+        fetchTeamActions,
+        setTeamActionsFromApi,
+        setCurrentTeamId,
+      ]
     ),
   });
 

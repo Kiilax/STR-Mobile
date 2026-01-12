@@ -24,7 +24,7 @@ import { colors } from "@/constants/theme";
 export default function TeamActionsScreen() {
   const router = useRouter();
   const [loadingActions, setLoadingActions] = useState(false);
-  
+
   const { eventId } = useEventIdStore();
 
   const { equipments } = useEquipmentsStore();
@@ -38,10 +38,10 @@ export default function TeamActionsScreen() {
   } = useTeamActionsStore();
 
   const apiTeamId = currentTeamId ? parseInt(currentTeamId, 10) : 0;
-  const {
-    fetchTeamActions,
-    error: apiError,
-  } = useTeamActionsApi(apiTeamId, eventId ? eventId : 0);
+  const { fetchTeamActions, error: apiError } = useTeamActionsApi(
+    apiTeamId,
+    eventId ? eventId : 0
+  );
 
   useEffect(() => {
     const loadTeamActions = async () => {
@@ -107,13 +107,16 @@ export default function TeamActionsScreen() {
             style={{ opacity: 0.5, marginBottom: 30 }}
           />
           <Text style={styles.infoText}>
-            Vous devez d'abord synchroniser l'appareil pour récupérer le planning de votre équipe.
+            Vous devez d&apos;abord synchroniser l&apos;appareil pour récupérer
+            le planning de votre équipe.
           </Text>
           <TouchableOpacity
             style={styles.mainButton}
             onPress={() => router.push("/(tabs)/synchronization")}
           >
-            <Text style={styles.mainButtonText}>Aller à la synchronisation</Text>
+            <Text style={styles.mainButtonText}>
+              Aller à la synchronisation
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -195,13 +198,16 @@ export default function TeamActionsScreen() {
             style={{ opacity: 0.5, marginBottom: 30 }}
           />
           <Text style={styles.infoText}>
-            Vous devez d'abord synchroniser l'appareil pour récupérer le planning de votre équipe.
+            Vous devez d&apos;abord synchroniser l&apos;appareil pour récupérer
+            le planning de votre équipe.
           </Text>
           <TouchableOpacity
             style={styles.mainButton}
             onPress={() => router.push("/(tabs)/synchronization")}
           >
-            <Text style={styles.mainButtonText}>Aller à la synchronisation</Text>
+            <Text style={styles.mainButtonText}>
+              Aller à la synchronisation
+            </Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -240,9 +246,7 @@ export default function TeamActionsScreen() {
               disabled={loadingActions}
             >
               <Ionicons name="refresh-outline" size={24} color="#FFF" />
-              <Text style={styles.mainButtonText}>
-                Changer de planning
-              </Text>
+              <Text style={styles.mainButtonText}>Changer de planning</Text>
             </TouchableOpacity>
           </View>
         </View>
