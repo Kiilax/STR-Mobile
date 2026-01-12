@@ -175,14 +175,33 @@ export default function MapScreen() {
               const equipment = getEquipmentById(marker.equipmentId);
               const isVehicle = equipment?.type === "vehicle";
               const strokeColor = marker.isVisited ? "green" : "red";
-
+              const fillColor = marker.isVisited
+                ? "rgba(0,255,0,0.3)"
+                : "rgba(255,0,0,0.3)";
+              if (marker.coordinates.length === 1) {
+                return (
+                  <Marker
+                    key={marker.id}
+                    coordinate={marker.coordinates[0]}
+                    image={
+                      marker.isVisited
+                        ? require("@/assets/markers/md-gr.png")
+                        : equipment?.image
+                    }
+                    onPress={() => {
+                      setSelectedPlacement(marker);
+                      setShowModal(true);
+                    }}
+                  />
+                );
+              }
               if (isVehicle) {
                 return (
                   <Polygon
                     key={marker.id}
                     coordinates={marker.coordinates}
                     strokeColor={strokeColor}
-                    fillColor="transparent"
+                    fillColor={fillColor}
                     strokeWidth={2}
                     tappable
                     onPress={() => {
@@ -214,8 +233,10 @@ export default function MapScreen() {
             <Polyline
               key={lines.id}
               coordinates={lines.route}
-              strokeColor="red"
-              strokeWidth={4}
+              strokeColor={
+                lines.color ? `${lines.color}90` : "rgba(0,0,255,0.3)"
+              }
+              strokeWidth={8}
             />
           ))}
 
