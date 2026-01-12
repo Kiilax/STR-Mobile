@@ -6,6 +6,8 @@ import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
 import { useInterestPointsApi } from "./useInterestPointsApi";
 import { useEventApi } from "./useEventApi";
 import { InterestPoint } from "@/types";
+import { useEquipmentsStore } from "@/hooks";
+import { RectangleCalculator } from "@/utils/rectangleCalculator";
 
 type SyncStatus = "idle" | "syncing" | "success" | "error";
 
@@ -28,6 +30,7 @@ export function useSynchronization(): UseSynchronizationReturn {
   const { eventId, deleteEventId } = useEventIdStore();
   const { setEventData, deleteEventData } = useEventDataStore();
   const { interestPoints, deleteAllInterestPoints } = useInterestPointsStore();
+  const { getEquipmentById } = useEquipmentsStore();
 
   const { create } = useInterestPointsApi();
   const { fetchEventById } = useEventApi();
@@ -120,11 +123,32 @@ export function useSynchronization(): UseSynchronizationReturn {
       try {
         const event = await fetchEventById(overrideUrl, overrideEventId);
         if (event) {
-          setEventData(event);
+          console.log("Event received:", event.zones);
           setStatus("success");
           setMessage("Événement reçu avec succès");
-          console.log("Event received successfully:", event);
-          console.log("Geometries:", event.geometries);
+          for (const equipmentPlacement of event.equipmentPlacements) {
+            const equipment = getEquipmentById(equipmentPlacement.equipmentId);
+            console.log(
+              `Getting equipment type for equipment ID: ${equipmentPlacement.equipmentId} : ${equipment?.type}`
+            );
+            if (equipment?.type === "vehicle") {
+              console.log(`Found a vehicle equipment ID: ${equipment.id}`);
+              const newCoordinates =
+                RectangleCalculator.getVehicleRect(equipmentPlacement);
+              if (newCoordinates) {
+                console.log(
+                  `Calculated rectangle for equipmentPlacement ID ${equipmentPlacement.id}:`,
+                  newCoordinates
+                );
+                equipmentPlacement.coordinates = newCoordinates;
+              } else {
+                console.warn(
+                  `Failed to calculate rectangle for equipmentPlacement ID ${equipmentPlacement.id}`
+                );
+              }
+            }
+          }
+          setEventData(event);
         } else {
           setStatus("error");
           setMessage("Aucun événement trouvé");
@@ -138,7 +162,7 @@ export function useSynchronization(): UseSynchronizationReturn {
         console.error("Failed to receive event:", error);
       }
     },
-    [url, fetchEventById, setEventData]
+    [url, fetchEventById, setEventData, getEquipmentById]
   );
 
   const handleClearData = async () => {
