@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useQrCode } from "@/hooks/useQRCode";
 import { ModalWrapper, QRCodeScanner } from "@/components";
 import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
@@ -24,6 +25,7 @@ import { useEventIdStore } from "@/hooks";
 import { colors } from "@/constants/theme";
 
 export default function TeamActionsScreen() {
+  const router = useRouter();
   const [hasScannedQR, setHasScannedQR] = useState(false);
   const [currentTeamId, setCurrentTeamId] = useState<string | null>(null);
 
@@ -138,6 +140,29 @@ export default function TeamActionsScreen() {
           continuer.
         </Text>
       </View>
+    );
+
+  if (!currentTeamId)
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centerContent}>
+          <Ionicons
+            name="sync-outline"
+            size={100}
+            color={colors.dark.text}
+            style={{ opacity: 0.5, marginBottom: 30 }}
+          />
+          <Text style={styles.infoText}>
+            Vous devez d'abord synchroniser l'appareil pour récupérer le planning de votre équipe.
+          </Text>
+          <TouchableOpacity
+            style={styles.mainButton}
+            onPress={() => router.push("/(tabs)/synchronization")}
+          >
+            <Text style={styles.mainButtonText}>Aller à la synchronisation</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     );
 
   const renderActionItem = ({ item }: { item: LocalTeamAction }) => {
