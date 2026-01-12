@@ -9,15 +9,18 @@ export interface LocalTeamAction extends TeamAction {
 
 interface TeamActionState {
   teamActions: LocalTeamAction[];
+  currentTeamId: string | null;
   setTeamActionsFromApi: (
     apiActions: TeamAction[] | TeamAction
   ) => Promise<void>;
+  setCurrentTeamId: (teamId: string | null) => void;
   toggleActionDone: (actionId: string) => void;
   resetTeamActions: () => void;
 }
 
 export const useTeamActionsStore = create<TeamActionState>((set, get) => ({
   teamActions: [],
+  currentTeamId: null,
 
   setTeamActionsFromApi: async (apiActions) => {
     try {
@@ -37,6 +40,10 @@ export const useTeamActionsStore = create<TeamActionState>((set, get) => ({
     }
   },
 
+  setCurrentTeamId: (teamId: string | null) => {
+    set({ currentTeamId: teamId });
+  },
+
   toggleActionDone: (actionId: string) => {
     set((state) => ({
       teamActions: state.teamActions.map((action) =>
@@ -47,7 +54,7 @@ export const useTeamActionsStore = create<TeamActionState>((set, get) => ({
   },
 
   resetTeamActions: async () => {
-    set({ teamActions: [] });
+    set({ teamActions: [], currentTeamId: null });
     try {
       await AsyncStore.remove(keys.teamActions);
     } catch (e) {
