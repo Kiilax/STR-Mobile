@@ -54,7 +54,7 @@ export function useMarkers({
       try {
         const distances = await GoogleMapsService.getDrivingDistances(
           userLocation.coords,
-          equipmentPlacements.map((e) => e.coordinates)
+          equipmentPlacements.map((e) => e.coordinates[0])
         );
 
         const sorted = equipmentPlacements
@@ -86,7 +86,7 @@ export function useMarkers({
       if (!userLocation) return Infinity;
       return geolib.getDistance(
         { ...userLocation.coords },
-        { ...point.coordinates }
+        { ...point.coordinates[0] }
       );
     };
     if (!userLocation || !routeMarkers) return;

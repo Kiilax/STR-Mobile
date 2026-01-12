@@ -15,6 +15,7 @@ export interface EquipmentPlacement {
 
 export interface Equipment {
   id: number;
+  type: string;
   name: string;
   description: string;
   length: number;

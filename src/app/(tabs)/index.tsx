@@ -47,7 +47,7 @@ export default function MapScreen() {
   const [selectedPlacement, setSelectedPlacement] =
     useState<EquipmentPlacement | null>(null);
   const {
-    geometries,
+    zones,
     course,
     mapRef,
     region,
@@ -171,21 +171,42 @@ export default function MapScreen() {
                 marker.coordinates.length > 0 &&
                 isValidCoordinate(marker.coordinates[0])
             )
-            .map((marker) => (
-              <Marker
-                key={marker.id}
-                onPress={() => {
-                  setSelectedPlacement(marker);
-                  setShowModal(true);
-                }}
-                coordinate={marker.coordinates[0]}
-                image={
-                  marker.isVisited
-                    ? require("@/assets/markers/md-gr.png")
-                    : getEquipmentById(marker.equipmentId)?.image
-                }
-              />
-            ))}
+            .map((marker) => {
+              const equipment = getEquipmentById(marker.equipmentId);
+              const isVehicle = equipment?.type === "vehicle";
+              const strokeColor = marker.isVisited ? "green" : "red";
+
+              if (isVehicle) {
+                return (
+                  <Polygon
+                    key={marker.id}
+                    coordinates={marker.coordinates}
+                    strokeColor={strokeColor}
+                    fillColor="transparent"
+                    strokeWidth={2}
+                    tappable
+                    onPress={() => {
+                      setSelectedPlacement(marker);
+                      setShowModal(true);
+                    }}
+                  />
+                );
+              }
+
+              return (
+                <Polyline
+                  key={marker.id}
+                  coordinates={marker.coordinates}
+                  strokeColor={strokeColor}
+                  strokeWidth={2}
+                  tappable
+                  onPress={() => {
+                    setSelectedPlacement(marker);
+                    setShowModal(true);
+                  }}
+                />
+              );
+            })}
 
         {course &&
           course.length > 0 &&
@@ -198,12 +219,12 @@ export default function MapScreen() {
             />
           ))}
 
-        {geometries &&
-          geometries.length > 0 &&
-          geometries.map((lines, index) => (
+        {zones &&
+          zones.length > 0 &&
+          zones.map((zone, index) => (
             <Polygon
               key={index}
-              coordinates={lines}
+              coordinates={zone.coordinates}
               strokeColor="green"
               fillColor="rgba(0,255,0,0.3)"
               strokeWidth={2}

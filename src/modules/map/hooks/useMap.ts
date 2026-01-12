@@ -3,7 +3,7 @@ import MapView from "react-native-maps";
 import * as Location from "expo-location";
 import { STRASBOURG_COORDINATES, USER_DELTA } from "@/constants/coordinates";
 import { useEventDataStore } from "@/hooks/useEventDataStore";
-import { Coordinates, Course } from "@/types";
+import { Course, Zone } from "@/types";
 
 export function useMap() {
   const mapRef = useRef<MapView | null>(null);
@@ -14,7 +14,7 @@ export function useMap() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const { eventData, eventDataLoading } = useEventDataStore();
   const [course, setCourse] = useState<Course[]>([]);
-  const [geometries, setGeometries] = useState<Coordinates[][]>([]);
+  const [zones, setZones] = useState<Zone[]>([]);
 
   useEffect(() => {
     if (eventData && !eventDataLoading) {
@@ -22,13 +22,13 @@ export function useMap() {
         console.log("Setting route:", eventData.courses);
         setCourse(eventData.courses);
       }
-      if (eventData.geometries) {
-        console.log("Setting geometries:", eventData.geometries);
-        setGeometries(eventData.geometries);
+      if (eventData.zones) {
+        console.log("Setting zones:", eventData.zones);
+        setZones(eventData.zones);
       }
     } else if (!eventData) {
       setCourse([]);
-      setGeometries([]);
+      setZones([]);
     }
   }, [eventData, eventDataLoading]);
 
@@ -74,7 +74,7 @@ export function useMap() {
   };
 
   return {
-    geometries,
+    zones,
     course,
     mapRef,
     region,

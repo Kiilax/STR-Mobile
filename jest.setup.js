@@ -54,3 +54,9 @@ jest.mock("react-native-geocoding", () => ({
     ),
   },
 }))
+
+jest.mock("@/utils/imageStorage", () => ({
+  ImageStorage: {
+    save: jest.fn(),
+  },
+}))

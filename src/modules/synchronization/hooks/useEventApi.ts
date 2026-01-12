@@ -37,7 +37,7 @@ export function useEventApi() {
           targetUrl,
           `/event/${targetEventId}`
         );
-        await fetchAll();
+        await fetchAll(targetUrl);
         return response;
       } catch (err: any) {
         setError(err.message || "Failed to fetch event");

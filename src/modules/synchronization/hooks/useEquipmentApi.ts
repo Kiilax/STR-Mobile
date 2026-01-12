@@ -10,33 +10,43 @@ export function useEquipmentApi() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAll = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    if (!url || url.trim() === "") {
-      setError("IP address is not set");
-      setLoading(false);
-      return [];
-    }
-    try {
-      const newEquipments = await ProxyApi.get<Equipment[]>(url, "/equipments");
-      setEquipments([]);
-      const finalEquipments = [];
-      for (const equip of newEquipments) {
-        const localUri = await FileDownloader.download(
-          url + "/files/",
-          equip.image
-        );
-        if (localUri) equip.image = localUri;
-        finalEquipments.push(equip);
+  const fetchAll = useCallback(
+    async (overrideUrl?: string) => {
+      setLoading(true);
+      setError(null);
+
+      const targetUrl = overrideUrl || url;
+
+      if (!targetUrl || targetUrl.trim() === "") {
+        console.warn("URL is not set, cannot fetch equipments");
+        setError("IP address is not set");
+        setLoading(false);
+        return [];
       }
-      setEquipments(finalEquipments);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  }, [url, setEquipments]);
+      try {
+        const newEquipments = await ProxyApi.get<Equipment[]>(
+          targetUrl,
+          "/equipments"
+        );
+        setEquipments([]);
+        const finalEquipments = [];
+        for (const equip of newEquipments) {
+          const localUri = await FileDownloader.download(
+            targetUrl + "/files/",
+            equip.image
+          );
+          if (localUri) equip.image = localUri;
+          finalEquipments.push(equip);
+        }
+        setEquipments(finalEquipments);
+      } catch (error) {
+        console.error("Failed to fetch equipments:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [url, setEquipments]
+  );
 
   return {
     fetchAll,
