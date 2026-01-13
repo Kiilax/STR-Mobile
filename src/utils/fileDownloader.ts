@@ -11,7 +11,12 @@ export class FileDownloader {
    */
   static async download(url: string, endpoint: string) {
     try {
-      const response = await fetch(`${url}${endpoint}`);
+      const apiKey: string = process.env.EXPO_PUBLIC_API_KEY || "";
+      const response = await fetch(`${url}${endpoint}`, {
+        headers: {
+          "x-api-key": apiKey,
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: Failed to download file`);
       }
