@@ -22,10 +22,8 @@ export default function EquipmentActions({
   placementId,
   onClose,
 }: EquipmentActionsProps) {
-  const {
-    equipmentPlacements,
-    setEquipmentStatus,
-  } = useEquipmentPlacementStore();
+  const { equipmentPlacements, setEquipmentStatus } =
+    useEquipmentPlacementStore();
   const { equipments } = useEquipmentsStore();
 
   const placement = equipmentPlacements.find((p) => p.id === placementId);
@@ -170,7 +168,8 @@ export default function EquipmentActions({
           <Text
             style={[
               styles.buttonTextSecondary,
-              placement.status === EquipmentStatus.REMOVED && styles.textVisited,
+              placement.status === EquipmentStatus.REMOVED &&
+                styles.textVisited,
             ]}
           >
             {placement.status === EquipmentStatus.REMOVED

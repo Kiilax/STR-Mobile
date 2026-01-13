@@ -29,17 +29,11 @@ export default function TeamActionsScreen() {
   const { eventId } = useEventIdStore();
   const { equipments } = useEquipmentsStore();
 
-  const {
-    teamActions,
-    setTeamActionsFromApi,
-    currentTeamId,
-  } = useTeamActionsStore();
+  const { teamActions, setTeamActionsFromApi, currentTeamId } =
+    useTeamActionsStore();
 
-  const {
-    equipmentPlacements,
-    getEquipmentPlacementById,
-    setEquipmentStatus,
-  } = useEquipmentPlacementStore();
+  const { equipmentPlacements, getEquipmentPlacementById, setEquipmentStatus } =
+    useEquipmentPlacementStore();
 
   const apiTeamId = currentTeamId ? parseInt(currentTeamId, 10) : 0;
   const { fetchTeamActions, error: apiError } = useTeamActionsApi(
@@ -122,8 +116,8 @@ export default function TeamActionsScreen() {
         placement.status === EquipmentStatus.DROPPED_OFF ||
         placement.status === EquipmentStatus.REMOVED
       );
-    } 
-    
+    }
+
     if (item.action === "REMOVE") {
       return placement.status === EquipmentStatus.REMOVED;
     }
@@ -135,21 +129,21 @@ export default function TeamActionsScreen() {
     const placementId =
       item.equipmentPlacementId || (item as any).equipmentPlacementId;
     const placement = getEquipmentPlacementById(Number(placementId));
-    
+
     if (!placement) return;
 
     if (item.action === "DROPOFF") {
-       if (placement.status === EquipmentStatus.DROPPED_OFF) {
-         await setEquipmentStatus(placement.id, EquipmentStatus.PENDING);
-       } else {
-         await setEquipmentStatus(placement.id, EquipmentStatus.DROPPED_OFF);
-       }
+      if (placement.status === EquipmentStatus.DROPPED_OFF) {
+        await setEquipmentStatus(placement.id, EquipmentStatus.PENDING);
+      } else {
+        await setEquipmentStatus(placement.id, EquipmentStatus.DROPPED_OFF);
+      }
     } else if (item.action === "REMOVE") {
-       if (placement.status === EquipmentStatus.REMOVED) {
-         await setEquipmentStatus(placement.id, EquipmentStatus.DROPPED_OFF);
-       } else {
-         await setEquipmentStatus(placement.id, EquipmentStatus.REMOVED);
-       }
+      if (placement.status === EquipmentStatus.REMOVED) {
+        await setEquipmentStatus(placement.id, EquipmentStatus.DROPPED_OFF);
+      } else {
+        await setEquipmentStatus(placement.id, EquipmentStatus.REMOVED);
+      }
     }
   };
 
@@ -220,18 +214,12 @@ export default function TeamActionsScreen() {
 
           <View style={styles.actionTexts}>
             <Text
-              style={[
-                styles.actionTitle,
-                done && styles.strikethroughText,
-              ]}
+              style={[styles.actionTitle, done && styles.strikethroughText]}
             >
               {isDropoff ? "Déposer" : "Retirer"} : {equipmentName}
             </Text>
             <Text
-              style={[
-                styles.actionSubtitle,
-                done && styles.strikethroughText,
-              ]}
+              style={[styles.actionSubtitle, done && styles.strikethroughText]}
             >
               Emplacement n°{placementId}
             </Text>
@@ -247,9 +235,7 @@ export default function TeamActionsScreen() {
             name={done ? "checkmark-circle" : "ellipse-outline"}
             size={28}
             color={
-              done
-                ? colors.dark.tint || "#2196F3"
-                : "rgba(255,255,255,0.3)"
+              done ? colors.dark.tint || "#2196F3" : "rgba(255,255,255,0.3)"
             }
           />
         </TouchableOpacity>
