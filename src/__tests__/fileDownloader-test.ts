@@ -26,7 +26,11 @@ describe("FileDownloader", () => {
 
       const result = await FileDownloader.download(url, endpoint);
 
-      expect(mockFetch).toHaveBeenCalledWith(`${url}${endpoint}`);
+      expect(mockFetch).toHaveBeenCalledWith(`${url}${endpoint}`, {
+        headers: {
+          "x-api-key": process.env.EXPO_PUBLIC_API_KEY || "",
+        },
+      });
       expect(mockImageStorageSave).toHaveBeenCalledWith(
         "document/downloadedFile"
       );
