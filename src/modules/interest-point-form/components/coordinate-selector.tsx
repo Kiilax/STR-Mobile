@@ -85,7 +85,7 @@ export default function CoordinateSelector({
               longitude:
                 coordinates.longitude || STRASBOURG_COORDINATES.longitude,
             }}
-            title="Point d'intérêt"
+            title="Point à sécuriser"
             description="Emplacement sélectionné"
           />
         </MapView>

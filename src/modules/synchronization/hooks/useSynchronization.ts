@@ -103,7 +103,7 @@ export function useSynchronization(): UseSynchronizationReturn {
       }
 
       setStatus("success");
-      setMessage("Points d'intérêt synchronisés avec succès");
+      setMessage("Points à sécuriser synchronisés avec succès");
     } catch (error: any) {
       setStatus("error");
       const errorMessage =

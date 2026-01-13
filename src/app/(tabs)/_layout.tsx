@@ -34,7 +34,7 @@ export default function TabNav() {
             options={{
               headerShown: true,
               title: "Événement :" + (title ? ` ${title}` : " Aucun"),
-              tabBarLabel: "Points d'intérêts",
+              tabBarLabel: "Points à sécuriser",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="location" size={size} color={color} />
               ),
@@ -45,9 +45,9 @@ export default function TabNav() {
             options={{
               headerShown: true,
               title: "Événement :" + (title ? ` ${title}` : " Aucun"),
-              tabBarLabel: "Synchronisation",
+              tabBarLabel: "Événement",
               tabBarIcon: ({ color, size }) => (
-                <Entypo name="rocket" size={size} color={color} />
+                <Entypo name="calendar" size={size} color={color} />
               ),
             }}
           />
