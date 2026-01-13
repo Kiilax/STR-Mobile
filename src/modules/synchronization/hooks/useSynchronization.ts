@@ -22,7 +22,7 @@ interface UseSynchronizationReturn {
     overrideUrl?: string,
     overrideEventId?: number
   ) => Promise<void>;
-  handleClearData: () => Promise<void>;
+  handleClearData: (resetTeamActions?: () => Promise<void>) => Promise<void>;
 }
 
 export function useSynchronization(): UseSynchronizationReturn {
@@ -165,9 +165,12 @@ export function useSynchronization(): UseSynchronizationReturn {
     [url, fetchEventById, setEventData, getEquipmentById]
   );
 
-  const handleClearData = async () => {
+  const handleClearData = async (resetTeamActions?: () => Promise<void>) => {
     await deleteEventData();
     deleteAllInterestPoints();
+    if (resetTeamActions) {
+      await resetTeamActions();
+    }
     await deleteEventId();
     useUrlStore.getState().setUrl("");
     setStatus("idle");

@@ -15,7 +15,7 @@ interface TeamActionState {
   ) => Promise<void>;
   setCurrentTeamId: (teamId: string | null) => void;
   toggleActionDone: (actionId: string) => void;
-  resetTeamActions: () => void;
+  resetTeamActions: () => Promise<void>;
 }
 
 export const useTeamActionsStore = create<TeamActionState>((set, get) => ({
