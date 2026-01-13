@@ -35,7 +35,8 @@ export default function SynchronizationScreen() {
     handleReceiveEvent,
   } = useSynchronization();
 
-  const { setTeamActionsFromApi, setCurrentTeamId } = useTeamActionsStore();
+  const { setTeamActionsFromApi, setCurrentTeamId, resetTeamActions } =
+    useTeamActionsStore();
   const [teamIdState, setTeamIdState] = useState<string | null>(null);
 
   const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
@@ -122,7 +123,7 @@ export default function SynchronizationScreen() {
           text: "Dissocier",
           style: "destructive",
           onPress: async () => {
-            await handleClearData();
+            await handleClearData(async () => resetTeamActions());
             router.getParent()?.navigate("index");
           },
         },

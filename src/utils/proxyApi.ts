@@ -1,6 +1,7 @@
 import { ApiResponse } from "../types";
 
 export class ProxyApi {
+  private static apiKey: string = process.env.EXPO_PUBLIC_API_KEY || "";
   /**
    * Makes an HTTP request to the specified URL and endpoint with given options.
    * @param url Base URL of the API
@@ -15,6 +16,7 @@ export class ProxyApi {
   ): Promise<T> {
     const headers: Record<string, string> = {
       ...(options.headers as any),
+      "x-api-key": this.apiKey,
     };
 
     if (

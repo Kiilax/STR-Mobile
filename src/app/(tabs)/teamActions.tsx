@@ -26,7 +26,8 @@ export default function TeamActionsScreen() {
   const [loadingActions, setLoadingActions] = useState(false);
 
   const { eventId } = useEventIdStore();
-  const { equipmentPlacements } = useEquipmentPlacementStore();
+  const { equipmentPlacements, getEquipmentPlacementById } =
+    useEquipmentPlacementStore();
   const { equipments } = useEquipmentsStore();
 
   const {
@@ -68,6 +69,26 @@ export default function TeamActionsScreen() {
 
   const handleRescanPress = () => {
     router.push("/(tabs)/synchronization");
+  };
+
+  const handleNavigateToEquipment = (placementId: string | number) => {
+    const placement = getEquipmentPlacementById(Number(placementId));
+
+    if (
+      placement &&
+      placement.coordinates &&
+      placement.coordinates.length > 0
+    ) {
+      const { latitude, longitude } = placement.coordinates[0];
+      router.push({
+        pathname: "/(tabs)",
+        params: {
+          focusPlacementId: placement.id,
+          latitude: latitude.toString(),
+          longitude: longitude.toString(),
+        },
+      });
+    }
   };
 
   const getEquipmentName = (placementId: string | number) => {
@@ -130,12 +151,12 @@ export default function TeamActionsScreen() {
     const equipmentName = getEquipmentName(placementId);
 
     return (
-      <TouchableOpacity
-        style={[styles.actionCard, item.done && styles.actionCardDone]}
-        onPress={() => toggleActionDone(item.id)}
-        activeOpacity={0.7}
-      >
-        <View style={styles.actionContentSide}>
+      <View style={[styles.actionCard, item.done && styles.actionCardDone]}>
+        <TouchableOpacity
+          style={styles.actionContentSide}
+          onPress={() => handleNavigateToEquipment(placementId)}
+          activeOpacity={0.7}
+        >
           <View
             style={[
               styles.actionIconContainer,
@@ -167,9 +188,13 @@ export default function TeamActionsScreen() {
               Emplacement n°{placementId}
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.checkboxContainer}>
+        <TouchableOpacity
+          style={styles.checkboxContainer}
+          onPress={() => toggleActionDone(item.id)}
+          activeOpacity={0.7}
+        >
           <Ionicons
             name={item.done ? "checkmark-circle" : "ellipse-outline"}
             size={28}
@@ -179,8 +204,8 @@ export default function TeamActionsScreen() {
                 : "rgba(255,255,255,0.3)"
             }
           />
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     );
   };
 
