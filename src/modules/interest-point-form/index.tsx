@@ -93,7 +93,7 @@ export default function InterestPointForm({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Nouveau Point d&apos;Intérêt</Text>
+        <Text style={styles.title}>Nouveau point à sécuriser</Text>
         {onClose && (
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Ionicons name="close" size={24} color={colors.dark.text} />
@@ -113,7 +113,7 @@ export default function InterestPointForm({
                 style={styles.textInput}
                 value={value}
                 onChangeText={onChange}
-                placeholder="Décrivez ce point d'intérêt..."
+                placeholder="Décrivez ce point à sécuriser..."
                 placeholderTextColor={colors.dark.accent}
                 multiline
                 numberOfLines={3}
@@ -151,7 +151,7 @@ export default function InterestPointForm({
           disabled={isSubmitting}
         >
           <Text style={styles.submitButtonText}>
-            {isSubmitting ? "Création..." : "Créer le Point d'Intérêt"}
+            {isSubmitting ? "Création..." : "Créer le point à sécuriser"}
           </Text>
         </TouchableOpacity>
       </ScrollView>

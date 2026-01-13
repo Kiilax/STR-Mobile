@@ -33,7 +33,7 @@ export default function InterestPointsScreen() {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.dark.tint} />
           <Text style={styles.loadingText}>
-            Chargement des points d&apos;intérêt...
+            Chargement des points à sécuriser...
           </Text>
         </View>
       ) : (
@@ -43,7 +43,7 @@ export default function InterestPointsScreen() {
         >
           {interestPoints.length === 0 ? (
             <Text style={styles.emptyText}>
-              Aucun point d&apos;intérêt disponible.
+              Aucun point à sécuriser disponible.
             </Text>
           ) : (
             interestPoints.map((poi) => (

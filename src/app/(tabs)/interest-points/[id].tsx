@@ -63,7 +63,7 @@ export default function InterestPointDetailsScreen() {
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
         <Text style={styles.loadingText}>
-          Chargement du point d&apos;intérêt...
+          Chargement du point à sécuriser...
         </Text>
       </View>
     );
@@ -74,7 +74,7 @@ export default function InterestPointDetailsScreen() {
       <View style={styles.container}>
         <View style={styles.errorContainer}>
           <Ionicons name="alert-circle" size={48} color={colors.dark.accent} />
-          <Text style={styles.errorText}>Point d&apos;intérêt non trouvé</Text>
+          <Text style={styles.errorText}>Point à sécuriser non trouvé</Text>
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => router.back()}
@@ -91,7 +91,7 @@ export default function InterestPointDetailsScreen() {
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
         <Text style={styles.loadingText}>
-          Chargement du point d&apos;intérêt...
+          Chargement du point à sécuriser...
         </Text>
       </View>
     );
@@ -199,8 +199,8 @@ export default function InterestPointDetailsScreen() {
     if (!interestPoint) return;
 
     Alert.alert(
-      "Supprimer le point d'intérêt",
-      "Êtes-vous sûr de vouloir supprimer ce point d'intérêt ?",
+      "Supprimer le point à sécuriser",
+      "Êtes-vous sûr de vouloir supprimer ce point à sécuriser ?",
       [
         { text: "Annuler", style: "cancel" },
         {

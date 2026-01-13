@@ -4,8 +4,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-  SafeAreaView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useCallback, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";

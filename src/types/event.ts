@@ -1,10 +1,17 @@
-import { EquipmentPlacement } from "./equipment";
-import { InterestPoint } from "./interestPoint";
-import { Coordinates } from "./coordinates";
-import { Course } from "./course";
+import { EquipmentPlacement, Course, Zone, InterestPoint } from "@/types";
 
-export interface Zone {
-  coordinates: Coordinates[];
+export interface EventDTO {
+  id: number;
+  startDate: string;
+  endDate: string;
+  title: string;
+  description: string;
+  courses: Course[];
+  zones: Zone[];
+  equipmentPlacements: EquipmentPlacement[];
+  interestPoints: InterestPoint[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Event {
@@ -15,7 +22,6 @@ export interface Event {
   description: string;
   courses: Course[];
   zones: Zone[];
-  equipmentPlacements: EquipmentPlacement[];
   interestPoints: InterestPoint[];
   createdAt: string;
   updatedAt: string;

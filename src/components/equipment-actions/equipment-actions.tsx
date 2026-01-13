@@ -7,23 +7,26 @@ import {
   Alert,
 } from "react-native";
 import { styles } from "./equipment-actions.styles";
-import { EquipmentPlacement } from "@/types";
-import { useEventDataStore } from "@/hooks/useEventDataStore";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/constants/theme";
 import { useEquipmentsStore } from "@/hooks";
+import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
+import { EquipmentStatus } from "@/types";
 
 interface EquipmentActionsProps {
-  placement?: EquipmentPlacement | null;
+  placementId: number;
   onClose?: () => void;
 }
 
 export default function EquipmentActions({
-  placement,
+  placementId,
   onClose,
 }: EquipmentActionsProps) {
-  const { toggleEquipmentVisited } = useEventDataStore();
+  const { equipmentPlacements, setEquipmentStatus } =
+    useEquipmentPlacementStore();
   const { equipments } = useEquipmentsStore();
+
+  const placement = equipmentPlacements.find((p) => p.id === placementId);
 
   if (!placement) return null;
 
@@ -63,11 +66,6 @@ export default function EquipmentActions({
     }
   };
 
-  const handleToggleVisited = async () => {
-    await toggleEquipmentVisited(placement.id);
-    if (onClose) onClose();
-  };
-
   const equipment = equipments.find((e) => e.id === placement.equipmentId);
 
   return (
@@ -100,27 +98,83 @@ export default function EquipmentActions({
         <TouchableOpacity
           style={[
             styles.buttonSecondary,
-            placement.isVisited
+            placement.status === EquipmentStatus.DROPPED_OFF
               ? styles.buttonVisited
               : styles.buttonNotVisited,
           ]}
-          onPress={handleToggleVisited}
+          onPress={() => {
+            if (placement.status === EquipmentStatus.DROPPED_OFF) {
+              setEquipmentStatus(placement.id, EquipmentStatus.PENDING);
+            } else {
+              setEquipmentStatus(placement.id, EquipmentStatus.DROPPED_OFF);
+            }
+          }}
           activeOpacity={0.8}
         >
           <Ionicons
-            name={placement.isVisited ? "checkmark-circle" : "ellipse-outline"}
+            name={
+              placement.status === EquipmentStatus.DROPPED_OFF
+                ? "checkmark-circle"
+                : "ellipse-outline"
+            }
             size={24}
-            color={placement.isVisited ? "white" : colors.dark.text}
+            color={
+              placement.status === EquipmentStatus.DROPPED_OFF
+                ? "white"
+                : colors.dark.text
+            }
           />
           <Text
             style={[
               styles.buttonTextSecondary,
-              placement.isVisited && styles.textVisited,
+              placement.status === EquipmentStatus.DROPPED_OFF &&
+                styles.textVisited,
             ]}
           >
-            {placement.isVisited
-              ? "Marqué comme visité"
-              : "Marquer comme visité"}
+            {placement.status === EquipmentStatus.DROPPED_OFF
+              ? "Equipement posé"
+              : "Poser cet équipement"}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.buttonSecondary,
+            placement.status === EquipmentStatus.REMOVED
+              ? styles.buttonVisited
+              : styles.buttonNotVisited,
+          ]}
+          onPress={() => {
+            if (placement.status === EquipmentStatus.REMOVED) {
+              setEquipmentStatus(placement.id, EquipmentStatus.DROPPED_OFF);
+            } else {
+              setEquipmentStatus(placement.id, EquipmentStatus.REMOVED);
+            }
+          }}
+          activeOpacity={0.8}
+        >
+          <Ionicons
+            name={
+              placement.status === EquipmentStatus.REMOVED
+                ? "checkmark-circle"
+                : "ellipse-outline"
+            }
+            size={24}
+            color={
+              placement.status === EquipmentStatus.REMOVED
+                ? "white"
+                : colors.dark.text
+            }
+          />
+          <Text
+            style={[
+              styles.buttonTextSecondary,
+              placement.status === EquipmentStatus.REMOVED &&
+                styles.textVisited,
+            ]}
+          >
+            {placement.status === EquipmentStatus.REMOVED
+              ? "Equipement retiré"
+              : "Retirer cet équipement"}
           </Text>
         </TouchableOpacity>
       </View>

@@ -4,6 +4,7 @@ export const keys = {
   cameraPermissionGranted: "camera-permission-granted",
   eventId: "event-id",
   eventData: "event-data",
+  equipmentPlacements: "equipment-placements",
   teamActions: "team-actions",
 } as const;
 
