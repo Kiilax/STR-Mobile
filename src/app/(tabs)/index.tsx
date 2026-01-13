@@ -67,28 +67,42 @@ export default function MapScreen() {
   const { equipments } = useEquipmentsStore();
 
   useEffect(() => {
-    if (params.focusPlacementId && params.latitude && params.longitude && mapRef.current) {
+    if (
+      params.focusPlacementId &&
+      params.latitude &&
+      params.longitude &&
+      mapRef.current
+    ) {
       const latitude = parseFloat(params.latitude as string);
       const longitude = parseFloat(params.longitude as string);
       const placementId = parseInt(params.focusPlacementId as string, 10);
 
-      mapRef.current.animateToRegion({
-        latitude,
-        longitude,
-        latitudeDelta: 0.005,
-        longitudeDelta: 0.005,
-      }, 1000);
+      mapRef.current.animateToRegion(
+        {
+          latitude,
+          longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        },
+        1000
+      );
 
       const placement = eventData?.equipmentPlacements.find(
         (p) => p.id === placementId
       );
-      
+
       if (placement) {
         setSelectedPlacement(placement);
         setShowModal(true);
       }
     }
-  }, [params.focusPlacementId, params.latitude, params.longitude, mapRef, eventData]);
+  }, [
+    params.focusPlacementId,
+    params.latitude,
+    params.longitude,
+    mapRef,
+    eventData,
+  ]);
 
   const getEquipmentById = (id: number) => {
     return equipments.find((eq) => eq.id === id);

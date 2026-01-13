@@ -73,12 +73,16 @@ export default function TeamActionsScreen() {
 
   const handleNavigateToEquipment = (placementId: string | number) => {
     if (!eventData?.equipmentPlacements) return;
-    
+
     const placement = eventData.equipmentPlacements.find(
       (p) => p.id === Number(placementId)
     );
-    
-    if (placement && placement.coordinates && placement.coordinates.length > 0) {
+
+    if (
+      placement &&
+      placement.coordinates &&
+      placement.coordinates.length > 0
+    ) {
       const { latitude, longitude } = placement.coordinates[0];
       router.push({
         pathname: "/(tabs)",
