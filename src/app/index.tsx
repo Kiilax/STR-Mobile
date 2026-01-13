@@ -1,25 +1,50 @@
 import { ModalWrapper, QRCodeScanner } from "@/components";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
+import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
+import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
 import { colors } from "@/constants/theme";
 import { useQrCode, useSynchronization } from "@/modules/synchronization/hooks";
 import { QRCodeContent } from "@/types/qrCodeContent";
 
 export default function EventScanner() {
   const [showQRScanner, setShowQRScanner] = useState(false);
+  const [teamIdState, setTeamIdState] = useState<string | null>(null);
   const { eventId, eventIdLoading } = useEventIdStore();
   const hasNavigated = useRef(false);
   const router = useRouter();
   const { handleReceiveEvent } = useSynchronization();
 
-  const onUrlFound = async (foundUrl: string, foundEventId: number) => {
-    if (hasNavigated.current) return;
-    hasNavigated.current = true;
-    await handleReceiveEvent(foundUrl, foundEventId);
-    router.navigate("/(tabs)");
-  };
+  const { setTeamActionsFromApi, setCurrentTeamId } = useTeamActionsStore();
+  const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
+  const { fetchTeamActions } = useTeamActionsApi(apiTeamId, eventId ? eventId : 0);
+
+  const onUrlFound = useCallback(
+    async (foundUrl: string, foundEventId: number, foundTeamId: string | null) => {
+      if (hasNavigated.current) return;
+      hasNavigated.current = true;
+      
+      await handleReceiveEvent(foundUrl, foundEventId);
+
+      if (foundTeamId) {
+        setTeamIdState(foundTeamId);
+        setCurrentTeamId(foundTeamId);
+        try {
+          const response = await fetchTeamActions();
+          if (response) {
+            await setTeamActionsFromApi(response);
+          }
+        } catch (error) {
+          console.error("Erreur fetch actions:", error);
+        }
+      }
+      
+      router.navigate("/(tabs)");
+    },
+    [handleReceiveEvent, fetchTeamActions, setTeamActionsFromApi, setCurrentTeamId, router]
+  );
 
   const { handleQRScanResult } = useQrCode({ onUrlFound });
 
