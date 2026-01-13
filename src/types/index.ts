@@ -5,3 +5,4 @@ export * from "./apiResponse";
 export * from "./event";
 export * from "./course";
 export * from "./teamAction";
+export * from "./zones";

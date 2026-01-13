@@ -5,8 +5,8 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
-  SafeAreaView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -16,19 +16,18 @@ import {
   LocalTeamAction,
 } from "@/hooks/useTeamActionsStore";
 import { useEquipmentsStore } from "@/hooks/useEquipmentsStore";
-import { useEventDataStore } from "@/hooks/useEventDataStore";
 import { styles } from "@/modules/team-actions/styles/TeamActionsScreen.styles";
 import { useEventIdStore } from "@/hooks";
 import { colors } from "@/constants/theme";
+import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
 
 export default function TeamActionsScreen() {
   const router = useRouter();
   const [loadingActions, setLoadingActions] = useState(false);
 
   const { eventId } = useEventIdStore();
-
+  const { equipmentPlacements } = useEquipmentPlacementStore();
   const { equipments } = useEquipmentsStore();
-  const { eventData } = useEventDataStore();
 
   const {
     teamActions,
@@ -72,9 +71,9 @@ export default function TeamActionsScreen() {
   };
 
   const getEquipmentName = (placementId: string | number) => {
-    if (!eventData?.equipmentPlacements || !equipments) return "Chargement...";
+    if (!equipmentPlacements || !equipments) return "Chargement...";
 
-    const placement = eventData.equipmentPlacements.find(
+    const placement = equipmentPlacements.find(
       (p) => p.id === Number(placementId)
     );
 

@@ -1,6 +1,6 @@
 import { useUrlStore } from "@/hooks/useUrlStore";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
-import { Event } from "@/types";
+import { EventDTO } from "@/types";
 import { ProxyApi } from "@/utils";
 import { useCallback, useState } from "react";
 import { useEquipmentApi } from "./useEquipmentApi";
@@ -33,7 +33,7 @@ export function useEventApi() {
       }
 
       try {
-        const response: Event = await ProxyApi.get<Event>(
+        const response: EventDTO = await ProxyApi.get<EventDTO>(
           targetUrl,
           `/event/${targetEventId}`
         );
