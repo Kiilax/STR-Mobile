@@ -7,10 +7,9 @@ import {
   FlatList,
   SafeAreaView,
 } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { useQrCode } from "@/hooks/useQRCode";
-import { ModalWrapper, QRCodeScanner } from "@/components";
+import { useRouter } from "expo-router";
 import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
 import {
   useTeamActionsStore,
@@ -19,13 +18,12 @@ import {
 import { useEquipmentsStore } from "@/hooks/useEquipmentsStore";
 import { useEventDataStore } from "@/hooks/useEventDataStore";
 import { styles } from "@/modules/team-actions/styles/TeamActionsScreen.styles";
-import type { QRCodeContent } from "@/types/qrCodeContent";
 import { useEventIdStore } from "@/hooks";
 import { colors } from "@/constants/theme";
 
 export default function TeamActionsScreen() {
-  const [hasScannedQR, setHasScannedQR] = useState(false);
-  const [currentTeamId, setCurrentTeamId] = useState<string | null>(null);
+  const router = useRouter();
+  const [loadingActions, setLoadingActions] = useState(false);
 
   const { eventId } = useEventIdStore();
 
@@ -36,83 +34,41 @@ export default function TeamActionsScreen() {
     teamActions,
     setTeamActionsFromApi,
     toggleActionDone,
-    resetTeamActions,
+    currentTeamId,
   } = useTeamActionsStore();
 
   const apiTeamId = currentTeamId ? parseInt(currentTeamId, 10) : 0;
-  const {
-    fetchTeamActions,
-    loading: loadingActions,
-    error: apiError,
-  } = useTeamActionsApi(apiTeamId, eventId ? eventId : 0);
-
-  const {
-    showQRScanner,
-    setShowQRScanner,
-    handleCloseScanner,
-    handleQRScanResult,
-    handleScanAgain,
-    url,
-  } = useQrCode({
-    onUrlFound: useCallback(
-      async (
-        foundUrl: string,
-        foundEventId: number,
-        foundTeamId: string | null
-      ) => {
-        if (foundTeamId) {
-          setCurrentTeamId(foundTeamId);
-          setHasScannedQR(true);
-        } else {
-          Alert.alert(
-            "Erreur",
-            "Identifiant d'équipe manquant dans le QR Code."
-          );
-          handleRescanPress();
-        }
-      },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      []
-    ),
-  });
+  const { fetchTeamActions, error: apiError } = useTeamActionsApi(
+    apiTeamId,
+    eventId ? eventId : 0
+  );
 
   useEffect(() => {
-    const loadAndInjectLocalState = async () => {
-      if (!url || !currentTeamId || !hasScannedQR) return;
+    const loadTeamActions = async () => {
+      if (!currentTeamId || !eventId) return;
 
       try {
+        setLoadingActions(true);
         const response = await fetchTeamActions();
         if (response) {
           await setTeamActionsFromApi(response);
         }
       } catch (error) {
         console.error("Erreur fetch actions:", error);
+      } finally {
+        setLoadingActions(false);
       }
     };
 
-    loadAndInjectLocalState();
-  }, [
-    url,
-    currentTeamId,
-    hasScannedQR,
-    fetchTeamActions,
-    setTeamActionsFromApi,
-  ]);
+    loadTeamActions();
+  }, [currentTeamId, eventId, fetchTeamActions, setTeamActionsFromApi]);
 
   useEffect(() => {
     if (apiError) Alert.alert("Erreur API", apiError);
   }, [apiError]);
 
-  const handleScanResult = (parsedData: QRCodeContent | null) => {
-    if (parsedData) handleQRScanResult(JSON.stringify(parsedData));
-  };
-
   const handleRescanPress = () => {
-    handleScanAgain();
-    resetTeamActions();
-    setHasScannedQR(false);
-    setCurrentTeamId(null);
-    setShowQRScanner(true);
+    router.push("/(tabs)/synchronization");
   };
 
   const getEquipmentName = (placementId: string | number) => {
@@ -138,6 +94,32 @@ export default function TeamActionsScreen() {
           continuer.
         </Text>
       </View>
+    );
+
+  if (!currentTeamId)
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centerContent}>
+          <Ionicons
+            name="sync-outline"
+            size={100}
+            color={colors.dark.text}
+            style={{ opacity: 0.5, marginBottom: 30 }}
+          />
+          <Text style={styles.infoText}>
+            Vous devez d&apos;abord synchroniser l&apos;appareil pour récupérer
+            le planning de votre équipe.
+          </Text>
+          <TouchableOpacity
+            style={styles.mainButton}
+            onPress={() => router.push("/(tabs)/synchronization")}
+          >
+            <Text style={styles.mainButtonText}>
+              Aller à la synchronisation
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     );
 
   const renderActionItem = ({ item }: { item: LocalTeamAction }) => {
@@ -207,22 +189,25 @@ export default function TeamActionsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {!hasScannedQR ? (
+      {!currentTeamId ? (
         <View style={styles.centerContent}>
           <Ionicons
-            name="qr-code-outline"
+            name="sync-outline"
             size={100}
             color={colors.dark.text}
             style={{ opacity: 0.5, marginBottom: 30 }}
           />
           <Text style={styles.infoText}>
-            Veuillez scanner le QR Code du planning pour commencer.
+            Vous devez d&apos;abord synchroniser l&apos;appareil pour récupérer
+            le planning de votre équipe.
           </Text>
           <TouchableOpacity
             style={styles.mainButton}
-            onPress={() => setShowQRScanner(true)}
+            onPress={() => router.push("/(tabs)/synchronization")}
           >
-            <Text style={styles.mainButtonText}>Scanner le Planning</Text>
+            <Text style={styles.mainButtonText}>
+              Aller à la synchronisation
+            </Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -261,20 +246,11 @@ export default function TeamActionsScreen() {
               disabled={loadingActions}
             >
               <Ionicons name="refresh-outline" size={24} color="#FFF" />
-              <Text style={styles.mainButtonText}>
-                Scanner un nouveau planning
-              </Text>
+              <Text style={styles.mainButtonText}>Changer de planning</Text>
             </TouchableOpacity>
           </View>
         </View>
       )}
-
-      <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner}>
-        <QRCodeScanner
-          title="Scanner le QR Planning"
-          onScanResult={handleScanResult}
-        />
-      </ModalWrapper>
     </SafeAreaView>
   );
 }

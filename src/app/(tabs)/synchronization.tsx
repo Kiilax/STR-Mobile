@@ -6,13 +6,15 @@ import {
   Alert,
   SafeAreaView,
 } from "react-native";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 
 import { useSynchronization } from "@/modules/synchronization/hooks/useSynchronization";
 import { useQrCode } from "@/hooks/useQRCode";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
+import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
+import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
 
 import { ModalWrapper, QRCodeScanner } from "@/components";
 import type { QRCodeContent } from "@/types/qrCodeContent";
@@ -33,6 +35,15 @@ export default function SynchronizationScreen() {
     handleReceiveEvent,
   } = useSynchronization();
 
+  const { setTeamActionsFromApi, setCurrentTeamId } = useTeamActionsStore();
+  const [teamIdState, setTeamIdState] = useState<string | null>(null);
+
+  const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
+  const { fetchTeamActions } = useTeamActionsApi(
+    apiTeamId,
+    eventId ? eventId : 0
+  );
+
   const {
     showQRScanner,
     setShowQRScanner,
@@ -41,10 +52,33 @@ export default function SynchronizationScreen() {
     handleScanAgain,
   } = useQrCode({
     onUrlFound: useCallback(
-      async (foundUrl: string, foundEventId: number) => {
+      async (
+        foundUrl: string,
+        foundEventId: number,
+        foundTeamId: string | null
+      ) => {
         await handleReceiveEvent(foundUrl, foundEventId);
+
+        if (foundTeamId && eventId === foundEventId) {
+          setTeamIdState(foundTeamId);
+          setCurrentTeamId(foundTeamId);
+          try {
+            const response = await fetchTeamActions();
+            if (response) {
+              await setTeamActionsFromApi(response);
+            }
+          } catch (error) {
+            console.error("Erreur fetch actions:", error);
+          }
+        }
       },
-      [handleReceiveEvent]
+      [
+        handleReceiveEvent,
+        eventId,
+        fetchTeamActions,
+        setTeamActionsFromApi,
+        setCurrentTeamId,
+      ]
     ),
   });
 
