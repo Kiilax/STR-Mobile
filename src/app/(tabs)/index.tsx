@@ -210,8 +210,8 @@ export default function MapScreen() {
 
       <View style={styles.infoContainer}>
         <Text style={styles.addressText}>
-          Astuce : cliquer sur un point pour démarrer le GPS ou le marquer comme
-          visité
+          Astuce : cliquer sur un équipement de sécurité pour afficher ses
+          actions
         </Text>
       </View>
 
