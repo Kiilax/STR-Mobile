@@ -19,13 +19,20 @@ export default function EventScanner() {
 
   const { setTeamActionsFromApi, setCurrentTeamId } = useTeamActionsStore();
   const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
-  const { fetchTeamActions } = useTeamActionsApi(apiTeamId, eventId ? eventId : 0);
+  const { fetchTeamActions } = useTeamActionsApi(
+    apiTeamId,
+    eventId ? eventId : 0
+  );
 
   const onUrlFound = useCallback(
-    async (foundUrl: string, foundEventId: number, foundTeamId: string | null) => {
+    async (
+      foundUrl: string,
+      foundEventId: number,
+      foundTeamId: string | null
+    ) => {
       if (hasNavigated.current) return;
       hasNavigated.current = true;
-      
+
       await handleReceiveEvent(foundUrl, foundEventId);
 
       if (foundTeamId) {
@@ -40,10 +47,16 @@ export default function EventScanner() {
           console.error("Erreur fetch actions:", error);
         }
       }
-      
+
       router.navigate("/(tabs)");
     },
-    [handleReceiveEvent, fetchTeamActions, setTeamActionsFromApi, setCurrentTeamId, router]
+    [
+      handleReceiveEvent,
+      fetchTeamActions,
+      setTeamActionsFromApi,
+      setCurrentTeamId,
+      router,
+    ]
   );
 
   const { handleQRScanResult } = useQrCode({ onUrlFound });

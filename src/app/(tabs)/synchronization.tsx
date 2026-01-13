@@ -35,7 +35,8 @@ export default function SynchronizationScreen() {
     handleReceiveEvent,
   } = useSynchronization();
 
-  const { setTeamActionsFromApi, setCurrentTeamId, resetTeamActions } = useTeamActionsStore();
+  const { setTeamActionsFromApi, setCurrentTeamId, resetTeamActions } =
+    useTeamActionsStore();
   const [teamIdState, setTeamIdState] = useState<string | null>(null);
 
   const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
