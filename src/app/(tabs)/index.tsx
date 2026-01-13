@@ -4,8 +4,6 @@ import {
   ActivityIndicator,
   Text,
   StyleSheet,
-  Linking,
-  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useMap } from "@/modules/map/hooks";
@@ -16,12 +14,11 @@ import MapView, {
   Polyline,
   PROVIDER_DEFAULT,
 } from "react-native-maps";
-import { useMarkers } from "@/modules/map/hooks/useMarkers";
 import { useState } from "react";
 import { ModalWrapper } from "@/components";
 import EquipmentActions from "@/components/equipment-actions/equipment-actions";
-import { EquipmentPlacement } from "@/types";
-import { useEquipmentsStore } from "@/hooks";
+import { useEquipmentsStore, useInterestPointsStore } from "@/hooks";
+import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
 
 const mapStyle = [
   {
@@ -31,21 +28,9 @@ const mapStyle = [
   },
 ];
 
-const isValidCoordinate = (coord: any): boolean => {
-  return (
-    coord &&
-    typeof coord === "object" &&
-    typeof coord.latitude === "number" &&
-    !isNaN(coord.latitude) &&
-    typeof coord.longitude === "number" &&
-    !isNaN(coord.longitude)
-  );
-};
-
 export default function MapScreen() {
   const [showModal, setShowModal] = useState(false);
-  const [selectedPlacement, setSelectedPlacement] =
-    useState<EquipmentPlacement | null>(null);
+
   const {
     zones,
     course,
@@ -56,83 +41,14 @@ export default function MapScreen() {
     handleMapDrag,
     handleCenterOnUser,
   } = useMap();
-  const { interestPointMarkers, routeMarkers } = useMarkers({
-    userLocation,
-  });
 
-  const { equipments } = useEquipmentsStore();
+  const { getEquipmentById } = useEquipmentsStore();
+  const { interestPoints } = useInterestPointsStore();
+  const { equipmentPlacements } = useEquipmentPlacementStore();
 
-  const getEquipmentById = (id: number) => {
-    return equipments.find((eq) => eq.id === id);
-  };
-
-  const handleStartTour = async () => {
-    const unvisited = routeMarkers.filter(
-      (m) =>
-        !m.isVisited &&
-        m.coordinates &&
-        m.coordinates.length > 0 &&
-        m.coordinates[0] &&
-        isValidCoordinate(m.coordinates[0])
-    );
-
-    if (unvisited.length === 0) {
-      Alert.alert(
-        "Tout est visité",
-        "Vous avez déjà visité tous les points de cet itinéraire !"
-      );
-      return;
-    }
-
-    const destination = unvisited[unvisited.length - 1];
-    if (
-      !destination.coordinates ||
-      destination.coordinates.length === 0 ||
-      !isValidCoordinate(destination.coordinates[0])
-    ) {
-      Alert.alert("Erreur", "Coordonnées de destination non disponibles.");
-      return;
-    }
-
-    const waypoints = unvisited.slice(0, unvisited.length - 1);
-    const destCoords = `${destination.coordinates[0].latitude},${destination.coordinates[0].longitude}`;
-
-    let url = `https://www.google.com/maps/dir/?api=1&destination=${destCoords}&travelmode=driving`;
-
-    if (waypoints.length > 0) {
-      const validWaypoints = waypoints.filter(
-        (p) =>
-          p.coordinates &&
-          p.coordinates.length > 0 &&
-          isValidCoordinate(p.coordinates[0])
-      );
-
-      if (validWaypoints.length > 0) {
-        const waypointsStr = validWaypoints
-          .map(
-            (p) => `${p.coordinates[0].latitude},${p.coordinates[0].longitude}`
-          )
-          .join("|");
-        url += `&waypoints=${waypointsStr}`;
-      }
-    }
-
-    try {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) {
-        await Linking.openURL(url);
-      } else {
-        Alert.alert(
-          "Erreur",
-          "Impossible d'ouvrir l'application de navigation."
-        );
-        return;
-      }
-      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    } catch (error) {
-      Alert.alert("Erreur", "Impossible d'ouvrir l'application de navigation.");
-    }
-  };
+  const [equipmentPlacementId, setEquipmentPlacementId] = useState<
+    number | null
+  >(null);
 
   return (
     <View style={styles.container}>
@@ -150,11 +66,8 @@ export default function MapScreen() {
         userInterfaceStyle="dark"
         toolbarEnabled={false}
       >
-        {interestPointMarkers
-          ?.filter(
-            (marker) =>
-              marker?.coordinates && isValidCoordinate(marker.coordinates)
-          )
+        {interestPoints
+          ?.filter((marker) => marker?.coordinates)
           .map((marker) => (
             <Marker
               key={marker.id}
@@ -163,13 +76,10 @@ export default function MapScreen() {
             />
           ))}
 
-        {routeMarkers &&
-          routeMarkers
+        {equipmentPlacements &&
+          equipmentPlacements
             .filter(
-              (marker) =>
-                marker.coordinates &&
-                marker.coordinates.length > 0 &&
-                isValidCoordinate(marker.coordinates[0])
+              (marker) => marker.coordinates && marker.coordinates.length > 0
             )
             .map((marker) => {
               const equipment = getEquipmentById(marker.equipmentId);
@@ -189,8 +99,8 @@ export default function MapScreen() {
                         : equipment?.image
                     }
                     onPress={() => {
-                      setSelectedPlacement(marker);
                       setShowModal(true);
+                      setEquipmentPlacementId(marker.id);
                     }}
                   />
                 );
@@ -205,8 +115,8 @@ export default function MapScreen() {
                     strokeWidth={2}
                     tappable
                     onPress={() => {
-                      setSelectedPlacement(marker);
                       setShowModal(true);
+                      setEquipmentPlacementId(marker.id);
                     }}
                   />
                 );
@@ -220,8 +130,8 @@ export default function MapScreen() {
                   strokeWidth={2}
                   tappable
                   onPress={() => {
-                    setSelectedPlacement(marker);
                     setShowModal(true);
+                    setEquipmentPlacementId(marker.id);
                   }}
                 />
               );
@@ -272,23 +182,13 @@ export default function MapScreen() {
         </TouchableOpacity>
       )}
 
-      {routeMarkers.length > 0 && (
-        <TouchableOpacity
-          style={[styles.fab, styles.tourFab]}
-          onPress={handleStartTour}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="navigate" size={26} color="white" />
-        </TouchableOpacity>
-      )}
-
       <ModalWrapper
         visible={showModal}
         onClose={() => setShowModal(false)}
         overlayOpacity={0}
       >
         <EquipmentActions
-          placement={selectedPlacement}
+          placementId={equipmentPlacementId!}
           onClose={() => setShowModal(false)}
         />
       </ModalWrapper>
