@@ -20,22 +20,26 @@ import { styles } from "@/modules/team-actions/styles/TeamActionsScreen.styles";
 import { useEventIdStore } from "@/hooks";
 import { colors } from "@/constants/theme";
 import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
+import { EquipmentStatus } from "@/types";
 
 export default function TeamActionsScreen() {
   const router = useRouter();
   const [loadingActions, setLoadingActions] = useState(false);
 
   const { eventId } = useEventIdStore();
-  const { equipmentPlacements, getEquipmentPlacementById } =
-    useEquipmentPlacementStore();
   const { equipments } = useEquipmentsStore();
 
   const {
     teamActions,
     setTeamActionsFromApi,
-    toggleActionDone,
     currentTeamId,
   } = useTeamActionsStore();
+
+  const {
+    equipmentPlacements,
+    getEquipmentPlacementById,
+    setEquipmentStatus,
+  } = useEquipmentPlacementStore();
 
   const apiTeamId = currentTeamId ? parseInt(currentTeamId, 10) : 0;
   const { fetchTeamActions, error: apiError } = useTeamActionsApi(
@@ -106,6 +110,49 @@ export default function TeamActionsScreen() {
     return equipment ? equipment.name : "Équipement inconnu";
   };
 
+  const isActionDone = (item: LocalTeamAction) => {
+    const placementId =
+      item.equipmentPlacementId || (item as any).equipmentPlacementId;
+    const placement = getEquipmentPlacementById(Number(placementId));
+
+    if (!placement) return false;
+
+    if (item.action === "DROPOFF") {
+      return (
+        placement.status === EquipmentStatus.DROPPED_OFF ||
+        placement.status === EquipmentStatus.REMOVED
+      );
+    } 
+    
+    if (item.action === "REMOVE") {
+      return placement.status === EquipmentStatus.REMOVED;
+    }
+
+    return false;
+  };
+
+  const handleToggleAction = async (item: LocalTeamAction) => {
+    const placementId =
+      item.equipmentPlacementId || (item as any).equipmentPlacementId;
+    const placement = getEquipmentPlacementById(Number(placementId));
+    
+    if (!placement) return;
+
+    if (item.action === "DROPOFF") {
+       if (placement.status === EquipmentStatus.DROPPED_OFF) {
+         await setEquipmentStatus(placement.id, EquipmentStatus.PENDING);
+       } else {
+         await setEquipmentStatus(placement.id, EquipmentStatus.DROPPED_OFF);
+       }
+    } else if (item.action === "REMOVE") {
+       if (placement.status === EquipmentStatus.REMOVED) {
+         await setEquipmentStatus(placement.id, EquipmentStatus.DROPPED_OFF);
+       } else {
+         await setEquipmentStatus(placement.id, EquipmentStatus.REMOVED);
+       }
+    }
+  };
+
   if (!eventId)
     return (
       <View style={styles.centerContent}>
@@ -145,13 +192,14 @@ export default function TeamActionsScreen() {
   const renderActionItem = ({ item }: { item: LocalTeamAction }) => {
     const isDropoff = item.action === "DROPOFF";
     const iconColor = isDropoff ? "#4CAF50" : "#F44336";
+    const done = isActionDone(item);
 
     const placementId =
       item.equipmentPlacementId || (item as any).equipmentPlacementId;
     const equipmentName = getEquipmentName(placementId);
 
     return (
-      <View style={[styles.actionCard, item.done && styles.actionCardDone]}>
+      <View style={[styles.actionCard, done && styles.actionCardDone]}>
         <TouchableOpacity
           style={styles.actionContentSide}
           onPress={() => handleNavigateToEquipment(placementId)}
@@ -174,7 +222,7 @@ export default function TeamActionsScreen() {
             <Text
               style={[
                 styles.actionTitle,
-                item.done && styles.strikethroughText,
+                done && styles.strikethroughText,
               ]}
             >
               {isDropoff ? "Déposer" : "Retirer"} : {equipmentName}
@@ -182,7 +230,7 @@ export default function TeamActionsScreen() {
             <Text
               style={[
                 styles.actionSubtitle,
-                item.done && styles.strikethroughText,
+                done && styles.strikethroughText,
               ]}
             >
               Emplacement n°{placementId}
@@ -192,14 +240,14 @@ export default function TeamActionsScreen() {
 
         <TouchableOpacity
           style={styles.checkboxContainer}
-          onPress={() => toggleActionDone(item.id)}
+          onPress={() => handleToggleAction(item)}
           activeOpacity={0.7}
         >
           <Ionicons
-            name={item.done ? "checkmark-circle" : "ellipse-outline"}
+            name={done ? "checkmark-circle" : "ellipse-outline"}
             size={28}
             color={
-              item.done
+              done
                 ? colors.dark.tint || "#2196F3"
                 : "rgba(255,255,255,0.3)"
             }
