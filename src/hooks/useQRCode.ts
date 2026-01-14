@@ -64,7 +64,7 @@ export const useQrCode = ({
       const eventId = Number(parsedData.eventId);
 
       if (isNaN(eventId)) {
-        onError?.("Erreur", "QR Code invalide: ID d'événement incorrect");
+        onError?.("Erreur", "QR Code invalide. Veuillez en générer un nouveau.");
         return;
       }
 
