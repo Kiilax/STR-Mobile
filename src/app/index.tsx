@@ -41,7 +41,10 @@ export default function EventScanner() {
         setCurrentTeamId(foundTeamId);
       }
 
-      router.navigate("/(tabs)");
+      router.navigate({
+        pathname: "/(tabs)",
+        params: { zoomToEvent: "true" },
+      });
     },
     [handleReceiveEvent, setCurrentTeamId, router]
   );
