@@ -3,3 +3,4 @@ export * from "./imageStorage";
 export * from "./proxyApi";
 export * from "./fileDownloader";
 export * from "./addressConverter";
+export * from "./eventBounds";

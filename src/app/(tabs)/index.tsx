@@ -43,6 +43,7 @@ export default function MapScreen() {
     userLocation,
     handleMapDrag,
     handleCenterOnUser,
+    handleZoomToEvent,
   } = useMap();
 
   const { getEquipmentById } = useEquipmentsStore();
@@ -53,6 +54,14 @@ export default function MapScreen() {
   const [equipmentPlacementId, setEquipmentPlacementId] = useState<
     number | null
   >(null);
+
+  useEffect(() => {
+    if (params.zoomToEvent === "true" && eventData && mapRef.current) {
+      setTimeout(() => {
+        handleZoomToEvent();
+      }, 500);
+    }
+  }, [params.zoomToEvent, eventData, handleZoomToEvent, mapRef]);
 
   useEffect(() => {
     if (
