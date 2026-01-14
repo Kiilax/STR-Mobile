@@ -95,9 +95,26 @@ export default function EventScanner() {
     if (!eventId) {
       setShowQRScanner(true);
     } else {
-      router.replace("/(tabs)");
+      router.replace({
+        pathname: "/(tabs)",
+        params: { zoomToEvent: "true" },
+      });
     }
   }, [eventIdLoading, eventId, router]);
+
+  if (eventIdLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("@assets/images/stras-ta-route.webp")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.loadingContainer}>
