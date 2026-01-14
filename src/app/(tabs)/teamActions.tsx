@@ -154,7 +154,7 @@ export default function TeamActionsScreen() {
       <View style={styles.centerContent}>
         <Text style={styles.infoText}>
             Pour récupérer le planning de votre équipe, veuillez d&apos;abord
-            générer et scanner le QR Code "Planning".
+            générer et scanner le QR Code &quot;Planning&quot;.
         </Text>
       </View>
     );
@@ -171,7 +171,7 @@ export default function TeamActionsScreen() {
           />
           <Text style={styles.infoText}>
             Pour récupérer le planning de votre équipe, veuillez d&apos;abord
-            générer et scanner le QR Code "Planning".
+            générer et scanner le QR Code &quot;Planning&quot;.
           </Text>
           <Button
             title="Aller à la synchronisation"

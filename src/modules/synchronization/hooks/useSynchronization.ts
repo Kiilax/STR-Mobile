@@ -60,7 +60,6 @@ export function useSynchronization(): UseSynchronizationReturn {
     try {
       await create(dataToSend);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
       console.error(
         `Failed to sync interest point ID ${interestPoint.id}:`,
         error
@@ -157,8 +156,6 @@ export function useSynchronization(): UseSynchronizationReturn {
         }
       } catch (error: any) {
         setStatus("error");
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
         setMessage(`Échec de la synchronisation de l'évènement. Veuillez réessayer.`);
         console.error("Failed to receive event:", error);
       }
