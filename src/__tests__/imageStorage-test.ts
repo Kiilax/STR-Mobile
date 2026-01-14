@@ -14,31 +14,64 @@ describe("ImageStorage", () => {
   });
 
   describe("save", () => {
-    it("moves file to document directory and returns new uri", async () => {
+    it("overwrites existing file and returns new uri", async () => {
       const mockMove = jest.fn();
+      const mockDelete = jest.fn();
       const mockUri = "file:///original/path/image.jpg";
+      const mockDestinationUri = "file:///document/path/image.jpg";
 
-      mockFile.mockImplementation(
-        (uri) =>
-          ({
-            uri: uri,
+      mockFile.mockImplementation(((path: string, fileName?: string) => {
+        if (path === mockUri) {
+          return {
+            uri: mockUri,
             move: mockMove,
-          } as any)
-      );
-
-      mockDirectory.mockImplementation(
-        (path) =>
-          ({
-            uri: path,
-          } as any)
-      );
+          };
+        } else {
+          return {
+            uri: mockDestinationUri,
+            exists: true,
+            delete: mockDelete,
+          };
+        }
+      }) as any);
 
       const result = await ImageStorage.save(mockUri);
 
       expect(mockFile).toHaveBeenCalledWith(mockUri);
-      expect(mockDirectory).toHaveBeenCalledWith(Paths.document);
-      expect(mockMove).toHaveBeenCalledWith(expect.any(Object));
-      expect(result).toBe(mockUri);
+      expect(mockFile).toHaveBeenCalledWith(Paths.document, "image.jpg");
+
+      expect(mockDelete).toHaveBeenCalled();
+      expect(mockMove).toHaveBeenCalledWith(expect.objectContaining({ uri: mockDestinationUri }));
+      
+      expect(result).toBe(mockDestinationUri);
+    });
+
+    it("moves file without delete if destination does not exist", async () => {
+      const mockMove = jest.fn();
+      const mockDelete = jest.fn();
+      const mockUri = "file:///original/path/image.jpg";
+      const mockDestinationUri = "file:///document/path/image.jpg";
+
+      mockFile.mockImplementation(((path: string, fileName?: string) => {
+        if (path === mockUri) {
+           return {
+            uri: mockUri,
+            move: mockMove,
+          };
+        } else {
+          return {
+            uri: mockDestinationUri,
+            exists: false,
+            delete: mockDelete,
+          };
+        }
+      }) as any);
+
+      const result = await ImageStorage.save(mockUri);
+
+      expect(mockDelete).not.toHaveBeenCalled();
+      expect(mockMove).toHaveBeenCalledWith(expect.objectContaining({ uri: mockDestinationUri }));
+      expect(result).toBe(mockDestinationUri);
     });
 
     it("returns null on error", async () => {

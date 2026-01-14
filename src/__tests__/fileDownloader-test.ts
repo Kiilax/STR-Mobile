@@ -32,7 +32,7 @@ describe("FileDownloader", () => {
         },
       });
       expect(mockImageStorageSave).toHaveBeenCalledWith(
-        "document/downloadedFile"
+        "cache/downloadedFile"
       );
       expect(result).toBe("file:///saved/image.jpg");
     });
@@ -55,7 +55,7 @@ describe("FileDownloader", () => {
       await FileDownloader.download(url, endpoint);
 
       expect(mockImageStorageSave).toHaveBeenCalledWith(
-        "document/testResponse.jpg"
+        "cache/testResponse.jpg"
       );
     });
 
