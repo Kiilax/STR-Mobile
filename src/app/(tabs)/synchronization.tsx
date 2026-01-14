@@ -166,6 +166,7 @@ export default function SynchronizationScreen() {
             <Button
               title="Scanner le QR Code"
               onPress={() => setShowQRScanner(true)}
+              size="lg"
               fullWidth
             />
           </View>

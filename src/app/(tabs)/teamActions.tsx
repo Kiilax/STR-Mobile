@@ -177,6 +177,7 @@ export default function TeamActionsScreen() {
             title="Aller à la synchronisation"
             onPress={() => router.push("/(tabs)/synchronization")}
             size="lg"
+            fullWidth
           />
         </View>
       </SafeAreaView>
@@ -262,6 +263,7 @@ export default function TeamActionsScreen() {
             title="Aller à la synchronisation"
             onPress={() => router.push("/(tabs)/synchronization")}
             size="lg"
+            fullWidth
           />
         </View>
       ) : (
