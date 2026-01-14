@@ -22,7 +22,7 @@ export default function TabNav() {
             name="index"
             options={{
               headerShown: true,
-              title: "Événement :" + (title ? ` ${title}` : " Aucun"),
+              title: "Évènement :" + (title ? ` ${title}` : " Aucun"),
               tabBarLabel: "Carte",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="map" size={size} color={color} />
@@ -33,7 +33,7 @@ export default function TabNav() {
             name="interest-points"
             options={{
               headerShown: true,
-              title: "Événement :" + (title ? ` ${title}` : " Aucun"),
+              title: "Évènement :" + (title ? ` ${title}` : " Aucun"),
               tabBarLabel: "Points à sécuriser",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="location" size={size} color={color} />
@@ -44,8 +44,8 @@ export default function TabNav() {
             name="synchronization"
             options={{
               headerShown: true,
-              title: "Événement :" + (title ? ` ${title}` : " Aucun"),
-              tabBarLabel: "Événement",
+              title: "Évènement :" + (title ? ` ${title}` : " Aucun"),
+              tabBarLabel: "Évènement",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="calendar" size={size} color={color} />
               ),
@@ -54,8 +54,8 @@ export default function TabNav() {
           <Tabs.Screen
             name="teamActions"
             options={{
-              headerShown: false,
-              title: "Événement :" + (title ? ` ${title}` : " Aucun"),
+              headerShown: true,
+              title: "Évènement :" + (title ? ` ${title}` : " Aucun"),
               tabBarLabel: "Planning",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="list" size={size} color={color} />

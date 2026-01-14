@@ -62,9 +62,12 @@ export function useSynchronization(): UseSynchronizationReturn {
     try {
       await create(dataToSend);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error(
+        `Failed to sync interest point ID ${interestPoint.id}:`,
+        error
+      );
       throw new Error(
-        `Échec de la création du point "${interestPoint.comment}": ${errorMsg}`
+        `Échec de la création du point "${interestPoint.comment}". Veuillez réessayer.`
       );
     }
   };
@@ -162,7 +165,7 @@ export function useSynchronization(): UseSynchronizationReturn {
         );
         if (event) {
           setStatus("success");
-          setMessage("Événement reçu avec succès");
+          setMessage("Évènement reçu avec succès");
 
           let rawPlacements = event.equipmentPlacements;
           const targetTeamId =
@@ -179,14 +182,14 @@ export function useSynchronization(): UseSynchronizationReturn {
           setEventData(event);
         } else {
           setStatus("error");
-          setMessage("Aucun événement trouvé");
+          setMessage("Aucun évènement trouvé");
           console.error("No event found");
         }
       } catch (error: any) {
         setStatus("error");
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        setMessage(`Échec de la réception: ${errorMessage}`);
+        setMessage(
+          `Échec de la synchronisation de l'évènement. Veuillez réessayer.`
+        );
         console.error("Failed to receive event:", error);
       }
     },

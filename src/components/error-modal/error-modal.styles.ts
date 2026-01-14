@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors } from "@/constants/theme";
+import { colors, typography } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   overlay: {
@@ -44,18 +44,20 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(33, 150, 243, 0.15)",
   },
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: typography.h3.fontSize,
+    fontWeight: typography.h3.fontWeight as "600",
+    lineHeight: typography.h3.lineHeight,
     color: colors.dark.text,
     marginBottom: 8,
     textAlign: "center",
   },
   message: {
-    fontSize: 15,
+    fontSize: typography.body.fontSize,
+    fontWeight: typography.body.fontWeight as "normal",
+    lineHeight: typography.body.lineHeight,
     color: colors.dark.text,
     opacity: 0.8,
     textAlign: "center",
-    lineHeight: 22,
     marginBottom: 24,
   },
   buttonsContainer: {
@@ -82,8 +84,9 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F44336",
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: typography.button.fontSize,
+    fontWeight: typography.button.fontWeight as "600",
+    lineHeight: typography.button.lineHeight,
     color: colors.dark.primary,
   },
   buttonTextSecondary: {

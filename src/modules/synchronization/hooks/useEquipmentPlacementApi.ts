@@ -28,11 +28,6 @@ export function useEquipmentPlacementApi() {
           targetUrl,
           `/equipment-placements?teamId=${teamId}`
         );
-        console.log(
-          "Fetched equipment placements for teamId:",
-          teamId,
-          JSON.stringify(response, null, 2)
-        );
         await setEquipmentPlacement(response);
         setEquipmentPlacement(response);
       } catch (err) {

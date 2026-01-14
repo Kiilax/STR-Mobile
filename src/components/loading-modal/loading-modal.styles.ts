@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors } from "@/constants/theme";
+import { colors, typography } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   overlay: {
@@ -28,17 +28,19 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: typography.h4.fontSize,
+    fontWeight: typography.h4.fontWeight as "600",
+    lineHeight: typography.h4.lineHeight,
     color: colors.dark.text,
     marginBottom: 8,
     textAlign: "center",
   },
   message: {
-    fontSize: 14,
+    fontSize: typography.bodySmall.fontSize,
+    fontWeight: typography.bodySmall.fontWeight as "normal",
+    lineHeight: typography.bodySmall.lineHeight,
     color: colors.dark.text,
     opacity: 0.7,
     textAlign: "center",
-    lineHeight: 20,
   },
 });

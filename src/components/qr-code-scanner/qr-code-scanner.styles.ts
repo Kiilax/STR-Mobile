@@ -1,5 +1,5 @@
 import { StyleSheet, Platform } from "react-native";
-import { colors } from "@/constants/theme";
+import { colors, typography } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   container: {
@@ -14,8 +14,9 @@ export const styles = StyleSheet.create({
     borderBottomColor: colors.dark.accent,
   },
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: typography.h3.fontSize,
+    fontWeight: typography.h3.fontWeight as "600",
+    lineHeight: typography.h3.lineHeight,
     color: colors.dark.text,
   },
   closeButton: {
@@ -32,7 +33,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 40,
   },
   loadingText: {
-    fontSize: 16,
+    fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
     color: colors.dark.text,
     marginTop: 16,
   },
@@ -43,28 +45,31 @@ export const styles = StyleSheet.create({
     paddingVertical: 40,
   },
   errorTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: typography.h2.fontSize,
+    fontWeight: typography.h2.fontWeight as "bold",
+    lineHeight: typography.h2.lineHeight,
     color: colors.dark.text,
     marginTop: 24,
     marginBottom: 12,
     textAlign: "center",
   },
   errorDescription: {
-    fontSize: 16,
+    fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
     color: colors.dark.accent,
     textAlign: "center",
-    lineHeight: 24,
     marginBottom: 20,
   },
   errorText: {
     color: "red",
-    fontSize: 14,
+    fontSize: typography.bodySmall.fontSize,
+    lineHeight: typography.bodySmall.lineHeight,
     textAlign: "center",
     marginTop: 12,
   },
   instructionText: {
-    fontSize: 13,
+    fontSize: typography.bodySmall.fontSize,
+    lineHeight: typography.bodySmall.lineHeight,
     paddingTop: 20,
     color: colors.dark.text,
     textAlign: "center",

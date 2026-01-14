@@ -3,7 +3,7 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-import { Platform } from "react-native";
+import { Platform, TextStyle } from "react-native";
 
 const dark = {
   primary: "#171C22",
@@ -17,6 +17,70 @@ const light = {
   secondary: "#F7F9FA",
   accent: "#2AD783",
   black: "#11181C",
+};
+
+export const typography: Record<string, TextStyle> = {
+  h1: {
+    fontSize: 28,
+    fontWeight: "bold",
+    lineHeight: 34,
+  },
+  h2: {
+    fontSize: 24,
+    fontWeight: "bold",
+    lineHeight: 30,
+  },
+  h3: {
+    fontSize: 20,
+    fontWeight: "600",
+    lineHeight: 26,
+  },
+  h4: {
+    fontSize: 18,
+    fontWeight: "600",
+    lineHeight: 24,
+  },
+  // Body text
+  body: {
+    fontSize: 16,
+    fontWeight: "normal",
+    lineHeight: 22,
+  },
+  bodySmall: {
+    fontSize: 14,
+    fontWeight: "normal",
+    lineHeight: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    lineHeight: 22,
+  },
+  labelSmall: {
+    fontSize: 14,
+    fontWeight: "500",
+    lineHeight: 20,
+  },
+  caption: {
+    fontSize: 12,
+    fontWeight: "normal",
+    lineHeight: 16,
+  },
+  button: {
+    fontSize: 16,
+    fontWeight: "600",
+    lineHeight: 22,
+  },
+  buttonSmall: {
+    fontSize: 14,
+    fontWeight: "600",
+    lineHeight: 20,
+  },
+  buttonLarge: {
+    fontSize: 18,
+    fontWeight: "600",
+    lineHeight: 24,
+  },
 };
 
 export const colors = {

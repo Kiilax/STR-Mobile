@@ -11,7 +11,7 @@ import {
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-import { colors } from "@/constants/theme";
+import { colors, typography } from "@/constants/theme";
 import { ModalWrapper, ErrorModal, Button } from "@/components";
 import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
 import { useAlertModal } from "@/hooks";
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     color: colors.dark.inverted,
-    fontSize: 16,
-    lineHeight: 22,
+    fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
   },
   fab: {
     position: "absolute",
@@ -155,12 +155,14 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     color: colors.dark.inverted,
-    fontSize: 16,
+    fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
   },
   emptyText: {
     textAlign: "center",
     marginTop: 50,
     color: colors.dark.inverted,
-    fontSize: 16,
+    fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
   },
 });

@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors } from "@/constants/theme";
+import { colors, typography } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   container: {
@@ -24,8 +24,9 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: typography.h2.fontSize,
+    fontWeight: typography.h2.fontWeight,
+    lineHeight: typography.h2.lineHeight,
     color: colors.dark.text,
     textAlign: "center",
     marginBottom: 24,
@@ -40,13 +41,15 @@ export const styles = StyleSheet.create({
   },
   connectedText: {
     color: colors.dark.tint,
-    fontSize: 16,
+    fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
     marginBottom: 16,
-    fontWeight: "600",
+    fontWeight: typography.label.fontWeight as "600",
   },
   urlText: {
     color: colors.dark.text,
-    fontSize: 14,
+    fontSize: typography.bodySmall.fontSize,
+    lineHeight: typography.bodySmall.lineHeight,
     fontFamily: "monospace",
     marginBottom: 20,
     textAlign: "center",
@@ -58,7 +61,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.dark.tint,
     paddingVertical: 14,
     paddingHorizontal: 20,
-    borderRadius: 8,
+    borderRadius: 12,
     width: "100%",
     marginBottom: 12,
     gap: 10,
@@ -70,12 +73,13 @@ export const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: typography.button.fontSize,
+    fontWeight: typography.button.fontWeight as "600",
+    lineHeight: typography.button.lineHeight,
   },
   buttonDanger: {
-    backgroundColor: "#F44336", // Red color
-    marginTop: "auto", // Push to bottom if container has flex
+    backgroundColor: "#F44336",
+    marginTop: "auto",
   },
   buttonDisabled: {
     opacity: 0.5,
@@ -96,14 +100,19 @@ export const styles = StyleSheet.create({
   },
   statusText: {
     color: "#FFFFFF",
+    fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
     marginLeft: 10,
     flex: 1,
   },
   infoText: {
     color: colors.dark.text,
+    fontSize: typography.h4.fontSize,
+    fontWeight: typography.h4.fontWeight as "600",
+    lineHeight: typography.h4.lineHeight,
     textAlign: "center",
     marginBottom: 20,
-    opacity: 0.8,
+    opacity: 0.9,
   },
   rescanButton: {
     marginTop: 12,
