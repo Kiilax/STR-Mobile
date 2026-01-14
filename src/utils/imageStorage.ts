@@ -1,4 +1,4 @@
-import { File, Directory, Paths } from "expo-file-system";
+import { File, Paths } from "expo-file-system";
 
 export class ImageStorage {
   /**
@@ -9,8 +9,13 @@ export class ImageStorage {
   static async save(uri: string) {
     try {
       const image = new File(uri);
-      image.move(new Directory(Paths.document));
-      return image.uri;
+      const fileName = uri.split("/").pop() || "unknown_image";
+      const destination = new File(Paths.document, fileName);
+      if (destination.exists) {
+        destination.delete();
+      }
+      image.move(destination);
+      return destination.uri;
     } catch (error) {
       console.error("Error saving image to persistent storage:", error);
       return null;
