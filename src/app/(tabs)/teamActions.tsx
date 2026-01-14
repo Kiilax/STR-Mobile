@@ -245,7 +245,7 @@ export default function TeamActionsScreen() {
   if (!eventId) return null;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       {!currentTeamId ? (
         <View style={styles.centerContent}>
           <Ionicons
@@ -297,8 +297,8 @@ export default function TeamActionsScreen() {
             <Button
               title="Changer de planning"
               variant="secondary"
-              size="lg"
-              icon={<Ionicons name="refresh-outline" size={24} color="#FFF" />}
+              size="md"
+              icon={<Ionicons name="refresh-outline" size={20} color="#FFF" />}
               onPress={handleRescanPress}
               disabled={loadingActions}
               fullWidth

@@ -9,7 +9,6 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
   },
   centerContent: {
@@ -20,6 +19,8 @@ export const styles = StyleSheet.create({
   footerContainer: {
     width: "100%",
     paddingTop: 20,
+    paddingBottom: 20,
+    marginTop: "auto",
     gap: 10,
   },
   title: {

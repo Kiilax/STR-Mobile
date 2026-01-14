@@ -26,7 +26,7 @@ export default function InterestPointsScreen() {
   } = useInterestPointsStore();
   const router = useRouter();
   const [showPOIForm, setShowPOIForm] = useState(false);
-  const { alertState, showError, hideAlert } = useAlertModal();
+  const { alertState, hideAlert } = useAlertModal();
 
   return (
     <View style={styles.container}>
@@ -86,7 +86,6 @@ export default function InterestPointsScreen() {
         <InterestPointForm
           onClose={() => setShowPOIForm(false)}
           onSubmit={addInterestPoint}
-          onError={showError}
         />
       </ModalWrapper>
 
@@ -143,7 +142,7 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: "absolute",
-    bottom: 95,
+    bottom: 20,
     right: 20,
     borderRadius: 10,
   },

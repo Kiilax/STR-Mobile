@@ -146,7 +146,12 @@ export default function SynchronizationScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
         {!hasScannedQR ? (
-          <View style={styles.centerContent}>
+          <View
+            style={[
+              styles.centerContent,
+              { justifyContent: "center", flex: 1 },
+            ]}
+          >
             <Ionicons
               name="qr-code-outline"
               size={100}
@@ -164,79 +169,87 @@ export default function SynchronizationScreen() {
             />
           </View>
         ) : (
-          <View style={styles.centerContent}>
-            <View style={{ marginBottom: 40, alignItems: "center" }}>
-              <Ionicons
-                name="location"
-                size={60}
-                color={pointsToSync > 0 ? "#4CAF50" : "#ccc"}
+          <>
+            <View
+              style={[
+                styles.centerContent,
+                { justifyContent: "center", flex: 1 },
+              ]}
+            >
+              <View style={{ marginBottom: 40, alignItems: "center" }}>
+                <Ionicons
+                  name="location"
+                  size={60}
+                  color={pointsToSync > 0 ? "#4CAF50" : "#ccc"}
+                />
+                <Text
+                  style={{
+                    color: "#FFF",
+                    fontSize: 32,
+                    fontWeight: "bold",
+                    marginTop: 10,
+                  }}
+                >
+                  {pointsToSync}
+                </Text>
+                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 16 }}>
+                  Points à synchroniser
+                </Text>
+              </View>
+
+              <Button
+                title={
+                  status === "syncing"
+                    ? "Synchronisation..."
+                    : pointsToSync > 0
+                    ? "Envoyer maintenant"
+                    : "Tout est synchronisé"
+                }
+                variant={pointsToSync === 0 ? "secondary" : "primary"}
+                onPress={handleSendInterestPoints}
+                disabled={!canSync || status === "syncing"}
+                loading={status === "syncing"}
+                fullWidth
               />
-              <Text
-                style={{
-                  color: "#FFF",
-                  fontSize: 32,
-                  fontWeight: "bold",
-                  marginTop: 10,
-                }}
-              >
-                {pointsToSync}
-              </Text>
-              <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 16 }}>
-                Points à synchroniser
-              </Text>
+
+              <Button
+                title="Mettre à jour l'événement"
+                variant="secondary"
+                onPress={handleRescanPress}
+                fullWidth
+                style={{ marginTop: 12 }}
+              />
             </View>
 
-            <Button
-              title={
-                status === "syncing"
-                  ? "Synchronisation..."
-                  : pointsToSync > 0
-                  ? "Envoyer maintenant"
-                  : "Tout est synchronisé"
-              }
-              variant={pointsToSync === 0 ? "secondary" : "primary"}
-              onPress={handleSendInterestPoints}
-              disabled={!canSync || status === "syncing"}
-              loading={status === "syncing"}
-              fullWidth
-            />
+            <View style={styles.footerContainer}>
+              {(status === "success" || status === "error") && (
+                <View
+                  style={[
+                    styles.statusContainer,
+                    status === "success"
+                      ? styles.successStatus
+                      : styles.errorStatus,
+                  ]}
+                >
+                  <Ionicons
+                    name={getStatusIcon()}
+                    size={24}
+                    color="#FFFFFF"
+                    style={{ marginRight: 10 }}
+                  />
+                  <Text style={styles.statusText}>{message}</Text>
+                </View>
+              )}
 
-            <Button
-              title="Mettre à jour l'événement"
-              variant="secondary"
-              onPress={handleRescanPress}
-              fullWidth
-              style={{ marginTop: 12 }}
-            />
-          </View>
+              <Button
+                title="Dissocier l'évènement"
+                variant="danger"
+                onPress={handleDissociateAndExit}
+                fullWidth
+              />
+            </View>
+          </>
         )}
-      </View>
-
-      <View style={styles.footerContainer}>
-        {(status === "success" || status === "error") && (
-          <View
-            style={[
-              styles.statusContainer,
-              status === "success" ? styles.successStatus : styles.errorStatus,
-            ]}
-          >
-            <Ionicons
-              name={getStatusIcon()}
-              size={24}
-              color="#FFFFFF"
-              style={{ marginRight: 10 }}
-            />
-            <Text style={styles.statusText}>{message}</Text>
-          </View>
-        )}
-
-        <Button
-          title="Dissocier l'évènement"
-          variant="danger"
-          onPress={handleDissociateAndExit}
-          fullWidth
-          style={{ marginTop: 10 }}
-        />
       </View>
 
       <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner}>
