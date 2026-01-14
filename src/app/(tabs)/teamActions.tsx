@@ -153,8 +153,8 @@ export default function TeamActionsScreen() {
     return (
       <View style={styles.centerContent}>
         <Text style={styles.infoText}>
-          Aucun événement sélectionné. Veuillez sélectionner un événement pour
-          continuer.
+            Pour récupérer le planning de votre équipe, veuillez d&apos;abord
+            générer et scanner le QR Code "Planning".
         </Text>
       </View>
     );
@@ -170,8 +170,8 @@ export default function TeamActionsScreen() {
             style={{ opacity: 0.5, marginBottom: 30 }}
           />
           <Text style={styles.infoText}>
-            Vous devez d&apos;abord synchroniser l&apos;appareil pour récupérer
-            le planning de votre équipe.
+            Pour récupérer le planning de votre équipe, veuillez d&apos;abord
+            générer et scanner le QR Code "Planning".
           </Text>
           <Button
             title="Aller à la synchronisation"
@@ -215,7 +215,7 @@ export default function TeamActionsScreen() {
             <Text
               style={[styles.actionTitle, done && styles.strikethroughText]}
             >
-              {isDropoff ? "Déposer" : "Retirer"} : {equipmentName}
+              {isDropoff ? "Poser" : "Retirer"} : {equipmentName}
             </Text>
             <Text
               style={[styles.actionSubtitle, done && styles.strikethroughText]}
