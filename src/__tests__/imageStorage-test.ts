@@ -41,8 +41,10 @@ describe("ImageStorage", () => {
       expect(mockFile).toHaveBeenCalledWith(Paths.document, "image.jpg");
 
       expect(mockDelete).toHaveBeenCalled();
-      expect(mockMove).toHaveBeenCalledWith(expect.objectContaining({ uri: mockDestinationUri }));
-      
+      expect(mockMove).toHaveBeenCalledWith(
+        expect.objectContaining({ uri: mockDestinationUri })
+      );
+
       expect(result).toBe(mockDestinationUri);
     });
 
@@ -54,7 +56,7 @@ describe("ImageStorage", () => {
 
       mockFile.mockImplementation(((path: string, fileName?: string) => {
         if (path === mockUri) {
-           return {
+          return {
             uri: mockUri,
             move: mockMove,
           };
@@ -70,7 +72,9 @@ describe("ImageStorage", () => {
       const result = await ImageStorage.save(mockUri);
 
       expect(mockDelete).not.toHaveBeenCalled();
-      expect(mockMove).toHaveBeenCalledWith(expect.objectContaining({ uri: mockDestinationUri }));
+      expect(mockMove).toHaveBeenCalledWith(
+        expect.objectContaining({ uri: mockDestinationUri })
+      );
       expect(result).toBe(mockDestinationUri);
     });
 

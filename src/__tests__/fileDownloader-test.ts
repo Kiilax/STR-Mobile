@@ -31,9 +31,7 @@ describe("FileDownloader", () => {
           "x-api-key": process.env.EXPO_PUBLIC_API_KEY || "",
         },
       });
-      expect(mockImageStorageSave).toHaveBeenCalledWith(
-        "cache/downloadedFile"
-      );
+      expect(mockImageStorageSave).toHaveBeenCalledWith("cache/downloadedFile");
       expect(result).toBe("file:///saved/image.jpg");
     });
 
