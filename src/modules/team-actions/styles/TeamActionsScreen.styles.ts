@@ -23,13 +23,13 @@ export const styles = StyleSheet.create({
 
   dashboardContainer: {
     flex: 1,
-    padding: 16,
-    paddingBottom: 0,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
 
   simpleHeader: {
-    marginBottom: 20,
-    paddingBottom: 10,
+    marginBottom: 12,
+    paddingBottom: 8,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.1)",
   },
@@ -110,7 +110,8 @@ export const styles = StyleSheet.create({
   },
 
   footerContainer: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: colors.dark.background || "#121212",
     borderTopWidth: 1,
     borderTopColor: "rgba(255,255,255,0.1)",

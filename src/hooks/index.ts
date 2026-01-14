@@ -6,3 +6,4 @@ export * from "./useEquipmentsStore";
 export * from "./useQRCode";
 export * from "./useQRScanner";
 export * from "./useAlertModal";
+export * from "./useLoadingModal";

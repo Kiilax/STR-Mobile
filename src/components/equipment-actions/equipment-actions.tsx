@@ -87,12 +87,16 @@ export default function EquipmentActions({
         <TouchableOpacity
           style={[
             styles.buttonSecondary,
-            placement.status === EquipmentStatus.DROPPED_OFF
+            placement.status === EquipmentStatus.DROPPED_OFF ||
+            placement.status === EquipmentStatus.REMOVED
               ? styles.buttonVisited
               : styles.buttonNotVisited,
           ]}
           onPress={() => {
-            if (placement.status === EquipmentStatus.DROPPED_OFF) {
+            if (
+              placement.status === EquipmentStatus.DROPPED_OFF ||
+              placement.status === EquipmentStatus.REMOVED
+            ) {
               setEquipmentStatus(placement.id, EquipmentStatus.PENDING);
             } else {
               setEquipmentStatus(placement.id, EquipmentStatus.DROPPED_OFF);
@@ -102,13 +106,15 @@ export default function EquipmentActions({
         >
           <Ionicons
             name={
-              placement.status === EquipmentStatus.DROPPED_OFF
+              placement.status === EquipmentStatus.DROPPED_OFF ||
+              placement.status === EquipmentStatus.REMOVED
                 ? "checkmark-circle"
                 : "ellipse-outline"
             }
             size={24}
             color={
-              placement.status === EquipmentStatus.DROPPED_OFF
+              placement.status === EquipmentStatus.DROPPED_OFF ||
+              placement.status === EquipmentStatus.REMOVED
                 ? "white"
                 : colors.dark.text
             }
@@ -116,11 +122,13 @@ export default function EquipmentActions({
           <Text
             style={[
               styles.buttonTextSecondary,
-              placement.status === EquipmentStatus.DROPPED_OFF &&
+              (placement.status === EquipmentStatus.DROPPED_OFF ||
+                placement.status === EquipmentStatus.REMOVED) &&
                 styles.textVisited,
             ]}
           >
-            {placement.status === EquipmentStatus.DROPPED_OFF
+            {placement.status === EquipmentStatus.DROPPED_OFF ||
+            placement.status === EquipmentStatus.REMOVED
               ? "Equipement posé"
               : "Poser cet équipement"}
           </Text>
