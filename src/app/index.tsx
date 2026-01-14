@@ -1,30 +1,30 @@
-import { ModalWrapper, QRCodeScanner, ErrorModal } from "@/components";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ModalWrapper,
+  QRCodeScanner,
+  ErrorModal,
+  Button,
+  LoadingModal,
+} from "@/components";
+import { StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
-import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
 import { colors } from "@/constants/theme";
 import { useQrCode, useSynchronization } from "@/modules/synchronization/hooks";
 import { QRCodeContent } from "@/types/qrCodeContent";
-import { useAlertModal } from "@/hooks";
+import { useAlertModal, useLoadingModal } from "@/hooks";
 
 export default function EventScanner() {
   const [showQRScanner, setShowQRScanner] = useState(false);
-  const [teamIdState, setTeamIdState] = useState<string | null>(null);
   const { eventId, eventIdLoading } = useEventIdStore();
   const hasNavigated = useRef(false);
   const router = useRouter();
   const { handleReceiveEvent } = useSynchronization();
   const { alertState, showError, hideAlert } = useAlertModal();
+  const { loadingState, showLoading, hideLoading } = useLoadingModal();
 
-  const { setTeamActionsFromApi, setCurrentTeamId } = useTeamActionsStore();
-  const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
-  const { fetchTeamActions } = useTeamActionsApi(
-    apiTeamId,
-    eventId ? eventId : 0
-  );
+  const { setCurrentTeamId } = useTeamActionsStore();
 
   const onUrlFound = useCallback(
     async (
@@ -38,30 +38,27 @@ export default function EventScanner() {
       await handleReceiveEvent(foundUrl, foundEventId);
 
       if (foundTeamId) {
-        setTeamIdState(foundTeamId);
         setCurrentTeamId(foundTeamId);
-        try {
-          const response = await fetchTeamActions();
-          if (response) {
-            await setTeamActionsFromApi(response);
-          }
-        } catch (error) {
-          console.error("Erreur fetch actions:", error);
-        }
       }
 
       router.navigate("/(tabs)");
     },
-    [
-      handleReceiveEvent,
-      fetchTeamActions,
-      setTeamActionsFromApi,
-      setCurrentTeamId,
-      router,
-    ]
+    [handleReceiveEvent, setCurrentTeamId, router]
   );
 
-  const { handleQRScanResult } = useQrCode({ onUrlFound, onError: showError });
+  const { handleQRScanResult } = useQrCode({
+    onUrlFound,
+    onError: showError,
+    onLoadingStart: useCallback(
+      () =>
+        showLoading(
+          "Connexion en cours",
+          "Vérification de la connexion au serveur..."
+        ),
+      [showLoading]
+    ),
+    onLoadingEnd: hideLoading,
+  });
 
   const handleCloseScanner = () => {
     setShowQRScanner(false);
@@ -106,12 +103,11 @@ export default function EventScanner() {
     <View style={styles.loadingContainer}>
       <Text style={styles.title}>Stras&apos;ta route</Text>
       {!eventId && (
-        <TouchableOpacity
-          style={styles.button}
+        <Button
+          title="Scanner le QR Code"
           onPress={() => setShowQRScanner(true)}
-        >
-          <Text style={styles.buttonText}>Scanner le QR Code</Text>
-        </TouchableOpacity>
+          style={{ marginTop: 20 }}
+        />
       )}
       {!eventId && (
         <ModalWrapper
@@ -131,6 +127,12 @@ export default function EventScanner() {
         buttons={alertState.buttons}
         onClose={hideAlert}
       />
+
+      <LoadingModal
+        visible={loadingState.visible}
+        title={loadingState.title}
+        message={loadingState.message}
+      />
     </View>
   );
 }
@@ -147,17 +149,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: colors.dark.text,
-  },
-  button: {
-    backgroundColor: colors.dark.tint,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginTop: 20,
-  },
-  buttonText: {
-    color: colors.dark.primary,
-    fontSize: 18,
-    fontWeight: "bold",
   },
 });

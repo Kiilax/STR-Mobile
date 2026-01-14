@@ -1,6 +1,6 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useCallback, useState } from "react";
+import { useCallback, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 
@@ -8,17 +8,26 @@ import { useSynchronization } from "@/modules/synchronization/hooks/useSynchroni
 import { useQrCode } from "@/hooks/useQRCode";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
-import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
-import { useAlertModal } from "@/hooks";
+import { useAlertModal, useLoadingModal } from "@/hooks";
 
-import { ModalWrapper, QRCodeScanner, ErrorModal } from "@/components";
+import {
+  ModalWrapper,
+  QRCodeScanner,
+  ErrorModal,
+  Button,
+  LoadingModal,
+} from "@/components";
 import type { QRCodeContent } from "@/types/qrCodeContent";
 import { styles } from "@/modules/synchronization/styles/SynchronizationView.styles";
 
 export default function SynchronizationScreen() {
-  const router = useNavigation();
+  const navigation = useNavigation();
   const { eventId } = useEventIdStore();
   const { alertState, showError, showWarning, hideAlert } = useAlertModal();
+  const { loadingState, showLoading, hideLoading } = useLoadingModal();
+
+  const eventIdRef = useRef(eventId);
+  eventIdRef.current = eventId;
 
   const {
     status,
@@ -31,15 +40,7 @@ export default function SynchronizationScreen() {
     handleReceiveEvent,
   } = useSynchronization();
 
-  const { setTeamActionsFromApi, setCurrentTeamId, resetTeamActions } =
-    useTeamActionsStore();
-  const [teamIdState, setTeamIdState] = useState<string | null>(null);
-
-  const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
-  const { fetchTeamActions } = useTeamActionsApi(
-    apiTeamId,
-    eventId ? eventId : 0
-  );
+  const { setCurrentTeamId, resetTeamActions } = useTeamActionsStore();
 
   const {
     showQRScanner,
@@ -56,28 +57,28 @@ export default function SynchronizationScreen() {
       ) => {
         await handleReceiveEvent(foundUrl, foundEventId);
 
-        if (foundTeamId && eventId === foundEventId) {
-          setTeamIdState(foundTeamId);
+        const currentEventId = eventIdRef.current;
+        if (
+          foundTeamId &&
+          (!currentEventId || currentEventId === foundEventId)
+        ) {
           setCurrentTeamId(foundTeamId);
-          try {
-            const response = await fetchTeamActions();
-            if (response) {
-              await setTeamActionsFromApi(response);
-            }
-          } catch (error) {
-            console.error("Erreur fetch actions:", error);
-          }
         }
+
+        navigation.getParent()?.navigate("index");
       },
-      [
-        handleReceiveEvent,
-        eventId,
-        fetchTeamActions,
-        setTeamActionsFromApi,
-        setCurrentTeamId,
-      ]
+      [handleReceiveEvent, setCurrentTeamId, navigation]
     ),
     onError: showError,
+    onLoadingStart: useCallback(
+      () =>
+        showLoading(
+          "Connexion en cours",
+          "Vérification de la connexion au serveur..."
+        ),
+      [showLoading]
+    ),
+    onLoadingEnd: hideLoading,
   });
 
   const handleScan = (parsedData: QRCodeContent | null) => {
@@ -121,7 +122,7 @@ export default function SynchronizationScreen() {
           style: "danger",
           onPress: async () => {
             await handleClearData(async () => resetTeamActions());
-            router.getParent()?.navigate("index");
+            navigation.getParent()?.navigate("index");
           },
         },
       ]
@@ -145,7 +146,12 @@ export default function SynchronizationScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
         {!hasScannedQR ? (
-          <View style={styles.centerContent}>
+          <View
+            style={[
+              styles.centerContent,
+              { justifyContent: "center", flex: 1 },
+            ]}
+          >
             <Ionicons
               name="qr-code-outline"
               size={100}
@@ -156,95 +162,94 @@ export default function SynchronizationScreen() {
               Scannez le QR Code administrateur pour synchroniser vos points
               d&apos;intérêt.
             </Text>
-            <TouchableOpacity
-              style={styles.button}
+            <Button
+              title="Scanner le QR Code"
               onPress={() => setShowQRScanner(true)}
-            >
-              <Text style={styles.buttonText}>Scanner le QR Code</Text>
-            </TouchableOpacity>
+              fullWidth
+            />
           </View>
         ) : (
-          <View style={styles.centerContent}>
-            <View style={{ marginBottom: 40, alignItems: "center" }}>
-              <Ionicons
-                name="location"
-                size={60}
-                color={pointsToSync > 0 ? "#4CAF50" : "#ccc"}
+          <>
+            <View
+              style={[
+                styles.centerContent,
+                { justifyContent: "center", flex: 1 },
+              ]}
+            >
+              <View style={{ marginBottom: 40, alignItems: "center" }}>
+                <Ionicons
+                  name="location"
+                  size={60}
+                  color={pointsToSync > 0 ? "#4CAF50" : "#ccc"}
+                />
+                <Text
+                  style={{
+                    color: "#FFF",
+                    fontSize: 32,
+                    fontWeight: "bold",
+                    marginTop: 10,
+                  }}
+                >
+                  {pointsToSync}
+                </Text>
+                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 16 }}>
+                  Points à synchroniser
+                </Text>
+              </View>
+
+              <Button
+                title={
+                  status === "syncing"
+                    ? "Synchronisation..."
+                    : pointsToSync > 0
+                    ? "Envoyer maintenant"
+                    : "Tout est synchronisé"
+                }
+                variant={pointsToSync === 0 ? "secondary" : "primary"}
+                onPress={handleSendInterestPoints}
+                disabled={!canSync || status === "syncing"}
+                loading={status === "syncing"}
+                fullWidth
               />
-              <Text
-                style={{
-                  color: "#FFF",
-                  fontSize: 32,
-                  fontWeight: "bold",
-                  marginTop: 10,
-                }}
-              >
-                {pointsToSync}
-              </Text>
-              <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 16 }}>
-                Points à synchroniser
-              </Text>
+
+              <Button
+                title="Mettre à jour l'événement"
+                variant="secondary"
+                onPress={handleRescanPress}
+                fullWidth
+                style={{ marginTop: 12 }}
+              />
             </View>
 
-            <TouchableOpacity
-              style={[
-                styles.button,
-                !canSync && pointsToSync > 0 && { opacity: 0.7 },
-                pointsToSync === 0 && styles.buttonSecondary,
-              ]}
-              onPress={handleSendInterestPoints}
-              disabled={!canSync || status === "syncing"}
-            >
-              {status === "syncing" ? (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <ActivityIndicator color="#FFF" style={{ marginRight: 10 }} />
-                  <Text style={styles.buttonText}>Synchronisation...</Text>
+            <View style={styles.footerContainer}>
+              {(status === "success" || status === "error") && (
+                <View
+                  style={[
+                    styles.statusContainer,
+                    status === "success"
+                      ? styles.successStatus
+                      : styles.errorStatus,
+                  ]}
+                >
+                  <Ionicons
+                    name={getStatusIcon()}
+                    size={24}
+                    color="#FFFFFF"
+                    style={{ marginRight: 10 }}
+                  />
+                  <Text style={styles.statusText}>{message}</Text>
                 </View>
-              ) : (
-                <Text style={styles.buttonText}>
-                  {pointsToSync > 0
-                    ? "Envoyer maintenant"
-                    : "Tout est synchronisé"}
-                </Text>
               )}
-            </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.button, styles.buttonSecondary, { marginTop: 12 }]}
-              onPress={handleRescanPress}
-            >
-              <Text style={styles.buttonText}>
-                Mettre à jour l&apos;événement
-              </Text>
-            </TouchableOpacity>
-          </View>
+              <Button
+                title="Dissocier l'évènement"
+                variant="danger"
+                onPress={handleDissociateAndExit}
+                fullWidth
+              />
+            </View>
+          </>
         )}
-      </View>
-
-      <View style={styles.footerContainer}>
-        {(status === "success" || status === "error") && (
-          <View
-            style={[
-              styles.statusContainer,
-              status === "success" ? styles.successStatus : styles.errorStatus,
-            ]}
-          >
-            <Ionicons
-              name={getStatusIcon()}
-              size={24}
-              color="#FFFFFF"
-              style={{ marginRight: 10 }}
-            />
-            <Text style={styles.statusText}>{message}</Text>
-          </View>
-        )}
-
-        <TouchableOpacity
-          style={[styles.button, styles.buttonDanger, { marginTop: 10 }]}
-          onPress={handleDissociateAndExit}
-        >
-          <Text style={styles.buttonText}>Dissocier l&apos;évènement</Text>
-        </TouchableOpacity>
       </View>
 
       <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner}>
@@ -261,6 +266,12 @@ export default function SynchronizationScreen() {
         type={alertState.type}
         buttons={alertState.buttons}
         onClose={hideAlert}
+      />
+
+      <LoadingModal
+        visible={loadingState.visible}
+        title={loadingState.title}
+        message={loadingState.message}
       />
     </SafeAreaView>
   );

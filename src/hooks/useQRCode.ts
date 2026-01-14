@@ -10,9 +10,16 @@ interface UseQrCodeProps {
     teamId: string | null
   ) => void | Promise<void>;
   onError?: (title: string, message: string) => void;
+  onLoadingStart?: () => void;
+  onLoadingEnd?: () => void;
 }
 
-export const useQrCode = ({ onUrlFound, onError }: UseQrCodeProps = {}) => {
+export const useQrCode = ({
+  onUrlFound,
+  onError,
+  onLoadingStart,
+  onLoadingEnd,
+}: UseQrCodeProps = {}) => {
   const [showQRScanner, setShowQRScanner] = useState(false);
   const { url, setUrl } = useUrlStore();
   const { setEventId } = useEventIdStore();
@@ -20,6 +27,14 @@ export const useQrCode = ({ onUrlFound, onError }: UseQrCodeProps = {}) => {
   const [qrIps, setQrIps] = useState<string[]>([]);
   const scannedEventId = useRef<number | null>(null);
   const scannedTeamId = useRef<string | null>(null);
+
+  const callbacksRef = useRef({
+    onUrlFound,
+    onError,
+    onLoadingStart,
+    onLoadingEnd,
+  });
+  callbacksRef.current = { onUrlFound, onError, onLoadingStart, onLoadingEnd };
 
   const fetchWithTimeout = (url: string, options: any = {}, timeout = 3000) => {
     const controller = new AbortController();
@@ -108,12 +123,13 @@ export const useQrCode = ({ onUrlFound, onError }: UseQrCodeProps = {}) => {
     const checkQRCodeData = async () => {
       if (qrIps.length === 0) return;
 
+      callbacksRef.current.onLoadingStart?.();
       const urlFound = await checkIps(qrIps);
 
       if (urlFound) {
         setUrl(urlFound);
-        if (onUrlFound && scannedEventId.current) {
-          await onUrlFound(
+        if (callbacksRef.current.onUrlFound && scannedEventId.current) {
+          await callbacksRef.current.onUrlFound(
             urlFound,
             scannedEventId.current,
             scannedTeamId.current
@@ -121,17 +137,18 @@ export const useQrCode = ({ onUrlFound, onError }: UseQrCodeProps = {}) => {
         }
         setQrIps([]);
       } else {
-        onError?.(
+        callbacksRef.current.onError?.(
           "Erreur connexion",
           "Aucune adresse IP du QR Code n'est joignable."
         );
         setQrIps([]);
       }
+      callbacksRef.current.onLoadingEnd?.();
     };
 
     checkQRCodeData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [qrIps, setUrl, onUrlFound]);
+  }, [qrIps, setUrl]);
 
   const handleScanAgain = () => {
     setUrl("");

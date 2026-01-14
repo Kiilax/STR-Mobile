@@ -1,17 +1,12 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/constants/theme";
 import { STRASBOURG_COORDINATES } from "@/constants/coordinates";
 import { useCoordinateSelector } from "@/modules/interest-point-form/hooks/useCoordinateSelector";
 import { Coordinates } from "@/types";
+import { Button } from "@/components";
 
 const mapStyle = [
   {
@@ -50,23 +45,14 @@ export default function CoordinateSelector({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.label}>Coordonnées</Text>
-        <TouchableOpacity
-          style={[
-            styles.locationButton,
-            isLoadingLocation && styles.locationButtonDisabled,
-          ]}
+        <Button
+          title={isLoadingLocation ? "Localisation..." : "Ma position"}
+          icon={<Ionicons name="location" size={16} color="white" />}
+          size="sm"
           onPress={getCurrentLocation}
           disabled={isLoadingLocation}
-        >
-          {isLoadingLocation ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Ionicons name="location" size={16} color="white" />
-          )}
-          <Text style={styles.locationButtonText}>
-            {isLoadingLocation ? "Localisation..." : "Ma position"}
-          </Text>
-        </TouchableOpacity>
+          loading={isLoadingLocation}
+        />
       </View>
 
       <View style={styles.mapContainer}>
@@ -118,23 +104,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: colors.dark.text,
-  },
-  locationButton: {
-    backgroundColor: colors.dark.tint,
-    borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  locationButtonDisabled: {
-    opacity: 0.6,
-  },
-  locationButtonText: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "600",
   },
   mapContainer: {
     position: "relative",
