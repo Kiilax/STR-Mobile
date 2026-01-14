@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 
@@ -8,7 +8,6 @@ import { useSynchronization } from "@/modules/synchronization/hooks/useSynchroni
 import { useQrCode } from "@/hooks/useQRCode";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
-import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
 import { useAlertModal, useLoadingModal } from "@/hooks";
 
 import {
@@ -26,7 +25,7 @@ export default function SynchronizationScreen() {
   const { eventId } = useEventIdStore();
   const { alertState, showError, showWarning, hideAlert } = useAlertModal();
   const { loadingState, showLoading, hideLoading } = useLoadingModal();
-  
+
   const eventIdRef = useRef(eventId);
   eventIdRef.current = eventId;
 
@@ -41,15 +40,7 @@ export default function SynchronizationScreen() {
     handleReceiveEvent,
   } = useSynchronization();
 
-  const { setTeamActionsFromApi, setCurrentTeamId, resetTeamActions } =
-    useTeamActionsStore();
-  const [teamIdState, setTeamIdState] = useState<string | null>(null);
-
-  const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
-  const { fetchTeamActions } = useTeamActionsApi(
-    apiTeamId,
-    eventId ? eventId : 0
-  );
+  const { setCurrentTeamId, resetTeamActions } = useTeamActionsStore();
 
   const {
     showQRScanner,
@@ -67,32 +58,24 @@ export default function SynchronizationScreen() {
         await handleReceiveEvent(foundUrl, foundEventId);
 
         const currentEventId = eventIdRef.current;
-        if (foundTeamId && (!currentEventId || currentEventId === foundEventId)) {
-          setTeamIdState(foundTeamId);
+        if (
+          foundTeamId &&
+          (!currentEventId || currentEventId === foundEventId)
+        ) {
           setCurrentTeamId(foundTeamId);
-          try {
-            const response = await fetchTeamActions();
-            if (response) {
-              await setTeamActionsFromApi(response);
-            }
-          } catch (error) {
-            console.error("Erreur fetch actions:", error);
-          }
         }
-        
+
         navigation.getParent()?.navigate("index");
       },
-      [
-        handleReceiveEvent,
-        fetchTeamActions,
-        setTeamActionsFromApi,
-        setCurrentTeamId,
-        navigation,
-      ]
+      [handleReceiveEvent, setCurrentTeamId, navigation]
     ),
     onError: showError,
     onLoadingStart: useCallback(
-      () => showLoading("Connexion en cours", "Vérification de la connexion au serveur..."),
+      () =>
+        showLoading(
+          "Connexion en cours",
+          "Vérification de la connexion au serveur..."
+        ),
       [showLoading]
     ),
     onLoadingEnd: hideLoading,
@@ -208,8 +191,8 @@ export default function SynchronizationScreen() {
                 status === "syncing"
                   ? "Synchronisation..."
                   : pointsToSync > 0
-                    ? "Envoyer maintenant"
-                    : "Tout est synchronisé"
+                  ? "Envoyer maintenant"
+                  : "Tout est synchronisé"
               }
               variant={pointsToSync === 0 ? "secondary" : "primary"}
               onPress={handleSendInterestPoints}

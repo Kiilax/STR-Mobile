@@ -232,7 +232,11 @@ export default function MapScreen() {
       )}
 
       <ModalWrapper
-        visible={showModal}
+        visible={
+          showModal &&
+          equipmentPlacementId !== null &&
+          !!getEquipmentPlacementById(equipmentPlacementId)
+        }
         onClose={() => setShowModal(false)}
         overlayOpacity={0}
       >

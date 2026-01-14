@@ -28,6 +28,14 @@ export const useQrCode = ({
   const scannedEventId = useRef<number | null>(null);
   const scannedTeamId = useRef<string | null>(null);
 
+  const callbacksRef = useRef({
+    onUrlFound,
+    onError,
+    onLoadingStart,
+    onLoadingEnd,
+  });
+  callbacksRef.current = { onUrlFound, onError, onLoadingStart, onLoadingEnd };
+
   const fetchWithTimeout = (url: string, options: any = {}, timeout = 3000) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -115,13 +123,13 @@ export const useQrCode = ({
     const checkQRCodeData = async () => {
       if (qrIps.length === 0) return;
 
-      onLoadingStart?.();
+      callbacksRef.current.onLoadingStart?.();
       const urlFound = await checkIps(qrIps);
 
       if (urlFound) {
         setUrl(urlFound);
-        if (onUrlFound && scannedEventId.current) {
-          await onUrlFound(
+        if (callbacksRef.current.onUrlFound && scannedEventId.current) {
+          await callbacksRef.current.onUrlFound(
             urlFound,
             scannedEventId.current,
             scannedTeamId.current
@@ -129,18 +137,18 @@ export const useQrCode = ({
         }
         setQrIps([]);
       } else {
-        onError?.(
+        callbacksRef.current.onError?.(
           "Erreur connexion",
           "Aucune adresse IP du QR Code n'est joignable."
         );
         setQrIps([]);
       }
-      onLoadingEnd?.();
+      callbacksRef.current.onLoadingEnd?.();
     };
 
     checkQRCodeData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [qrIps, setUrl, onUrlFound]);
+  }, [qrIps, setUrl]);
 
   const handleScanAgain = () => {
     setUrl("");

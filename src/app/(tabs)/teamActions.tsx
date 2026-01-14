@@ -60,7 +60,8 @@ export default function TeamActionsScreen() {
     };
 
     loadTeamActions();
-  }, [currentTeamId, eventId, fetchTeamActions, setTeamActionsFromApi]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTeamId, eventId]);
 
   useEffect(() => {
     if (apiError) showError("Erreur API", apiError);
