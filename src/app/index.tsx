@@ -1,5 +1,5 @@
-import { ModalWrapper, QRCodeScanner } from "@/components";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ModalWrapper, QRCodeScanner, ErrorModal } from "@/components";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
@@ -8,6 +8,7 @@ import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsAp
 import { colors } from "@/constants/theme";
 import { useQrCode, useSynchronization } from "@/modules/synchronization/hooks";
 import { QRCodeContent } from "@/types/qrCodeContent";
+import { useAlertModal } from "@/hooks";
 
 export default function EventScanner() {
   const [showQRScanner, setShowQRScanner] = useState(false);
@@ -16,6 +17,7 @@ export default function EventScanner() {
   const hasNavigated = useRef(false);
   const router = useRouter();
   const { handleReceiveEvent } = useSynchronization();
+  const { alertState, showError, hideAlert } = useAlertModal();
 
   const { setTeamActionsFromApi, setCurrentTeamId } = useTeamActionsStore();
   const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
@@ -59,7 +61,7 @@ export default function EventScanner() {
     ]
   );
 
-  const { handleQRScanResult } = useQrCode({ onUrlFound });
+  const { handleQRScanResult } = useQrCode({ onUrlFound, onError: showError });
 
   const handleCloseScanner = () => {
     setShowQRScanner(false);
@@ -67,19 +69,19 @@ export default function EventScanner() {
 
   const handleScan = (parsedData: QRCodeContent | null) => {
     if (!parsedData) {
-      Alert.alert("Erreur", "QR Code invalide ou format non reconnu");
+      showError("Erreur", "QR Code invalide ou format non reconnu");
       return;
     }
 
     const scannedId = Number(parsedData.eventId);
 
     if (isNaN(scannedId)) {
-      Alert.alert("Erreur", "ID d'événement invalide dans le QR Code");
+      showError("Erreur", "ID d'événement invalide dans le QR Code");
       return;
     }
 
     if (eventId && scannedId !== eventId) {
-      Alert.alert(
+      showError(
         "Erreur d'événement",
         "Ce QR Code correspond à un événement différent de celui en cours. Veuillez dissocier l'événement actuel avant d'en changer."
       );
@@ -120,6 +122,15 @@ export default function EventScanner() {
           <QRCodeScanner title="Synchroniser" onScanResult={handleScan} />
         </ModalWrapper>
       )}
+
+      <ErrorModal
+        visible={alertState.visible}
+        title={alertState.title}
+        message={alertState.message}
+        type={alertState.type}
+        buttons={alertState.buttons}
+        onClose={hideAlert}
+      />
     </View>
   );
 }

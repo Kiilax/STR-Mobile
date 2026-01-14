@@ -3,7 +3,6 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
   FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,14 +16,16 @@ import {
 } from "@/hooks/useTeamActionsStore";
 import { useEquipmentsStore } from "@/hooks/useEquipmentsStore";
 import { styles } from "@/modules/team-actions/styles/TeamActionsScreen.styles";
-import { useEventIdStore } from "@/hooks";
+import { useEventIdStore, useAlertModal } from "@/hooks";
 import { colors } from "@/constants/theme";
 import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
 import { EquipmentStatus } from "@/types";
+import { ErrorModal } from "@/components";
 
 export default function TeamActionsScreen() {
   const router = useRouter();
   const [loadingActions, setLoadingActions] = useState(false);
+  const { alertState, showError, hideAlert } = useAlertModal();
 
   const { eventId } = useEventIdStore();
   const { equipments } = useEquipmentsStore();
@@ -62,8 +63,8 @@ export default function TeamActionsScreen() {
   }, [currentTeamId, eventId, fetchTeamActions, setTeamActionsFromApi]);
 
   useEffect(() => {
-    if (apiError) Alert.alert("Erreur API", apiError);
-  }, [apiError]);
+    if (apiError) showError("Erreur API", apiError);
+  }, [apiError, showError]);
 
   const handleRescanPress = () => {
     router.push("/(tabs)/synchronization");
@@ -309,6 +310,15 @@ export default function TeamActionsScreen() {
           </View>
         </View>
       )}
+
+      <ErrorModal
+        visible={alertState.visible}
+        title={alertState.title}
+        message={alertState.message}
+        type={alertState.type}
+        buttons={alertState.buttons}
+        onClose={hideAlert}
+      />
     </SafeAreaView>
   );
 }

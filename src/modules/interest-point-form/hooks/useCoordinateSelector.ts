@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Alert } from "react-native";
 import MapView from "react-native-maps";
 import * as Location from "expo-location";
 import { STRASBOURG_COORDINATES, USER_DELTA } from "@/constants/coordinates";
@@ -8,11 +7,13 @@ import { Coordinates } from "@/types";
 interface UseCoordinateSelectorProps {
   coordinates: Coordinates;
   onCoordinatesChange: (coords: Coordinates) => void;
+  onError?: (title: string, message: string) => void;
 }
 
 export function useCoordinateSelector({
   coordinates,
   onCoordinatesChange,
+  onError,
 }: UseCoordinateSelectorProps) {
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [hasInitialized, setHasInitialized] = useState(false);
@@ -35,7 +36,7 @@ export function useCoordinateSelector({
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert(
+        onError?.(
           "Permission refusée",
           "L'accès à la localisation est nécessaire."
         );
@@ -62,11 +63,11 @@ export function useCoordinateSelector({
         mapRef.current.animateToRegion(newRegion, 1000);
       }
     } catch {
-      Alert.alert("Erreur", "Impossible d'obtenir la localisation.");
+      onError?.("Erreur", "Impossible d'obtenir la localisation.");
     } finally {
       setIsLoadingLocation(false);
     }
-  }, []);
+  }, [onError]);
 
   useEffect(() => {
     if (!hasInitialized) {
