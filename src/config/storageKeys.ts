@@ -6,6 +6,8 @@ export const keys = {
   eventData: "event-data",
   equipmentPlacements: "equipment-placements",
   teamActions: "team-actions",
+  url: "url",
+  currentTeamId: "current-team-id",
 } as const;
 
 export type Keys = (typeof keys)[keyof typeof keys];

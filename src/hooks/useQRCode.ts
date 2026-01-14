@@ -127,7 +127,7 @@ export const useQrCode = ({
       const urlFound = await checkIps(qrIps);
 
       if (urlFound) {
-        setUrl(urlFound);
+        await setUrl(urlFound);
         if (callbacksRef.current.onUrlFound && scannedEventId.current) {
           await callbacksRef.current.onUrlFound(
             urlFound,
@@ -150,8 +150,8 @@ export const useQrCode = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qrIps, setUrl]);
 
-  const handleScanAgain = () => {
-    setUrl("");
+  const handleScanAgain = async () => {
+    await setUrl("");
     setQrIps([]);
     scannedTeamId.current = null;
     scannedEventId.current = null;
