@@ -1,11 +1,12 @@
 import { useEquipmentsStore } from "@/hooks";
-import { Equipment, EquipmentPlacement } from "@/types";
+import { Equipment, EquipmentPlacement, EquipmentStatus } from "@/types";
 import { RectangleCalculator } from "@/utils/rectangleCalculator";
 
 describe("SquareCalculator", () => {
   const mockEquipments: Equipment[] = [
     {
       id: 1,
+      type: "Vehicle",
       name: "Truck",
       description: "Big Truck",
       length: 10,
@@ -31,6 +32,7 @@ describe("SquareCalculator", () => {
       equipmentId: 1,
       interestPointId: 10,
       quantity: 1,
+      status: EquipmentStatus.PENDING,
       coordinates: [
         { latitude: 50.0, longitude: 10.0 },
         { latitude: 50.0001, longitude: 10.0 },
@@ -72,6 +74,7 @@ describe("SquareCalculator", () => {
       equipmentId: 999,
       interestPointId: 10,
       quantity: 1,
+      status: EquipmentStatus.PENDING,
       coordinates: [
         { latitude: 10, longitude: 10 },
         { latitude: 10.0001, longitude: 10 },
@@ -93,6 +96,7 @@ describe("SquareCalculator", () => {
       equipmentId: 1,
       interestPointId: 10,
       quantity: 1,
+      status: EquipmentStatus.PENDING,
       coordinates: [{ latitude: 10, longitude: 10 }],
       dropOffDate: "",
       removalDate: "",
