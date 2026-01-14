@@ -1,10 +1,4 @@
-import {
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-  Text,
-  StyleSheet,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useMap } from "@/modules/map/hooks";
 import { colors, darkTheme } from "@/constants/theme";
@@ -15,7 +9,7 @@ import MapView, {
   PROVIDER_DEFAULT,
 } from "react-native-maps";
 import { useEffect, useState } from "react";
-import { ModalWrapper, ErrorModal } from "@/components";
+import { ModalWrapper, ErrorModal, Button } from "@/components";
 import EquipmentActions from "@/components/equipment-actions/equipment-actions";
 import {
   useEquipmentsStore,
@@ -218,15 +212,23 @@ export default function MapScreen() {
       </View>
 
       {!isFollowing && (
-        <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>
-          <Ionicons name="locate" size={26} color="white" />
-        </TouchableOpacity>
+        <Button
+          icon={<Ionicons name="locate" size={26} color="white" />}
+          iconOnly
+          size="lg"
+          onPress={handleCenterOnUser}
+          style={styles.fab}
+        />
       )}
 
       {isFollowing && !userLocation && (
-        <TouchableOpacity style={styles.fab} onPress={handleCenterOnUser}>
-          <ActivityIndicator size="small" color="white" />
-        </TouchableOpacity>
+        <Button
+          iconOnly
+          size="lg"
+          loading
+          onPress={handleCenterOnUser}
+          style={styles.fab}
+        />
       )}
 
       <ModalWrapper
@@ -266,13 +268,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 20,
     bottom: 95,
-    width: 55,
-    height: 55,
     borderRadius: 30,
-    backgroundColor: colors.dark.tint,
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 4,
   },
   tourFab: {
     bottom: 160,

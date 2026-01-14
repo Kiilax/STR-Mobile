@@ -1,5 +1,10 @@
-import { ModalWrapper, QRCodeScanner, ErrorModal } from "@/components";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ModalWrapper,
+  QRCodeScanner,
+  ErrorModal,
+  Button,
+} from "@/components";
+import { StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
@@ -106,12 +111,11 @@ export default function EventScanner() {
     <View style={styles.loadingContainer}>
       <Text style={styles.title}>Stras&apos;ta route</Text>
       {!eventId && (
-        <TouchableOpacity
-          style={styles.button}
+        <Button
+          title="Scanner le QR Code"
           onPress={() => setShowQRScanner(true)}
-        >
-          <Text style={styles.buttonText}>Scanner le QR Code</Text>
-        </TouchableOpacity>
+          style={{ marginTop: 20 }}
+        />
       )}
       {!eventId && (
         <ModalWrapper
@@ -147,17 +151,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: colors.dark.text,
-  },
-  button: {
-    backgroundColor: colors.dark.tint,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginTop: 20,
-  },
-  buttonText: {
-    color: colors.dark.primary,
-    fontSize: 18,
-    fontWeight: "bold",
   },
 });

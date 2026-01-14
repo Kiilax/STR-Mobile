@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   Image,
-  TouchableOpacity,
   ActivityIndicator,
   Pressable,
 } from "react-native";
@@ -13,7 +12,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { colors } from "@/constants/theme";
-import { ModalWrapper, ErrorModal } from "@/components";
+import { ModalWrapper, ErrorModal, Button } from "@/components";
 import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
 import { useAlertModal } from "@/hooks";
 import InterestPointForm from "@/modules/interest-point-form";
@@ -71,9 +70,13 @@ export default function InterestPointsScreen() {
           )}
         </ScrollView>
       )}
-      <TouchableOpacity style={styles.fab} onPress={() => setShowPOIForm(true)}>
-        <Ionicons name="add" size={26} color="white" />
-      </TouchableOpacity>
+      <Button
+        icon={<Ionicons name="add" size={26} color="white" />}
+        iconOnly
+        size="lg"
+        onPress={() => setShowPOIForm(true)}
+        style={styles.fab}
+      />
 
       <ModalWrapper
         visible={showPOIForm}
@@ -142,13 +145,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 95,
     right: 20,
-    width: 55,
-    height: 55,
     borderRadius: 10,
-    backgroundColor: colors.dark.tint,
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 4,
   },
   loadingContainer: {
     flex: 1,

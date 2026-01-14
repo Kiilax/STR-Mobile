@@ -10,6 +10,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/constants/theme";
 import { useImageSelector } from "../hooks";
+import { Button } from "@/components";
 
 interface ImageSelectorProps {
   selectedImages: string[];
@@ -32,23 +33,21 @@ export default function ImageSelector({
       <Text style={styles.label}>Images</Text>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, isLoading && styles.buttonDisabled]}
+        <Button
+          title="Galerie"
+          icon={<Ionicons name="images" size={20} color="white" />}
           onPress={pickImage}
           disabled={isLoading}
-        >
-          <Ionicons name="images" size={20} color="white" />
-          <Text style={styles.buttonText}>Galerie</Text>
-        </TouchableOpacity>
+          style={{ flex: 1 }}
+        />
 
-        <TouchableOpacity
-          style={[styles.button, isLoading && styles.buttonDisabled]}
+        <Button
+          title="Appareil photo"
+          icon={<Ionicons name="camera" size={20} color="white" />}
           onPress={takePhoto}
           disabled={isLoading}
-        >
-          <Ionicons name="camera" size={20} color="white" />
-          <Text style={styles.buttonText}>Appareil photo</Text>
-        </TouchableOpacity>
+          style={{ flex: 1 }}
+        />
       </View>
 
       {selectedImages.length > 0 && (
@@ -101,24 +100,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 12,
     marginBottom: 12,
-  },
-  button: {
-    flex: 1,
-    backgroundColor: colors.dark.tint,
-    borderRadius: 8,
-    padding: 12,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 8,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "600",
-    fontSize: 14,
   },
   previewContainer: {
     marginTop: 8,

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCallback, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,7 +11,12 @@ import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
 import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
 import { useAlertModal } from "@/hooks";
 
-import { ModalWrapper, QRCodeScanner, ErrorModal } from "@/components";
+import {
+  ModalWrapper,
+  QRCodeScanner,
+  ErrorModal,
+  Button,
+} from "@/components";
 import type { QRCodeContent } from "@/types/qrCodeContent";
 import { styles } from "@/modules/synchronization/styles/SynchronizationView.styles";
 
@@ -156,12 +161,11 @@ export default function SynchronizationScreen() {
               Scannez le QR Code administrateur pour synchroniser vos points
               d&apos;intérêt.
             </Text>
-            <TouchableOpacity
-              style={styles.button}
+            <Button
+              title="Scanner le QR Code"
               onPress={() => setShowQRScanner(true)}
-            >
-              <Text style={styles.buttonText}>Scanner le QR Code</Text>
-            </TouchableOpacity>
+              fullWidth
+            />
           </View>
         ) : (
           <View style={styles.centerContent}>
@@ -186,37 +190,28 @@ export default function SynchronizationScreen() {
               </Text>
             </View>
 
-            <TouchableOpacity
-              style={[
-                styles.button,
-                !canSync && pointsToSync > 0 && { opacity: 0.7 },
-                pointsToSync === 0 && styles.buttonSecondary,
-              ]}
+            <Button
+              title={
+                status === "syncing"
+                  ? "Synchronisation..."
+                  : pointsToSync > 0
+                    ? "Envoyer maintenant"
+                    : "Tout est synchronisé"
+              }
+              variant={pointsToSync === 0 ? "secondary" : "primary"}
               onPress={handleSendInterestPoints}
               disabled={!canSync || status === "syncing"}
-            >
-              {status === "syncing" ? (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <ActivityIndicator color="#FFF" style={{ marginRight: 10 }} />
-                  <Text style={styles.buttonText}>Synchronisation...</Text>
-                </View>
-              ) : (
-                <Text style={styles.buttonText}>
-                  {pointsToSync > 0
-                    ? "Envoyer maintenant"
-                    : "Tout est synchronisé"}
-                </Text>
-              )}
-            </TouchableOpacity>
+              loading={status === "syncing"}
+              fullWidth
+            />
 
-            <TouchableOpacity
-              style={[styles.button, styles.buttonSecondary, { marginTop: 12 }]}
+            <Button
+              title="Mettre à jour l'événement"
+              variant="secondary"
               onPress={handleRescanPress}
-            >
-              <Text style={styles.buttonText}>
-                Mettre à jour l&apos;événement
-              </Text>
-            </TouchableOpacity>
+              fullWidth
+              style={{ marginTop: 12 }}
+            />
           </View>
         )}
       </View>
@@ -239,12 +234,13 @@ export default function SynchronizationScreen() {
           </View>
         )}
 
-        <TouchableOpacity
-          style={[styles.button, styles.buttonDanger, { marginTop: 10 }]}
+        <Button
+          title="Dissocier l'évènement"
+          variant="danger"
           onPress={handleDissociateAndExit}
-        >
-          <Text style={styles.buttonText}>Dissocier l&apos;évènement</Text>
-        </TouchableOpacity>
+          fullWidth
+          style={{ marginTop: 10 }}
+        />
       </View>
 
       <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner}>

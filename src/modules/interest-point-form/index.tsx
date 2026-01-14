@@ -15,6 +15,7 @@ import { useEventIdStore } from "@/hooks/useEventIdStore";
 import CoordinateSelector from "./components/coordinate-selector";
 import ImageSelector from "./components/image-selector";
 import { convertToAddress } from "@/utils";
+import { Button } from "@/components";
 
 interface InterestPointFormProps {
   onClose?: () => void;
@@ -142,18 +143,14 @@ export default function InterestPointForm({
         />
 
         {/* Submit Button */}
-        <TouchableOpacity
-          style={[
-            styles.submitButton,
-            isSubmitting && styles.submitButtonDisabled,
-          ]}
+        <Button
+          title={isSubmitting ? "Création..." : "Créer le point à sécuriser"}
           onPress={handleSubmit(onFormSubmit)}
           disabled={isSubmitting}
-        >
-          <Text style={styles.submitButtonText}>
-            {isSubmitting ? "Création..." : "Créer le point à sécuriser"}
-          </Text>
-        </TouchableOpacity>
+          loading={isSubmitting}
+          fullWidth
+          style={{ marginTop: 16, marginBottom: 32 }}
+        />
       </ScrollView>
     </View>
   );
@@ -202,22 +199,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.dark.accent,
     textAlignVertical: "top",
-  },
-  submitButton: {
-    backgroundColor: colors.dark.tint,
-    borderRadius: 8,
-    padding: 16,
-    alignItems: "center",
-    marginTop: 16,
-    marginBottom: 32,
-  },
-  submitButtonDisabled: {
-    opacity: 0.6,
-  },
-  submitButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
   },
   errorText: {
     color: "red",

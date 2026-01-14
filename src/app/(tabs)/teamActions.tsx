@@ -20,7 +20,7 @@ import { useEventIdStore, useAlertModal } from "@/hooks";
 import { colors } from "@/constants/theme";
 import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
 import { EquipmentStatus } from "@/types";
-import { ErrorModal } from "@/components";
+import { ErrorModal, Button } from "@/components";
 
 export default function TeamActionsScreen() {
   const router = useRouter();
@@ -172,14 +172,11 @@ export default function TeamActionsScreen() {
             Vous devez d&apos;abord synchroniser l&apos;appareil pour récupérer
             le planning de votre équipe.
           </Text>
-          <TouchableOpacity
-            style={styles.mainButton}
+          <Button
+            title="Aller à la synchronisation"
             onPress={() => router.push("/(tabs)/synchronization")}
-          >
-            <Text style={styles.mainButtonText}>
-              Aller à la synchronisation
-            </Text>
-          </TouchableOpacity>
+            size="lg"
+          />
         </View>
       </SafeAreaView>
     );
@@ -260,14 +257,11 @@ export default function TeamActionsScreen() {
             Vous devez d&apos;abord synchroniser l&apos;appareil pour récupérer
             le planning de votre équipe.
           </Text>
-          <TouchableOpacity
-            style={styles.mainButton}
+          <Button
+            title="Aller à la synchronisation"
             onPress={() => router.push("/(tabs)/synchronization")}
-          >
-            <Text style={styles.mainButtonText}>
-              Aller à la synchronisation
-            </Text>
-          </TouchableOpacity>
+            size="lg"
+          />
         </View>
       ) : (
         <View style={{ flex: 1 }}>
@@ -299,14 +293,15 @@ export default function TeamActionsScreen() {
           </View>
 
           <View style={styles.footerContainer}>
-            <TouchableOpacity
-              style={[styles.mainButton, styles.rescanButton]}
+            <Button
+              title="Changer de planning"
+              variant="secondary"
+              size="lg"
+              icon={<Ionicons name="refresh-outline" size={24} color="#FFF" />}
               onPress={handleRescanPress}
               disabled={loadingActions}
-            >
-              <Ionicons name="refresh-outline" size={24} color="#FFF" />
-              <Text style={styles.mainButtonText}>Changer de planning</Text>
-            </TouchableOpacity>
+              fullWidth
+            />
           </View>
         </View>
       )}
