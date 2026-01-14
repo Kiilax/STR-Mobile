@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 
@@ -26,9 +26,6 @@ export default function SynchronizationScreen() {
   const { alertState, showError, showWarning, hideAlert } = useAlertModal();
   const { loadingState, showLoading, hideLoading } = useLoadingModal();
 
-  const eventIdRef = useRef(eventId);
-  eventIdRef.current = eventId;
-
   const {
     status,
     message,
@@ -47,7 +44,7 @@ export default function SynchronizationScreen() {
     setShowQRScanner,
     handleCloseScanner,
     handleQRScanResult,
-    handleScanAgain,
+    resetQrResult,
   } = useQrCode({
     onUrlFound: useCallback(
       async (
@@ -55,13 +52,13 @@ export default function SynchronizationScreen() {
         foundEventId: number,
         foundTeamId: string | null
       ) => {
-        await handleReceiveEvent(foundUrl, foundEventId);
+        await handleReceiveEvent(
+          foundUrl,
+          foundEventId,
+          foundTeamId || undefined
+        );
 
-        const currentEventId = eventIdRef.current;
-        if (
-          foundTeamId &&
-          (!currentEventId || currentEventId === foundEventId)
-        ) {
+        if (foundTeamId) {
           await setCurrentTeamId(foundTeamId);
         }
 
@@ -103,11 +100,11 @@ export default function SynchronizationScreen() {
       return;
     }
 
-    handleQRScanResult(JSON.stringify(parsedData));
+    handleQRScanResult(parsedData);
   };
 
   const handleRescanPress = () => {
-    handleScanAgain();
+    resetQrResult();
     setShowQRScanner(true);
   };
 
@@ -156,7 +153,7 @@ export default function SynchronizationScreen() {
               name="qr-code-outline"
               size={100}
               color="#FFFFFF"
-              style={{ opacity: 0.5, marginBottom: 24 }}
+              style={styles.icon}
             />
             <Text style={styles.infoText}>
               Scannez le QR Code administrateur pour synchroniser vos points
@@ -176,23 +173,14 @@ export default function SynchronizationScreen() {
                 { justifyContent: "center", flex: 1 },
               ]}
             >
-              <View style={{ marginBottom: 40, alignItems: "center" }}>
+              <View style={styles.pointsCountContainer}>
                 <Ionicons
                   name="location"
                   size={60}
                   color={pointsToSync > 0 ? "#4CAF50" : "#ccc"}
                 />
-                <Text
-                  style={{
-                    color: "#FFF",
-                    fontSize: 32,
-                    fontWeight: "bold",
-                    marginTop: 10,
-                  }}
-                >
-                  {pointsToSync}
-                </Text>
-                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 16 }}>
+                <Text style={styles.pointsCountText}>{pointsToSync}</Text>
+                <Text style={styles.pointsLabelText}>
                   Points à synchroniser
                 </Text>
               </View>
@@ -217,7 +205,7 @@ export default function SynchronizationScreen() {
                 variant="secondary"
                 onPress={handleRescanPress}
                 fullWidth
-                style={{ marginTop: 12 }}
+                style={styles.rescanButton}
               />
             </View>
 

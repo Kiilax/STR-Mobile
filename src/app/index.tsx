@@ -7,7 +7,7 @@ import {
 } from "@/components";
 import { StyleSheet, Image, View } from "react-native";
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
 import { colors } from "@/constants/theme";
@@ -16,7 +16,6 @@ import { QRCodeContent } from "@/types/qrCodeContent";
 import { useAlertModal, useLoadingModal } from "@/hooks";
 
 export default function EventScanner() {
-  const [showQRScanner, setShowQRScanner] = useState(false);
   const { eventId, eventIdLoading } = useEventIdStore();
   const hasNavigated = useRef(false);
   const router = useRouter();
@@ -35,7 +34,11 @@ export default function EventScanner() {
       if (hasNavigated.current) return;
       hasNavigated.current = true;
 
-      await handleReceiveEvent(foundUrl, foundEventId);
+      await handleReceiveEvent(
+        foundUrl,
+        foundEventId,
+        foundTeamId || undefined
+      );
 
       if (foundTeamId) {
         await setCurrentTeamId(foundTeamId);
@@ -49,7 +52,12 @@ export default function EventScanner() {
     [handleReceiveEvent, setCurrentTeamId, router]
   );
 
-  const { handleQRScanResult } = useQrCode({
+  const {
+    showQRScanner,
+    setShowQRScanner,
+    handleCloseScanner,
+    handleQRScanResult,
+  } = useQrCode({
     onUrlFound,
     onError: showError,
     onLoadingStart: useCallback(
@@ -62,10 +70,6 @@ export default function EventScanner() {
     ),
     onLoadingEnd: hideLoading,
   });
-
-  const handleCloseScanner = () => {
-    setShowQRScanner(false);
-  };
 
   const handleScan = (parsedData: QRCodeContent | null) => {
     if (!parsedData) {
@@ -89,7 +93,7 @@ export default function EventScanner() {
       return;
     }
 
-    handleQRScanResult(JSON.stringify(parsedData));
+    handleQRScanResult(parsedData);
   };
 
   useEffect(() => {
@@ -103,7 +107,7 @@ export default function EventScanner() {
         params: { zoomToEvent: "true" },
       });
     }
-  }, [eventIdLoading, eventId, router]);
+  }, [eventIdLoading, eventId, router, setShowQRScanner]);
 
   if (eventIdLoading) {
     return (
