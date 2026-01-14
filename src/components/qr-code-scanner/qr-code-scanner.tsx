@@ -72,7 +72,6 @@ export default function QRCodeScanner({
   };
 
   const handleScanResult = ({ data }: { data: string }) => {
-
     const parsedData = parseQRCodeData(data);
 
     if (parsedData) {

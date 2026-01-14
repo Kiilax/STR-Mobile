@@ -10,6 +10,7 @@ import { useEquipmentsStore } from "@/hooks";
 import { RectangleCalculator } from "@/utils/rectangleCalculator";
 import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
 import useQRCodeStore from "@/hooks/useQRCodeStore";
+import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
 
 type SyncStatus = "idle" | "syncing" | "success" | "error";
 
@@ -22,7 +23,8 @@ interface UseSynchronizationReturn {
   handleSendInterestPoints: () => Promise<void>;
   handleReceiveEvent: (
     overrideUrl?: string,
-    overrideEventId?: number
+    overrideEventId?: number,
+    overrideTeamId?: string
   ) => Promise<void>;
   handleClearData: (resetTeamActions?: () => Promise<void>) => Promise<void>;
 }
@@ -117,8 +119,36 @@ export function useSynchronization(): UseSynchronizationReturn {
     }
   };
 
+  const processPlacements = useCallback(
+    (placements: any[]) => {
+      return placements.map((placement) => {
+        const updatedPlacement = { ...placement };
+        updatedPlacement.status = EquipmentStatus.PENDING;
+
+        const equipment = getEquipmentById(updatedPlacement.equipmentId);
+        if (equipment?.type === "vehicle") {
+          const newCoordinates =
+            RectangleCalculator.getVehicleRect(updatedPlacement);
+          if (newCoordinates) {
+            updatedPlacement.coordinates = newCoordinates;
+          } else {
+            console.warn(
+              `Failed to calculate rectangle for equipmentPlacement ID ${updatedPlacement.id}`
+            );
+          }
+        }
+        return updatedPlacement;
+      });
+    },
+    [getEquipmentById]
+  );
+
   const handleReceiveEvent = useCallback(
-    async (overrideUrl?: string, overrideEventId?: number) => {
+    async (
+      overrideUrl?: string,
+      overrideEventId?: number,
+      overrideTeamId?: string
+    ) => {
       const targetUrl = overrideUrl || url;
       if (!targetUrl) {
         console.warn("Cannot receive event: No URL.");
@@ -128,26 +158,27 @@ export function useSynchronization(): UseSynchronizationReturn {
       setStatus("syncing");
       setMessage("");
       try {
-        const event = await fetchEventById(overrideUrl, overrideEventId);
+        const event = await fetchEventById(
+          overrideUrl,
+          overrideEventId,
+          overrideTeamId
+        );
         if (event) {
           setStatus("success");
           setMessage("Évènement reçu avec succès");
-          for (const equipmentPlacement of event.equipmentPlacements) {
-            equipmentPlacement.status = EquipmentStatus.PENDING;
-            const equipment = getEquipmentById(equipmentPlacement.equipmentId);
-            if (equipment?.type === "vehicle") {
-              const newCoordinates =
-                RectangleCalculator.getVehicleRect(equipmentPlacement);
-              if (newCoordinates) {
-                equipmentPlacement.coordinates = newCoordinates;
-              } else {
-                console.warn(
-                  `Failed to calculate rectangle for equipmentPlacement ID ${equipmentPlacement.id}`
-                );
-              }
-            }
+
+          let rawPlacements = event.equipmentPlacements;
+          const targetTeamId =
+            overrideTeamId || useTeamActionsStore.getState().currentTeamId;
+
+          if (targetTeamId) {
+            rawPlacements =
+              useEquipmentPlacementStore.getState().equipmentPlacements;
           }
-          setEquipmentPlacements(event.equipmentPlacements);
+
+          const processedPlacements = processPlacements(rawPlacements);
+
+          setEquipmentPlacements(processedPlacements);
           setEventData(event);
         } else {
           setStatus("error");
@@ -156,7 +187,9 @@ export function useSynchronization(): UseSynchronizationReturn {
         }
       } catch (error: any) {
         setStatus("error");
-        setMessage(`Échec de la synchronisation de l'évènement. Veuillez réessayer.`);
+        setMessage(
+          `Échec de la synchronisation de l'évènement. Veuillez réessayer.`
+        );
         console.error("Failed to receive event:", error);
       }
     },
@@ -165,7 +198,7 @@ export function useSynchronization(): UseSynchronizationReturn {
       fetchEventById,
       setEquipmentPlacements,
       setEventData,
-      getEquipmentById,
+      processPlacements,
     ]
   );
 
@@ -178,7 +211,7 @@ export function useSynchronization(): UseSynchronizationReturn {
     }
     await deleteEventId();
     useUrlStore.getState().setUrl("");
-    useQRCodeStore.getState().clear();
+    useQRCodeStore.getState().reset();
     setStatus("idle");
     setMessage("");
   };

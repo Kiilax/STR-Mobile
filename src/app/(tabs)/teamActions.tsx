@@ -153,8 +153,8 @@ export default function TeamActionsScreen() {
     return (
       <View style={styles.centerContent}>
         <Text style={styles.infoText}>
-            Pour récupérer le planning de votre équipe, veuillez d&apos;abord
-            générer et scanner le QR Code &quot;Planning&quot;.
+          Pour récupérer le planning de votre équipe, veuillez d&apos;abord
+          générer et scanner le QR Code &quot;Planning&quot;.
         </Text>
       </View>
     );
@@ -246,7 +246,7 @@ export default function TeamActionsScreen() {
   if (!eventId) return null;
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+    <SafeAreaView style={styles.container} edges={["left", "right"]}>
       {!currentTeamId ? (
         <View style={styles.centerContent}>
           <Ionicons

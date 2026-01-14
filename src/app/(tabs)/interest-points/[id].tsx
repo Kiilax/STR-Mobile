@@ -288,7 +288,10 @@ export default function InterestPointDetailsScreen() {
                       style={styles.image}
                       resizeMode="cover"
                       onError={(e) =>
-                        console.log("Error loading image:", e.nativeEvent.error)
+                        console.error(
+                          "Error loading image:",
+                          e.nativeEvent.error
+                        )
                       }
                     />
                     <TouchableOpacity

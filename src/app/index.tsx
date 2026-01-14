@@ -69,21 +69,27 @@ export default function EventScanner() {
 
   const handleScan = (parsedData: QRCodeContent | null) => {
     if (!parsedData) {
-      showError("Erreur", "Le QR Code scanné est invalide. Veuillez en genérer un nouveau.");
+      showError(
+        "Erreur",
+        "Le QR Code scanné est invalide. Veuillez en genérer un nouveau."
+      );
       return;
     }
 
     const scannedId = Number(parsedData.eventId);
 
     if (isNaN(scannedId)) {
-      showError("Erreur", "Le QR Code scanné est invalide. Veuillez en genérer un nouveau.");
+      showError(
+        "Erreur",
+        "Le QR Code scanné est invalide. Veuillez en genérer un nouveau."
+      );
       return;
     }
 
     if (eventId && scannedId !== eventId) {
       showError(
         "Erreur d'évènement",
-        "Ce QR Code correspond à un évènement différent de celui en cours. Veuillez dissocier l'évènement actuel avant d'en changer."
+        "Ce QR Code correspond à un événement différent de celui en cours. Veuillez dissocier l'événement actuel avant d'en changer."
       );
       setShowQRScanner(false);
       return;

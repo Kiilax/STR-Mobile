@@ -114,4 +114,25 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     opacity: 0.9,
   },
+  rescanButton: {
+    marginTop: 12,
+  },
+  icon: {
+    opacity: 0.5,
+    marginBottom: 24,
+  },
+  pointsCountContainer: {
+    marginBottom: 40,
+    alignItems: "center",
+  },
+  pointsCountText: {
+    color: "#FFF",
+    fontSize: 32,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  pointsLabelText: {
+    color: "rgba(255,255,255,0.7)",
+    fontSize: 16,
+  },
 });
