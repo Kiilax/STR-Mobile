@@ -1,10 +1,4 @@
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  Platform,
-  Linking,
-} from "react-native";
+import { Text, TouchableOpacity, View, Platform, Linking } from "react-native";
 import { styles } from "./equipment-actions.styles";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/constants/theme";

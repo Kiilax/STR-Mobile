@@ -75,7 +75,10 @@ export default function ErrorModal({
       onRequestClose={onClose}
     >
       <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable style={styles.container} onPress={(e) => e.stopPropagation()}>
+        <Pressable
+          style={styles.container}
+          onPress={(e) => e.stopPropagation()}
+        >
           <View style={[styles.iconContainer, iconContainerStyle[type]]}>
             <Ionicons name={icon.name} size={36} color={icon.color} />
           </View>

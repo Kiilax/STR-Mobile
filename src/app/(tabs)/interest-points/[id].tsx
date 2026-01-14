@@ -29,7 +29,8 @@ export default function InterestPointDetailsScreen() {
   const router = useRouter();
   const { interestPoints, setInterestPoints } = useInterestPointsStore();
   const { equipments } = useEquipmentsStore();
-  const { alertState, showError, showSuccess, showWarning, hideAlert } = useAlertModal();
+  const { alertState, showError, showSuccess, showWarning, hideAlert } =
+    useAlertModal();
 
   const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(
     null
