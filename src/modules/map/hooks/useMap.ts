@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import MapView from "react-native-maps";
 import * as Location from "expo-location";
 import { STRASBOURG_COORDINATES, USER_DELTA } from "@/constants/coordinates";
 import { useEventDataStore } from "@/hooks/useEventDataStore";
 import { Course, Zone } from "@/types";
+import { calculateEventBounds } from "@/utils/eventBounds";
 
 export function useMap() {
   const mapRef = useRef<MapView | null>(null);
@@ -71,6 +72,15 @@ export function useMap() {
     }
   };
 
+  const handleZoomToEvent = useCallback(() => {
+    if (eventData && mapRef.current) {
+      const bounds = calculateEventBounds(eventData);
+      if (bounds) {
+        mapRef.current.animateToRegion(bounds, 1000);
+      }
+    }
+  }, [eventData]);
+
   return {
     zones,
     course,
@@ -81,5 +91,6 @@ export function useMap() {
     errorMsg,
     handleMapDrag,
     handleCenterOnUser,
+    handleZoomToEvent,
   };
 }
