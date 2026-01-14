@@ -143,55 +143,55 @@ export default function SynchronizationScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
         {!hasScannedQR ? (
+          <View
+            style={[
+              styles.centerContent,
+              { justifyContent: "center", flex: 1 },
+            ]}
+          >
+            <Ionicons
+              name="qr-code-outline"
+              size={100}
+              color="#FFFFFF"
+              style={styles.icon}
+            />
+            <Text style={styles.infoText}>
+              Scannez le QR Code administrateur pour synchroniser vos points
+              d&apos;intérêt.
+            </Text>
+            <Button
+              title="Scanner le QR Code"
+              onPress={() => setShowQRScanner(true)}
+              fullWidth
+            />
+          </View>
+        ) : (
+          <>
             <View
               style={[
                 styles.centerContent,
                 { justifyContent: "center", flex: 1 },
               ]}
             >
-              <Ionicons
-                name="qr-code-outline"
-                size={100}
-                color="#FFFFFF"
-                style={styles.icon}
-              />
-              <Text style={styles.infoText}>
-                Scannez le QR Code administrateur pour synchroniser vos points
-                d&apos;intérêt.
-              </Text>
-              <Button
-                title="Scanner le QR Code"
-                onPress={() => setShowQRScanner(true)}
-                fullWidth
-              />
-            </View>
-          ) : (
-            <>
-              <View
-                style={[
-                  styles.centerContent,
-                  { justifyContent: "center", flex: 1 },
-                ]}
-              >
-                <View style={styles.pointsCountContainer}>
-                  <Ionicons
-                    name="location"
-                    size={60}
-                    color={pointsToSync > 0 ? "#4CAF50" : "#ccc"}
-                  />
-                  <Text style={styles.pointsCountText}>{pointsToSync}</Text>
-                  <Text style={styles.pointsLabelText}>
-                    Points à synchroniser
-                  </Text>
-                </View>
+              <View style={styles.pointsCountContainer}>
+                <Ionicons
+                  name="location"
+                  size={60}
+                  color={pointsToSync > 0 ? "#4CAF50" : "#ccc"}
+                />
+                <Text style={styles.pointsCountText}>{pointsToSync}</Text>
+                <Text style={styles.pointsLabelText}>
+                  Points à synchroniser
+                </Text>
+              </View>
 
               <Button
                 title={
                   status === "syncing"
                     ? "Synchronisation..."
                     : pointsToSync > 0
-                      ? "Envoyer maintenant"
-                      : "Tout est synchronisé"
+                    ? "Envoyer maintenant"
+                    : "Tout est synchronisé"
                 }
                 variant={pointsToSync === 0 ? "secondary" : "primary"}
                 onPress={handleSendInterestPoints}
