@@ -1,5 +1,5 @@
 import { ModalWrapper, QRCodeScanner, ErrorModal } from "@/components";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
@@ -104,7 +104,13 @@ export default function EventScanner() {
 
   return (
     <View style={styles.loadingContainer}>
-      <Text style={styles.title}>Stras&apos;ta route</Text>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require("@assets/images/stras-ta-route.webp")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
       {!eventId && (
         <TouchableOpacity
           style={styles.button}
@@ -142,11 +148,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.dark.background,
   },
-  title: {
-    fontSize: 40,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: colors.dark.text,
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 40,
+  },
+  logo: {
+    width: 250,
+    height: 250,
   },
   button: {
     backgroundColor: colors.dark.tint,
