@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 
@@ -22,10 +22,13 @@ import type { QRCodeContent } from "@/types/qrCodeContent";
 import { styles } from "@/modules/synchronization/styles/SynchronizationView.styles";
 
 export default function SynchronizationScreen() {
-  const router = useNavigation();
+  const navigation = useNavigation();
   const { eventId } = useEventIdStore();
   const { alertState, showError, showWarning, hideAlert } = useAlertModal();
   const { loadingState, showLoading, hideLoading } = useLoadingModal();
+  
+  const eventIdRef = useRef(eventId);
+  eventIdRef.current = eventId;
 
   const {
     status,
@@ -63,7 +66,8 @@ export default function SynchronizationScreen() {
       ) => {
         await handleReceiveEvent(foundUrl, foundEventId);
 
-        if (foundTeamId && eventId === foundEventId) {
+        const currentEventId = eventIdRef.current;
+        if (foundTeamId && (!currentEventId || currentEventId === foundEventId)) {
           setTeamIdState(foundTeamId);
           setCurrentTeamId(foundTeamId);
           try {
@@ -75,13 +79,15 @@ export default function SynchronizationScreen() {
             console.error("Erreur fetch actions:", error);
           }
         }
+        
+        navigation.getParent()?.navigate("index");
       },
       [
         handleReceiveEvent,
-        eventId,
         fetchTeamActions,
         setTeamActionsFromApi,
         setCurrentTeamId,
+        navigation,
       ]
     ),
     onError: showError,
@@ -133,7 +139,7 @@ export default function SynchronizationScreen() {
           style: "danger",
           onPress: async () => {
             await handleClearData(async () => resetTeamActions());
-            router.getParent()?.navigate("index");
+            navigation.getParent()?.navigate("index");
           },
         },
       ]

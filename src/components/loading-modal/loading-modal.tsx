@@ -1,4 +1,4 @@
-import { Modal, View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, Modal } from "react-native";
 import { styles } from "./loading-modal.styles";
 import { colors } from "@/constants/theme";
 
