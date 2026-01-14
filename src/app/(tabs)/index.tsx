@@ -15,12 +15,13 @@ import MapView, {
   PROVIDER_DEFAULT,
 } from "react-native-maps";
 import { useEffect, useState } from "react";
-import { ModalWrapper } from "@/components";
+import { ModalWrapper, ErrorModal } from "@/components";
 import EquipmentActions from "@/components/equipment-actions/equipment-actions";
 import {
   useEquipmentsStore,
   useEventDataStore,
   useInterestPointsStore,
+  useAlertModal,
 } from "@/hooks";
 import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
 import { useLocalSearchParams } from "expo-router";
@@ -37,6 +38,7 @@ export default function MapScreen() {
   const params = useLocalSearchParams();
   const { eventData } = useEventDataStore();
   const [showModal, setShowModal] = useState(false);
+  const { alertState, showError, hideAlert } = useAlertModal();
 
   const {
     zones,
@@ -235,8 +237,18 @@ export default function MapScreen() {
         <EquipmentActions
           placementId={equipmentPlacementId!}
           onClose={() => setShowModal(false)}
+          onError={showError}
         />
       </ModalWrapper>
+
+      <ErrorModal
+        visible={alertState.visible}
+        title={alertState.title}
+        message={alertState.message}
+        type={alertState.type}
+        buttons={alertState.buttons}
+        onClose={hideAlert}
+      />
     </View>
   );
 }

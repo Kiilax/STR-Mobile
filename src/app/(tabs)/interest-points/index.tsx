@@ -13,8 +13,9 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { colors } from "@/constants/theme";
-import { ModalWrapper } from "@/components";
+import { ModalWrapper, ErrorModal } from "@/components";
 import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
+import { useAlertModal } from "@/hooks";
 import InterestPointForm from "@/modules/interest-point-form";
 
 export default function InterestPointsScreen() {
@@ -26,6 +27,7 @@ export default function InterestPointsScreen() {
   } = useInterestPointsStore();
   const router = useRouter();
   const [showPOIForm, setShowPOIForm] = useState(false);
+  const { alertState, showError, hideAlert } = useAlertModal();
 
   return (
     <View style={styles.container}>
@@ -81,8 +83,18 @@ export default function InterestPointsScreen() {
         <InterestPointForm
           onClose={() => setShowPOIForm(false)}
           onSubmit={addInterestPoint}
+          onError={showError}
         />
       </ModalWrapper>
+
+      <ErrorModal
+        visible={alertState.visible}
+        title={alertState.title}
+        message={alertState.message}
+        type={alertState.type}
+        buttons={alertState.buttons}
+        onClose={hideAlert}
+      />
     </View>
   );
 }
