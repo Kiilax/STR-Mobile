@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors } from "@/constants/theme";
+import { colors, typography } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   container: {
@@ -15,7 +15,9 @@ export const styles = StyleSheet.create({
   },
   infoText: {
     color: colors.dark.text || "#FFFFFF",
-    fontSize: 18,
+    fontSize: typography.h4.fontSize,
+    fontWeight: typography.h4.fontWeight as "600",
+    lineHeight: typography.h4.lineHeight,
     textAlign: "center",
     marginBottom: 30,
     opacity: 0.9,
@@ -35,8 +37,9 @@ export const styles = StyleSheet.create({
   },
   teamTitleLarge: {
     color: colors.dark.text || "#FFFFFF",
-    fontSize: 28,
-    fontWeight: "bold",
+    fontSize: typography.h1.fontSize,
+    fontWeight: typography.h1.fontWeight as "bold",
+    lineHeight: typography.h1.lineHeight,
   },
 
   listContainer: {
@@ -91,13 +94,15 @@ export const styles = StyleSheet.create({
   },
   actionTitle: {
     color: colors.dark.text || "#FFFFFF",
-    fontSize: 17,
-    fontWeight: "600",
+    fontSize: typography.body.fontSize,
+    fontWeight: typography.label.fontWeight as "600",
+    lineHeight: typography.body.lineHeight,
     marginBottom: 4,
   },
   actionSubtitle: {
     color: colors.dark.text || "#CCCCCC",
-    fontSize: 13,
+    fontSize: typography.bodySmall.fontSize,
+    lineHeight: typography.bodySmall.lineHeight,
     opacity: 0.7,
   },
   strikethroughText: {
@@ -132,8 +137,9 @@ export const styles = StyleSheet.create({
   },
   mainButtonText: {
     color: "#FFFFFF",
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: typography.button.fontSize,
+    fontWeight: typography.button.fontWeight as "600",
+    lineHeight: typography.button.lineHeight,
     marginLeft: 10,
     marginRight: 10,
   },

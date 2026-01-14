@@ -9,6 +9,7 @@ import { useQrCode } from "@/hooks/useQRCode";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
 import { useAlertModal, useLoadingModal } from "@/hooks";
+import { typography } from "@/constants/theme";
 
 import {
   ModalWrapper,
@@ -185,14 +186,15 @@ export default function SynchronizationScreen() {
                 <Text
                   style={{
                     color: "#FFF",
-                    fontSize: 32,
-                    fontWeight: "bold",
+                    fontSize: typography.h1.fontSize,
+                    fontWeight: typography.h1.fontWeight as "bold",
+                    lineHeight: typography.h1.lineHeight,
                     marginTop: 10,
                   }}
                 >
                   {pointsToSync}
                 </Text>
-                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 16 }}>
+                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: typography.body.fontSize, lineHeight: typography.body.lineHeight }}>
                   Points à synchroniser
                 </Text>
               </View>

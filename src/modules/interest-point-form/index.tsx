@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm, Controller } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
-import { colors } from "@/constants/theme";
+import { colors, typography } from "@/constants/theme";
 import { InterestPoint, Coordinates } from "@/types";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import CoordinateSelector from "./components/coordinate-selector";
@@ -171,8 +171,9 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.dark.accent,
   },
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: typography.h3.fontSize,
+    fontWeight: typography.h3.fontWeight as "600",
+    lineHeight: typography.h3.lineHeight,
     color: colors.dark.text,
   },
   closeButton: {
@@ -186,8 +187,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   label: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: typography.label.fontSize,
+    fontWeight: typography.label.fontWeight as "600",
+    lineHeight: typography.label.lineHeight,
     color: colors.dark.text,
     marginBottom: 8,
   },
@@ -202,7 +204,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    fontSize: 12,
+    fontSize: typography.caption.fontSize,
+    lineHeight: typography.caption.lineHeight,
     marginTop: 4,
   },
 });
