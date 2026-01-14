@@ -3,6 +3,7 @@ import {
   QRCodeScanner,
   ErrorModal,
   Button,
+  LoadingModal,
 } from "@/components";
 import { StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
@@ -13,7 +14,7 @@ import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsAp
 import { colors } from "@/constants/theme";
 import { useQrCode, useSynchronization } from "@/modules/synchronization/hooks";
 import { QRCodeContent } from "@/types/qrCodeContent";
-import { useAlertModal } from "@/hooks";
+import { useAlertModal, useLoadingModal } from "@/hooks";
 
 export default function EventScanner() {
   const [showQRScanner, setShowQRScanner] = useState(false);
@@ -23,6 +24,7 @@ export default function EventScanner() {
   const router = useRouter();
   const { handleReceiveEvent } = useSynchronization();
   const { alertState, showError, hideAlert } = useAlertModal();
+  const { loadingState, showLoading, hideLoading } = useLoadingModal();
 
   const { setTeamActionsFromApi, setCurrentTeamId } = useTeamActionsStore();
   const apiTeamId = teamIdState ? parseInt(teamIdState, 10) : 0;
@@ -66,7 +68,15 @@ export default function EventScanner() {
     ]
   );
 
-  const { handleQRScanResult } = useQrCode({ onUrlFound, onError: showError });
+  const { handleQRScanResult } = useQrCode({
+    onUrlFound,
+    onError: showError,
+    onLoadingStart: useCallback(
+      () => showLoading("Connexion en cours", "Vérification de la connexion au serveur..."),
+      [showLoading]
+    ),
+    onLoadingEnd: hideLoading,
+  });
 
   const handleCloseScanner = () => {
     setShowQRScanner(false);
@@ -134,6 +144,12 @@ export default function EventScanner() {
         type={alertState.type}
         buttons={alertState.buttons}
         onClose={hideAlert}
+      />
+
+      <LoadingModal
+        visible={loadingState.visible}
+        title={loadingState.title}
+        message={loadingState.message}
       />
     </View>
   );

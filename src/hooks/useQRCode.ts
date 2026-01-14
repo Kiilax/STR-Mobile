@@ -10,9 +10,16 @@ interface UseQrCodeProps {
     teamId: string | null
   ) => void | Promise<void>;
   onError?: (title: string, message: string) => void;
+  onLoadingStart?: () => void;
+  onLoadingEnd?: () => void;
 }
 
-export const useQrCode = ({ onUrlFound, onError }: UseQrCodeProps = {}) => {
+export const useQrCode = ({
+  onUrlFound,
+  onError,
+  onLoadingStart,
+  onLoadingEnd,
+}: UseQrCodeProps = {}) => {
   const [showQRScanner, setShowQRScanner] = useState(false);
   const { url, setUrl } = useUrlStore();
   const { setEventId } = useEventIdStore();
@@ -108,6 +115,7 @@ export const useQrCode = ({ onUrlFound, onError }: UseQrCodeProps = {}) => {
     const checkQRCodeData = async () => {
       if (qrIps.length === 0) return;
 
+      onLoadingStart?.();
       const urlFound = await checkIps(qrIps);
 
       if (urlFound) {
@@ -127,6 +135,7 @@ export const useQrCode = ({ onUrlFound, onError }: UseQrCodeProps = {}) => {
         );
         setQrIps([]);
       }
+      onLoadingEnd?.();
     };
 
     checkQRCodeData();

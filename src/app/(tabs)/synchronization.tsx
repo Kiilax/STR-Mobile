@@ -9,13 +9,14 @@ import { useQrCode } from "@/hooks/useQRCode";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
 import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
-import { useAlertModal } from "@/hooks";
+import { useAlertModal, useLoadingModal } from "@/hooks";
 
 import {
   ModalWrapper,
   QRCodeScanner,
   ErrorModal,
   Button,
+  LoadingModal,
 } from "@/components";
 import type { QRCodeContent } from "@/types/qrCodeContent";
 import { styles } from "@/modules/synchronization/styles/SynchronizationView.styles";
@@ -24,6 +25,7 @@ export default function SynchronizationScreen() {
   const router = useNavigation();
   const { eventId } = useEventIdStore();
   const { alertState, showError, showWarning, hideAlert } = useAlertModal();
+  const { loadingState, showLoading, hideLoading } = useLoadingModal();
 
   const {
     status,
@@ -83,6 +85,11 @@ export default function SynchronizationScreen() {
       ]
     ),
     onError: showError,
+    onLoadingStart: useCallback(
+      () => showLoading("Connexion en cours", "Vérification de la connexion au serveur..."),
+      [showLoading]
+    ),
+    onLoadingEnd: hideLoading,
   });
 
   const handleScan = (parsedData: QRCodeContent | null) => {
@@ -257,6 +264,12 @@ export default function SynchronizationScreen() {
         type={alertState.type}
         buttons={alertState.buttons}
         onClose={hideAlert}
+      />
+
+      <LoadingModal
+        visible={loadingState.visible}
+        title={loadingState.title}
+        message={loadingState.message}
       />
     </SafeAreaView>
   );
