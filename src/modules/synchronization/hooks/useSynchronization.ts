@@ -9,6 +9,7 @@ import { InterestPoint, EquipmentStatus } from "@/types";
 import { useEquipmentsStore } from "@/hooks";
 import { RectangleCalculator } from "@/utils/rectangleCalculator";
 import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
+import useQRCodeStore from "@/hooks/useQRCodeStore";
 
 type SyncStatus = "idle" | "syncing" | "success" | "error";
 
@@ -176,6 +177,7 @@ export function useSynchronization(): UseSynchronizationReturn {
     }
     await deleteEventId();
     useUrlStore.getState().setUrl("");
+    useQRCodeStore.getState().clear();
     setStatus("idle");
     setMessage("");
   };

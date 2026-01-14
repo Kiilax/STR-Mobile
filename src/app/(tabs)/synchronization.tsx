@@ -62,7 +62,7 @@ export default function SynchronizationScreen() {
           foundTeamId &&
           (!currentEventId || currentEventId === foundEventId)
         ) {
-          setCurrentTeamId(foundTeamId);
+          await setCurrentTeamId(foundTeamId);
         }
 
         navigation.getParent()?.navigate("index");

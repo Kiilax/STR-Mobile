@@ -5,7 +5,7 @@ import {
   Button,
   LoadingModal,
 } from "@/components";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Image, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
@@ -38,7 +38,7 @@ export default function EventScanner() {
       await handleReceiveEvent(foundUrl, foundEventId);
 
       if (foundTeamId) {
-        setCurrentTeamId(foundTeamId);
+        await setCurrentTeamId(foundTeamId);
       }
 
       router.navigate({
@@ -98,13 +98,36 @@ export default function EventScanner() {
     if (!eventId) {
       setShowQRScanner(true);
     } else {
-      router.replace("/(tabs)");
+      router.replace({
+        pathname: "/(tabs)",
+        params: { zoomToEvent: "true" },
+      });
     }
   }, [eventIdLoading, eventId, router]);
 
+  if (eventIdLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("@assets/images/stras-ta-route.webp")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.loadingContainer}>
-      <Text style={styles.title}>Stras&apos;ta route</Text>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require("@assets/images/stras-ta-route.webp")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
       {!eventId && (
         <Button
           title="Scanner le QR Code"
@@ -147,10 +170,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.dark.background,
   },
-  title: {
-    fontSize: 40,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: colors.dark.text,
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 40,
+  },
+  logo: {
+    width: 250,
+    height: 250,
   },
 });

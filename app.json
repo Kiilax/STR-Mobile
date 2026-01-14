@@ -1,15 +1,16 @@
 {
   "expo": {
-    "name": "STRMOBILE",
+    "name": "Stras'ta route",
     "slug": "STRMOBILE",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/stras-ta-route.png",
     "scheme": "strmobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hermoor.strmobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,12 +31,12 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/stras-ta-route.png",
+          "imageWidth": 250,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#1a1a1a",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#1a1a1a"
           }
         }
       ],
