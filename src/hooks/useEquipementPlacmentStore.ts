@@ -9,6 +9,7 @@ interface EquipmentPlacementState {
   getEquipmentPlacementById: (id: number) => EquipmentPlacement | undefined;
   setEquipmentStatus: (id: number, status: EquipmentStatus) => Promise<void>;
   deleteEquipmentPlacements: () => Promise<void>;
+  refreshEquipmentPlacements: () => Promise<void>;
 }
 
 export const useEquipmentPlacementStore = create<EquipmentPlacementState>(
@@ -38,6 +39,17 @@ export const useEquipmentPlacementStore = create<EquipmentPlacementState>(
         await AsyncStore.remove(keys.equipmentPlacements);
       } catch (err) {
         console.error("Error deleting equipment placements", err);
+      }
+    },
+    refreshEquipmentPlacements: async () => {
+      try {
+        const placements = await AsyncStore.get<EquipmentPlacement[]>(
+          keys.equipmentPlacements,
+          []
+        );
+        set({ equipmentPlacements: placements });
+      } catch (err) {
+        console.error("Error refreshing equipment placements", err);
       }
     },
   })

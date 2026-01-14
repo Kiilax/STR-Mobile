@@ -38,10 +38,13 @@ export default function EventScanner() {
       await handleReceiveEvent(foundUrl, foundEventId);
 
       if (foundTeamId) {
-        setCurrentTeamId(foundTeamId);
+        await setCurrentTeamId(foundTeamId);
       }
 
-      router.navigate("/(tabs)");
+      router.navigate({
+        pathname: "/(tabs)",
+        params: { zoomToEvent: "true" },
+      });
     },
     [handleReceiveEvent, setCurrentTeamId, router]
   );

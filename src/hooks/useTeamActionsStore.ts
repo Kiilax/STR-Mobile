@@ -13,9 +13,10 @@ interface TeamActionState {
   setTeamActionsFromApi: (
     apiActions: TeamAction[] | TeamAction
   ) => Promise<void>;
-  setCurrentTeamId: (teamId: string | null) => void;
+  setCurrentTeamId: (teamId: string | null) => Promise<void>;
   toggleActionDone: (actionId: string) => void;
   resetTeamActions: () => Promise<void>;
+  refreshTeamActions: () => Promise<void>;
 }
 
 export const useTeamActionsStore = create<TeamActionState>((set, get) => ({
@@ -40,8 +41,9 @@ export const useTeamActionsStore = create<TeamActionState>((set, get) => ({
     }
   },
 
-  setCurrentTeamId: (teamId: string | null) => {
+  setCurrentTeamId: async (teamId: string | null) => {
     set({ currentTeamId: teamId });
+    await AsyncStore.set(keys.currentTeamId, teamId);
   },
 
   toggleActionDone: (actionId: string) => {
@@ -57,8 +59,25 @@ export const useTeamActionsStore = create<TeamActionState>((set, get) => ({
     set({ teamActions: [], currentTeamId: null });
     try {
       await AsyncStore.remove(keys.teamActions);
+      await AsyncStore.remove(keys.currentTeamId);
     } catch (e) {
       console.error(e);
+    }
+  },
+
+  refreshTeamActions: async () => {
+    try {
+      const actions = await AsyncStore.get<LocalTeamAction[]>(
+        keys.teamActions,
+        []
+      );
+      const teamId = await AsyncStore.get<string | null>(
+        keys.currentTeamId,
+        null
+      );
+      set({ teamActions: actions, currentTeamId: teamId });
+    } catch (err) {
+      console.error("Error refreshing team actions", err);
     }
   },
 }));
