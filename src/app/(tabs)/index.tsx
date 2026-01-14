@@ -55,10 +55,8 @@ export default function MapScreen() {
     number | null
   >(null);
 
-  // Zoom to event when params indicate we should (from initial association)
   useEffect(() => {
     if (params.zoomToEvent === "true" && eventData && mapRef.current) {
-      // Small delay to ensure map is ready
       setTimeout(() => {
         handleZoomToEvent();
       }, 500);
