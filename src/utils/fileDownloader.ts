@@ -30,7 +30,7 @@ export class FileDownloader {
         }
       }
 
-      const file = new File(Paths.document, fileName);
+      const file = new File(Paths.cache, fileName);
       file.write(await response.bytes());
       const uri = await ImageStorage.save(file.uri);
       return uri;

@@ -19,11 +19,9 @@ export function useMap() {
   useEffect(() => {
     if (eventData && !eventDataLoading) {
       if (eventData.courses) {
-        console.log("Setting route:", eventData.courses);
         setCourse(eventData.courses);
       }
       if (eventData.zones) {
-        console.log("Setting zones:", eventData.zones);
         setZones(eventData.zones);
       }
     } else if (!eventData) {

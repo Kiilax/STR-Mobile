@@ -27,7 +27,7 @@ jest.mock("expo-file-system", () => ({
     create: jest.fn(),
     exists: true,
   })),
-  Paths: { document: "document/" },
+  Paths: { document: "document/", cache: "cache/" },
 }))
 
 jest.mock("expo/fetch", () => ({
