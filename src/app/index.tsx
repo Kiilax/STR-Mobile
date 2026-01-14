@@ -7,7 +7,7 @@ import {
 } from "@/components";
 import { StyleSheet, Image, View } from "react-native";
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
 import { colors } from "@/constants/theme";
@@ -16,6 +16,7 @@ import { QRCodeContent } from "@/types/qrCodeContent";
 import { useAlertModal, useLoadingModal } from "@/hooks";
 
 export default function EventScanner() {
+  const [showQRScanner, setShowQRScanner] = useState(false);
   const { eventId, eventIdLoading } = useEventIdStore();
   const hasNavigated = useRef(false);
   const router = useRouter();
@@ -34,11 +35,7 @@ export default function EventScanner() {
       if (hasNavigated.current) return;
       hasNavigated.current = true;
 
-      await handleReceiveEvent(
-        foundUrl,
-        foundEventId,
-        foundTeamId || undefined
-      );
+      await handleReceiveEvent(foundUrl, foundEventId);
 
       if (foundTeamId) {
         await setCurrentTeamId(foundTeamId);
@@ -52,12 +49,7 @@ export default function EventScanner() {
     [handleReceiveEvent, setCurrentTeamId, router]
   );
 
-  const {
-    showQRScanner,
-    setShowQRScanner,
-    handleCloseScanner,
-    handleQRScanResult,
-  } = useQrCode({
+  const { handleQRScanResult } = useQrCode({
     onUrlFound,
     onError: showError,
     onLoadingStart: useCallback(
@@ -71,29 +63,39 @@ export default function EventScanner() {
     onLoadingEnd: hideLoading,
   });
 
+  const handleCloseScanner = () => {
+    setShowQRScanner(false);
+  };
+
   const handleScan = (parsedData: QRCodeContent | null) => {
     if (!parsedData) {
-      showError("Erreur", "QR Code invalide ou format non reconnu");
+      showError(
+        "Erreur",
+        "Le QR Code scanné est invalide. Veuillez en genérer un nouveau."
+      );
       return;
     }
 
     const scannedId = Number(parsedData.eventId);
 
     if (isNaN(scannedId)) {
-      showError("Erreur", "ID d'événement invalide dans le QR Code");
+      showError(
+        "Erreur",
+        "Le QR Code scanné est invalide. Veuillez en genérer un nouveau."
+      );
       return;
     }
 
     if (eventId && scannedId !== eventId) {
       showError(
-        "Erreur d'événement",
+        "Erreur d'évènement",
         "Ce QR Code correspond à un événement différent de celui en cours. Veuillez dissocier l'événement actuel avant d'en changer."
       );
       setShowQRScanner(false);
       return;
     }
 
-    handleQRScanResult(parsedData);
+    handleQRScanResult(JSON.stringify(parsedData));
   };
 
   useEffect(() => {
@@ -107,7 +109,7 @@ export default function EventScanner() {
         params: { zoomToEvent: "true" },
       });
     }
-  }, [eventIdLoading, eventId, router, setShowQRScanner]);
+  }, [eventIdLoading, eventId, router]);
 
   if (eventIdLoading) {
     return (

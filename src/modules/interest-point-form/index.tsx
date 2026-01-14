@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm, Controller } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
-import { colors } from "@/constants/theme";
+import { colors, typography } from "@/constants/theme";
 import { InterestPoint, Coordinates } from "@/types";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import CoordinateSelector from "./components/coordinate-selector";
@@ -92,7 +93,7 @@ export default function InterestPointForm({
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <View style={styles.header}>
         <Text style={styles.title}>Nouveau point à sécuriser</Text>
         {onClose && (
@@ -152,7 +153,7 @@ export default function InterestPointForm({
           style={{ marginTop: 16, marginBottom: 32 }}
         />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -166,13 +167,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 20,
-    paddingTop: 60,
     borderBottomWidth: 1,
     borderBottomColor: colors.dark.accent,
   },
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: typography.h3.fontSize,
+    fontWeight: typography.h3.fontWeight as "600",
+    lineHeight: typography.h3.lineHeight,
     color: colors.dark.text,
   },
   closeButton: {
@@ -186,8 +187,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   label: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: typography.label.fontSize,
+    fontWeight: typography.label.fontWeight as "600",
+    lineHeight: typography.label.lineHeight,
     color: colors.dark.text,
     marginBottom: 8,
   },
@@ -202,7 +204,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    fontSize: 12,
+    fontSize: typography.caption.fontSize,
+    lineHeight: typography.caption.lineHeight,
     marginTop: 4,
   },
 });

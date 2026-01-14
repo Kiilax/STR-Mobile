@@ -72,12 +72,9 @@ export default function QRCodeScanner({
   };
 
   const handleScanResult = ({ data }: { data: string }) => {
-    console.log("QR Code brut scanné:", data);
-
     const parsedData = parseQRCodeData(data);
 
     if (parsedData) {
-      console.log("QR Code parsé:", parsedData);
       onScanResult(parsedData);
     } else {
       console.warn("QR Code invalide ou format non reconnu");

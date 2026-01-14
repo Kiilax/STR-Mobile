@@ -87,14 +87,14 @@ export default function SynchronizationScreen() {
     const scannedId = Number(parsedData.eventId);
 
     if (isNaN(scannedId)) {
-      showError("Erreur", "ID d'événement invalide dans le QR Code");
+      showError("Erreur", "ID d'évènement invalide dans le QR Code");
       return;
     }
 
     if (eventId && scannedId !== eventId) {
       showError(
-        "Erreur d'événement",
-        "Ce QR Code correspond à un événement différent de celui en cours. Veuillez dissocier l'événement actuel avant d'en changer."
+        "Erreur d'évènement",
+        "Ce QR Code correspond à un évènement différent de celui en cours. Veuillez dissocier l'évènement actuel avant d'en changer."
       );
       setShowQRScanner(false);
       return;
@@ -110,8 +110,8 @@ export default function SynchronizationScreen() {
 
   const handleDissociateAndExit = async () => {
     showWarning(
-      "Dissocier l'événement ?",
-      "Cela effacera les données locales liées à l'événement et vous ramènera à l'accueil.",
+      "Dissocier l'évènement ?",
+      "Cela effacera les données locales liées à l'évènement et vous ramènera à l'accueil.",
       [
         { text: "Annuler", style: "secondary" },
         {
@@ -162,6 +162,7 @@ export default function SynchronizationScreen() {
             <Button
               title="Scanner le QR Code"
               onPress={() => setShowQRScanner(true)}
+              size="lg"
               fullWidth
             />
           </View>
@@ -201,7 +202,7 @@ export default function SynchronizationScreen() {
               />
 
               <Button
-                title="Mettre à jour l'événement"
+                title="Mettre à jour l'évènement"
                 variant="secondary"
                 onPress={handleRescanPress}
                 fullWidth
@@ -242,7 +243,7 @@ export default function SynchronizationScreen() {
 
       <ModalWrapper visible={showQRScanner} onClose={handleCloseScanner}>
         <QRCodeScanner
-          title={hasScannedQR ? "Mise à jour Connexion" : "Connexion Événement"}
+          title={hasScannedQR ? "Mise à jour Connexion" : "Connexion Évènement"}
           onScanResult={handleScan}
         />
       </ModalWrapper>

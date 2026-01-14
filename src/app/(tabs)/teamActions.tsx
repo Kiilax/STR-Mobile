@@ -153,8 +153,8 @@ export default function TeamActionsScreen() {
     return (
       <View style={styles.centerContent}>
         <Text style={styles.infoText}>
-          Aucun événement sélectionné. Veuillez sélectionner un événement pour
-          continuer.
+          Pour récupérer le planning de votre équipe, veuillez d&apos;abord
+          générer et scanner le QR Code &quot;Planning&quot;.
         </Text>
       </View>
     );
@@ -170,13 +170,14 @@ export default function TeamActionsScreen() {
             style={{ opacity: 0.5, marginBottom: 30 }}
           />
           <Text style={styles.infoText}>
-            Vous devez d&apos;abord synchroniser l&apos;appareil pour récupérer
-            le planning de votre équipe.
+            Pour récupérer le planning de votre équipe, veuillez d&apos;abord
+            générer et scanner le QR Code &quot;Planning&quot;.
           </Text>
           <Button
             title="Aller à la synchronisation"
             onPress={() => router.push("/(tabs)/synchronization")}
             size="lg"
+            fullWidth
           />
         </View>
       </SafeAreaView>
@@ -215,7 +216,7 @@ export default function TeamActionsScreen() {
             <Text
               style={[styles.actionTitle, done && styles.strikethroughText]}
             >
-              {isDropoff ? "Déposer" : "Retirer"} : {equipmentName}
+              {isDropoff ? "Poser" : "Retirer"} : {equipmentName}
             </Text>
             <Text
               style={[styles.actionSubtitle, done && styles.strikethroughText]}
@@ -245,7 +246,7 @@ export default function TeamActionsScreen() {
   if (!eventId) return null;
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+    <SafeAreaView style={styles.container} edges={["left", "right"]}>
       {!currentTeamId ? (
         <View style={styles.centerContent}>
           <Ionicons
@@ -262,6 +263,7 @@ export default function TeamActionsScreen() {
             title="Aller à la synchronisation"
             onPress={() => router.push("/(tabs)/synchronization")}
             size="lg"
+            fullWidth
           />
         </View>
       ) : (

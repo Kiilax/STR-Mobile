@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors, darkTheme } from "@/constants/theme";
+import { colors, darkTheme, typography } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   container: {
@@ -11,13 +11,15 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 20,
-    fontWeight: "700",
+    fontSize: typography.h3.fontSize,
+    fontWeight: typography.h3.fontWeight as "600",
+    lineHeight: typography.h3.lineHeight,
     color: colors.dark.text,
     marginBottom: 5,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: typography.bodySmall.fontSize,
+    lineHeight: typography.bodySmall.lineHeight,
     color: "rgba(255, 255, 255, 0.6)",
   },
   actionsContainer: {
@@ -45,8 +47,9 @@ export const styles = StyleSheet.create({
   buttonTextMain: {
     flex: 1,
     color: "white",
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: typography.button.fontSize,
+    fontWeight: typography.button.fontWeight as "600",
+    lineHeight: typography.button.lineHeight,
   },
   buttonSecondary: {
     flexDirection: "row",
@@ -69,8 +72,9 @@ export const styles = StyleSheet.create({
   buttonTextSecondary: {
     marginLeft: 10,
     color: colors.dark.text,
-    fontSize: 15,
-    fontWeight: "500",
+    fontSize: typography.body.fontSize,
+    fontWeight: typography.labelSmall.fontWeight as "500",
+    lineHeight: typography.body.lineHeight,
   },
   textVisited: {
     color: "white",

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useMap } from "@/modules/map/hooks";
-import { colors, darkTheme } from "@/constants/theme";
+import { colors, darkTheme, typography } from "@/constants/theme";
 import MapView, {
   Marker,
   Polygon,
@@ -288,7 +288,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.dark.tint,
   },
   paragraph: {
-    fontSize: 18,
+    fontSize: typography.h4.fontSize,
+    lineHeight: typography.h4.lineHeight,
     textAlign: "center",
   },
   addressText: {
@@ -296,6 +297,8 @@ const styles = StyleSheet.create({
     padding: 15,
     flex: 1,
     width: "100%",
+    fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
   },
   infoContainer: {
     position: "absolute",

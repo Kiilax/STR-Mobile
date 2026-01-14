@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors } from "@/constants/theme";
+import { colors, typography } from "@/constants/theme";
 
 export const styles = StyleSheet.create({
   button: {
@@ -47,16 +47,19 @@ export const styles = StyleSheet.create({
   },
 
   text: {
-    fontWeight: "600",
+    fontWeight: typography.button.fontWeight,
   },
   textSm: {
-    fontSize: 14,
+    fontSize: typography.buttonSmall.fontSize,
+    lineHeight: typography.buttonSmall.lineHeight,
   },
   textMd: {
-    fontSize: 16,
+    fontSize: typography.button.fontSize,
+    lineHeight: typography.button.lineHeight,
   },
   textLg: {
-    fontSize: 18,
+    fontSize: typography.buttonLarge.fontSize,
+    lineHeight: typography.buttonLarge.lineHeight,
   },
   textPrimary: {
     color: colors.dark.primary,
