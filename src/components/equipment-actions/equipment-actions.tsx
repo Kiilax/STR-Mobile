@@ -1,11 +1,4 @@
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  Platform,
-  Linking,
-  Alert,
-} from "react-native";
+import { Text, TouchableOpacity, View, Platform, Linking } from "react-native";
 import { styles } from "./equipment-actions.styles";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/constants/theme";
@@ -16,11 +9,13 @@ import { EquipmentStatus } from "@/types";
 interface EquipmentActionsProps {
   placementId: number;
   onClose?: () => void;
+  onError?: (title: string, message: string) => void;
 }
 
 export default function EquipmentActions({
   placementId,
   onClose,
+  onError,
 }: EquipmentActionsProps) {
   const { equipmentPlacements, setEquipmentStatus } =
     useEquipmentPlacementStore();
@@ -32,10 +27,7 @@ export default function EquipmentActions({
 
   const handleOpenMaps = async () => {
     if (!placement.coordinates || placement.coordinates.length === 0) {
-      Alert.alert(
-        "Erreur",
-        "Aucune coordonnée disponible pour cet équipement."
-      );
+      onError?.("Erreur", "Aucune coordonnée disponible pour cet équipement.");
       return;
     }
 
@@ -58,10 +50,7 @@ export default function EquipmentActions({
         }
         // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
       } catch (error) {
-        Alert.alert(
-          "Erreur",
-          "Impossible d'ouvrir l'application de navigation."
-        );
+        onError?.("Erreur", "Impossible d'ouvrir l'application de navigation.");
       }
     }
   };

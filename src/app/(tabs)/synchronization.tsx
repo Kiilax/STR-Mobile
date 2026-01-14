@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCallback, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,14 +9,16 @@ import { useQrCode } from "@/hooks/useQRCode";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
 import { useTeamActionsApi } from "@/modules/team-actions/hooks/useTeamActionsApi";
+import { useAlertModal } from "@/hooks";
 
-import { ModalWrapper, QRCodeScanner } from "@/components";
+import { ModalWrapper, QRCodeScanner, ErrorModal } from "@/components";
 import type { QRCodeContent } from "@/types/qrCodeContent";
 import { styles } from "@/modules/synchronization/styles/SynchronizationView.styles";
 
 export default function SynchronizationScreen() {
   const router = useNavigation();
   const { eventId } = useEventIdStore();
+  const { alertState, showError, showWarning, hideAlert } = useAlertModal();
 
   const {
     status,
@@ -81,23 +77,24 @@ export default function SynchronizationScreen() {
         setCurrentTeamId,
       ]
     ),
+    onError: showError,
   });
 
   const handleScan = (parsedData: QRCodeContent | null) => {
     if (!parsedData) {
-      Alert.alert("Erreur", "QR Code invalide ou format non reconnu");
+      showError("Erreur", "QR Code invalide ou format non reconnu");
       return;
     }
 
     const scannedId = Number(parsedData.eventId);
 
     if (isNaN(scannedId)) {
-      Alert.alert("Erreur", "ID d'événement invalide dans le QR Code");
+      showError("Erreur", "ID d'événement invalide dans le QR Code");
       return;
     }
 
     if (eventId && scannedId !== eventId) {
-      Alert.alert(
+      showError(
         "Erreur d'événement",
         "Ce QR Code correspond à un événement différent de celui en cours. Veuillez dissocier l'événement actuel avant d'en changer."
       );
@@ -114,14 +111,14 @@ export default function SynchronizationScreen() {
   };
 
   const handleDissociateAndExit = async () => {
-    Alert.alert(
+    showWarning(
       "Dissocier l'événement ?",
       "Cela effacera les données locales liées à l'événement et vous ramènera à l'accueil.",
       [
-        { text: "Annuler", style: "cancel" },
+        { text: "Annuler", style: "secondary" },
         {
           text: "Dissocier",
-          style: "destructive",
+          style: "danger",
           onPress: async () => {
             await handleClearData(async () => resetTeamActions());
             router.getParent()?.navigate("index");
@@ -256,6 +253,15 @@ export default function SynchronizationScreen() {
           onScanResult={handleScan}
         />
       </ModalWrapper>
+
+      <ErrorModal
+        visible={alertState.visible}
+        title={alertState.title}
+        message={alertState.message}
+        type={alertState.type}
+        buttons={alertState.buttons}
+        onClose={hideAlert}
+      />
     </SafeAreaView>
   );
 }

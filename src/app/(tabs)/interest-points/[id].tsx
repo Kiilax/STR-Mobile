@@ -8,7 +8,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
-  Alert,
   Modal,
   TextInput,
   Pressable,
@@ -22,12 +21,16 @@ import * as ImagePicker from "expo-image-picker";
 import { ImageStorage } from "@/utils";
 import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
 import { useEquipmentsStore } from "@/hooks/useEquipmentsStore";
+import { useAlertModal } from "@/hooks";
+import { ErrorModal } from "@/components";
 
 export default function InterestPointDetailsScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { interestPoints, setInterestPoints } = useInterestPointsStore();
   const { equipments } = useEquipmentsStore();
+  const { alertState, showError, showSuccess, showWarning, hideAlert } =
+    useAlertModal();
 
   const [interestPoint, setInterestPoint] = useState<InterestPoint | null>(
     null
@@ -124,7 +127,7 @@ export default function InterestPointDetailsScreen() {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert(
+        showError(
           "Permission requise",
           "L'accès à la galerie est nécessaire pour sélectionner des images."
         );
@@ -153,14 +156,14 @@ export default function InterestPointDetailsScreen() {
           };
 
           updateInterestPoint(updatedPoint);
-          Alert.alert("Succès", "Image ajoutée avec succès");
+          showSuccess("Succès", "Image ajoutée avec succès");
         } else {
-          Alert.alert("Erreur", "Impossible de sauvegarder l'image");
+          showError("Erreur", "Impossible de sauvegarder l'image");
         }
       }
     } catch (error) {
       console.error("Error picking image:", error);
-      Alert.alert("Erreur", "Impossible d'ajouter l'image");
+      showError("Erreur", "Impossible d'ajouter l'image");
     }
     setImagePickerModalVisible(false);
   };
@@ -168,14 +171,14 @@ export default function InterestPointDetailsScreen() {
   const deleteImage = (imageIndex: number) => {
     if (!interestPoint) return;
 
-    Alert.alert(
+    showWarning(
       "Supprimer l'image",
       "Êtes-vous sûr de vouloir supprimer cette image ?",
       [
-        { text: "Annuler", style: "cancel" },
+        { text: "Annuler", style: "secondary" },
         {
           text: "Supprimer",
-          style: "destructive",
+          style: "danger",
           onPress: () => {
             const imageToDelete = interestPoint.images[imageIndex];
             ImageStorage.remove(imageToDelete);
@@ -198,14 +201,14 @@ export default function InterestPointDetailsScreen() {
   const deleteInterestPoint = () => {
     if (!interestPoint) return;
 
-    Alert.alert(
+    showWarning(
       "Supprimer le point à sécuriser",
       "Êtes-vous sûr de vouloir supprimer ce point à sécuriser ?",
       [
-        { text: "Annuler", style: "cancel" },
+        { text: "Annuler", style: "secondary" },
         {
           text: "Supprimer",
-          style: "destructive",
+          style: "danger",
           onPress: () => {
             interestPoint.images.forEach((uri) => {
               ImageStorage.remove(uri);
@@ -433,6 +436,15 @@ export default function InterestPointDetailsScreen() {
           </View>
         </View>
       </Modal>
+
+      <ErrorModal
+        visible={alertState.visible}
+        title={alertState.title}
+        message={alertState.message}
+        type={alertState.type}
+        buttons={alertState.buttons}
+        onClose={hideAlert}
+      />
     </ScrollView>
   );
 }

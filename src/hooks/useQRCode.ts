@@ -2,7 +2,6 @@ import { useRef, useState, useEffect } from "react";
 import { useUrlStore } from "@/hooks/useUrlStore";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import type { QRCodeContent } from "@/types/qrCodeContent";
-import { Alert } from "react-native";
 
 interface UseQrCodeProps {
   onUrlFound?: (
@@ -10,9 +9,10 @@ interface UseQrCodeProps {
     eventId: number,
     teamId: string | null
   ) => void | Promise<void>;
+  onError?: (title: string, message: string) => void;
 }
 
-export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
+export const useQrCode = ({ onUrlFound, onError }: UseQrCodeProps = {}) => {
   const [showQRScanner, setShowQRScanner] = useState(false);
   const { url, setUrl } = useUrlStore();
   const { setEventId } = useEventIdStore();
@@ -42,14 +42,14 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
       const parsedData = JSON.parse(data) as QRCodeContent;
 
       if (!parsedData.eventId || !parsedData.ips) {
-        Alert.alert("Erreur", "QR Code invalide: eventId ou ips manquant");
+        onError?.("Erreur", "QR Code invalide: eventId ou ips manquant");
         return;
       }
 
       const eventId = Number(parsedData.eventId);
 
       if (isNaN(eventId)) {
-        Alert.alert("Erreur", "QR Code invalide: ID d'événement incorrect");
+        onError?.("Erreur", "QR Code invalide: ID d'événement incorrect");
         return;
       }
 
@@ -66,11 +66,11 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
         setQrIps(parsedData.ips);
         setShowQRScanner(false);
       } else {
-        Alert.alert("Erreur", "Format des IPs incorrect (tableau attendu)");
+        onError?.("Erreur", "Format des IPs incorrect (tableau attendu)");
       }
     } catch (error) {
       console.error("Erreur parsing QR:", error);
-      Alert.alert("Erreur", "QR Code invalide: format JSON incorrect");
+      onError?.("Erreur", "QR Code invalide: format JSON incorrect");
     }
   };
 
@@ -121,7 +121,7 @@ export const useQrCode = ({ onUrlFound }: UseQrCodeProps = {}) => {
         }
         setQrIps([]);
       } else {
-        Alert.alert(
+        onError?.(
           "Erreur connexion",
           "Aucune adresse IP du QR Code n'est joignable."
         );

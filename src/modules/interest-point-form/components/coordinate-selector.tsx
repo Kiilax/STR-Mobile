@@ -25,12 +25,14 @@ interface CoordinateSelectorProps {
   coordinates: Coordinates;
   onCoordinatesChange: (coords: Coordinates) => void;
   error?: string;
+  onError?: (title: string, message: string) => void;
 }
 
 export default function CoordinateSelector({
   coordinates,
   onCoordinatesChange,
   error,
+  onError,
 }: CoordinateSelectorProps) {
   const {
     isLoadingLocation,
@@ -41,6 +43,7 @@ export default function CoordinateSelector({
   } = useCoordinateSelector({
     coordinates,
     onCoordinatesChange,
+    onError,
   });
 
   return (
