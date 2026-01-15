@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 12,
     gap: 10,
+    marginVertical: 6,
   },
 
   sizeSm: {
@@ -37,7 +38,7 @@ export const styles = StyleSheet.create({
   variantOutline: {
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.2)",
+    borderColor: colors.dark.tint,
   },
   variantGhost: {
     backgroundColor: "transparent",

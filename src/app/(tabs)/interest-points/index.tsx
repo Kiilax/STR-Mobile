@@ -2,25 +2,27 @@ import { useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
   Image,
   ActivityIndicator,
-  Pressable,
+  FlatList,
+  TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { colors, typography } from "@/constants/theme";
 import { ModalWrapper, ErrorModal, Button } from "@/components";
 import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
 import { useAlertModal } from "@/hooks";
 import InterestPointForm from "@/modules/interest-point-form";
+import { InterestPoint } from "@/types";
 
 export default function InterestPointsScreen() {
   const {
     interestPoints,
-    interestPointsLoading: interestPointsLoading,
+    interestPointsLoading,
     addInterestPoint,
     deleteInterestPoint,
   } = useInterestPointsStore();
@@ -28,48 +30,89 @@ export default function InterestPointsScreen() {
   const [showPOIForm, setShowPOIForm] = useState(false);
   const { alertState, hideAlert } = useAlertModal();
 
-  return (
-    <View style={styles.container}>
-      {interestPointsLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.dark.tint} />
-          <Text style={styles.loadingText}>
-            Chargement des points à sécuriser...
-          </Text>
-        </View>
-      ) : (
-        <ScrollView
-          style={styles.scrollContainer}
-          contentContainerStyle={{ paddingBottom: 80 }}
-        >
-          {interestPoints.length === 0 ? (
-            <Text style={styles.emptyText}>
-              Aucun point à sécuriser disponible.
-            </Text>
-          ) : (
-            interestPoints.map((poi) => (
-              <Pressable
-                key={poi.id}
-                onPress={() => router.push(`/(tabs)/interest-points/${poi.id}`)}
-              >
-                <View style={styles.item}>
-                  {poi.images[0] && (
-                    <Image
-                      source={{ uri: poi.images[0] }}
-                      style={styles.icon}
-                    />
-                  )}
-                  <Text style={styles.text}>{poi.comment}</Text>
+  const handleNavigateToPOI = (id: number) => {
+    router.push(`/(tabs)/interest-points/${id}`);
+  };
 
-                  <Pressable onPress={() => deleteInterestPoint(poi.id)}>
-                    <Ionicons name="trash" size={24} color={"#b14"} />
-                  </Pressable>
+  const renderItem = ({ item }: { item: InterestPoint }) => {
+    const hasImage = item.images && item.images.length > 0;
+
+    return (
+      <View style={styles.actionCard}>
+        <TouchableOpacity
+          style={styles.actionContentSide}
+          onPress={() => handleNavigateToPOI(item.id)}
+          activeOpacity={0.7}
+        >
+          <View
+            style={[
+              styles.actionIconContainer,
+              hasImage ? styles.imageContainer : styles.iconContainer,
+            ]}
+          >
+            {hasImage ? (
+              <Image
+                source={{ uri: item.images[0] }}
+                style={styles.cardImage}
+              />
+            ) : (
+              <Ionicons
+                name="location-outline"
+                size={22}
+                color={colors.dark.tint}
+              />
+            )}
+          </View>
+
+          <View style={styles.actionTexts}>
+            <Text style={styles.actionTitle} numberOfLines={1}>
+              {item.address}
+            </Text>
+            <Text style={styles.actionSubtitle} numberOfLines={2}>
+              {item.comment || "Aucun commentaire"}
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.deleteActionContainer}
+          onPress={() => deleteInterestPoint(item.id)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="trash-outline" size={24} color="#F44336" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container} edges={["left", "right"]}>
+      <View style={styles.dashboardContainer}>
+        <View style={styles.listContainer}>
+          {interestPointsLoading ? (
+            <View style={styles.centerContent}>
+              <ActivityIndicator size="large" color={colors.dark.tint} />
+              <Text style={styles.loadingText}>Chargement...</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={interestPoints}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={styles.listContent}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <View style={styles.centerContent}>
+                  <Text style={styles.emptyText}>
+                    Aucun point à sécuriser disponible.
+                  </Text>
                 </View>
-              </Pressable>
-            ))
+              }
+            />
           )}
-        </ScrollView>
-      )}
+        </View>
+      </View>
+
       <Button
         icon={<Ionicons name="add" size={26} color="white" />}
         iconOnly
@@ -97,72 +140,125 @@ export default function InterestPointsScreen() {
         buttons={alertState.buttons}
         onClose={hideAlert}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative",
+    backgroundColor: colors.dark.background || "#121212",
   },
-  scrollContainer: {
+  dashboardContainer: {
     flex: 1,
-    padding: 20,
-    backgroundColor: colors.dark.background,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
-  item: {
+  simpleHeader: {
+    marginBottom: 12,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.1)",
+  },
+  titleLarge: {
+    color: colors.dark.text || "#FFFFFF",
+    fontSize: typography.h1.fontSize,
+    fontWeight: typography.h1.fontWeight as "bold",
+    lineHeight: typography.h1.lineHeight,
+  },
+  listContainer: {
+    flex: 1,
+  },
+  listContent: {
+    paddingBottom: 80,
+  },
+  centerContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  actionCard: {
+    backgroundColor: colors.dark.secondary || "#1E1E1E",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.05)",
     flexDirection: "row",
     alignItems: "center",
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.dark.accent,
-    backgroundColor: colors.dark.secondary,
-    borderRadius: 4,
-    marginBottom: 12,
-    shadowColor: colors.dark.inverted,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 3,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.dark.accent,
+    justifyContent: "space-between",
   },
-  icon: {
-    width: 50,
-    height: 50,
-    borderRadius: 4,
-    marginRight: 12,
-  },
-  text: {
+  actionContentSide: {
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
-    color: colors.dark.inverted,
+  },
+  actionIconContainer: {
+    width: 42,
+    height: 42,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+    overflow: "hidden",
+  },
+  iconContainer: {
+    backgroundColor: "rgba(33, 150, 243, 0.2)",
+    borderWidth: 1,
+    borderColor: colors.dark.tint,
+    borderRadius: 21,
+  },
+  imageContainer: {
+    backgroundColor: "transparent",
+  },
+  cardImage: {
+    width: "100%",
+    height: "100%",
+  },
+  actionTexts: {
+    flex: 1,
+  },
+  actionTitle: {
+    color: colors.dark.text || "#FFFFFF",
     fontSize: typography.body.fontSize,
+    fontWeight: typography.label.fontWeight as "600",
     lineHeight: typography.body.lineHeight,
+    marginBottom: 4,
+  },
+  actionSubtitle: {
+    color: colors.dark.text || "#CCCCCC",
+    fontSize: typography.bodySmall.fontSize,
+    lineHeight: typography.bodySmall.lineHeight,
+    opacity: 0.7,
+  },
+  deleteActionContainer: {
+    marginLeft: 10,
+    padding: 8,
   },
   fab: {
     position: "absolute",
     bottom: 20,
     right: 20,
-    borderRadius: 10,
-  },
-  loadingContainer: {
-    flex: 1,
+    borderRadius: 14,
+    width: 60,
+    height: 60,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.dark.background,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
   },
   loadingText: {
     marginTop: 10,
     color: colors.dark.inverted,
     fontSize: typography.body.fontSize,
-    lineHeight: typography.body.lineHeight,
   },
   emptyText: {
     textAlign: "center",
-    marginTop: 50,
+    marginTop: 20,
     color: colors.dark.inverted,
     fontSize: typography.body.fontSize,
-    lineHeight: typography.body.lineHeight,
   },
 });

@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm, Controller } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
@@ -97,16 +90,22 @@ export default function InterestPointForm({
       <View style={styles.header}>
         <Text style={styles.title}>Nouveau point à sécuriser</Text>
         {onClose && (
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Ionicons name="close" size={24} color={colors.dark.text} />
-          </TouchableOpacity>
+          <Button
+            onPress={onClose}
+            icon={<Ionicons name="close" size={24} color={colors.dark.text} />}
+            variant="ghost"
+            iconOnly
+            size="sm"
+          />
         )}
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Comment */}
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Commentaire</Text>
+        {/* Comment Section as Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>Commentaire</Text>
+          </View>
           <Controller
             control={control}
             name="comment"
@@ -116,7 +115,7 @@ export default function InterestPointForm({
                 value={value}
                 onChangeText={onChange}
                 placeholder="Décrivez ce point à sécuriser..."
-                placeholderTextColor={colors.dark.accent}
+                placeholderTextColor="rgba(255,255,255,0.4)"
                 multiline
                 numberOfLines={3}
               />
@@ -127,7 +126,7 @@ export default function InterestPointForm({
           )}
         </View>
 
-        {/* Minimap */}
+        {/* Minimap (Self-contained Card) */}
         <CoordinateSelector
           coordinates={coordinates}
           onCoordinatesChange={handleCoordinatesChange}
@@ -136,7 +135,7 @@ export default function InterestPointForm({
           }
         />
 
-        {/* Images */}
+        {/* Images (Self-contained Card) */}
         <ImageSelector
           selectedImages={selectedImages}
           onImagesChange={handleImagesChange}
@@ -150,7 +149,8 @@ export default function InterestPointForm({
           disabled={isSubmitting}
           loading={isSubmitting}
           fullWidth
-          style={{ marginTop: 16, marginBottom: 32 }}
+          style={{ marginTop: 8, marginBottom: 40 }}
+          size="lg"
         />
       </ScrollView>
     </SafeAreaView>
@@ -160,52 +160,62 @@ export default function InterestPointForm({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.dark.background,
+    backgroundColor: colors.dark.background || "#121212",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: colors.dark.accent,
+    borderBottomColor: "rgba(255,255,255,0.1)",
+    backgroundColor: colors.dark.background,
   },
   title: {
-    fontSize: typography.h3.fontSize,
-    fontWeight: typography.h3.fontWeight as "600",
-    lineHeight: typography.h3.lineHeight,
+    fontSize: typography.h2.fontSize,
+    fontWeight: "bold",
     color: colors.dark.text,
   },
   closeButton: {
     padding: 8,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   content: {
     flex: 1,
-    padding: 20,
+    padding: 16,
   },
-  formGroup: {
-    marginBottom: 24,
+  card: {
+    backgroundColor: colors.dark.secondary || "#1E1E1E",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.05)",
   },
-  label: {
-    fontSize: typography.label.fontSize,
-    fontWeight: typography.label.fontWeight as "600",
-    lineHeight: typography.label.lineHeight,
-    color: colors.dark.text,
-    marginBottom: 8,
+  cardHeader: {
+    marginBottom: 12,
+  },
+  cardTitle: {
+    fontSize: typography.h4.fontSize,
+    fontWeight: "600",
+    color: colors.dark.text || "#FFFFFF",
   },
   textInput: {
-    backgroundColor: colors.dark.secondary,
+    backgroundColor: "rgba(0,0,0,0.2)",
     borderRadius: 8,
     padding: 12,
     color: colors.dark.text,
     borderWidth: 1,
-    borderColor: colors.dark.accent,
+    borderColor: "rgba(255,255,255,0.1)",
     textAlignVertical: "top",
+    minHeight: 100,
+    fontSize: 16,
   },
   errorText: {
-    color: "red",
-    fontSize: typography.caption.fontSize,
-    lineHeight: typography.caption.lineHeight,
-    marginTop: 4,
+    color: "#F44336",
+    fontSize: 13,
+    marginTop: 8,
   },
 });

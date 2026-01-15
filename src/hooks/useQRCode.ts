@@ -28,15 +28,19 @@ export const useQrCode = ({
     setShowScanner(false);
   }, [setShowScanner]);
 
-  const handleQRScanResult = async (data: string | QRCodeContent) => {
+  const handleQRScanResult = async (
+    data: string | QRCodeContent
+  ): Promise<boolean> => {
     try {
       const parsedData = (
         typeof data === "string" ? JSON.parse(data) : data
       ) as QRCodeContent;
 
       onLoadingStart?.();
+
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
       const success = await processScanResult(parsedData);
-      onLoadingEnd?.();
 
       if (success) {
         const currentUrl = useUrlStore.getState().url;
@@ -50,10 +54,13 @@ export const useQrCode = ({
         const error = useQRCodeStore.getState().error;
         onError?.("Erreur", error || "Échec de la connexion");
       }
+      onLoadingEnd?.();
+      return success;
     } catch (error) {
       console.error("Erreur parsing QR:", error);
       onError?.("Erreur", "QR Code invalide: format JSON incorrect");
       onLoadingEnd?.();
+      return false;
     }
   };
 
