@@ -67,7 +67,10 @@ export default function EventScanner() {
 
     setShowQRScanner(false);
     isProcessingRef.current = true;
-    showLoading("Connexion en cours", "Vérification de la connexion au serveur...");
+    showLoading(
+      "Connexion en cours",
+      "Vérification de la connexion au serveur..."
+    );
 
     const success = await handleQRScanResult(JSON.stringify(parsedData));
 

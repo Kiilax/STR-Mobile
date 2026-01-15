@@ -51,7 +51,10 @@ export function useEventApi() {
 
         let teamPlacements = null;
         if (targetTeamId) {
-          teamPlacements = await fetchAllByTeamId(Number(targetTeamId), targetUrl);
+          teamPlacements = await fetchAllByTeamId(
+            Number(targetTeamId),
+            targetUrl
+          );
         }
 
         return { ...response, teamPlacements };

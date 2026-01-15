@@ -13,7 +13,10 @@ export function useEquipmentPlacementApi() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchAllByTeamId = useCallback(
-    async (teamId: number, overrideUrl?: string): Promise<EquipmentPlacement[] | null> => {
+    async (
+      teamId: number,
+      overrideUrl?: string
+    ): Promise<EquipmentPlacement[] | null> => {
       setLoading(true);
       setError(null);
       const targetUrl = overrideUrl || url;

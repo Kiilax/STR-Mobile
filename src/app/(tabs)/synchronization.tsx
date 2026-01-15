@@ -63,7 +63,7 @@ export default function SynchronizationScreen() {
             await setCurrentTeamId(foundTeamId);
           }
 
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
 
           navigation.getParent()?.navigate("index");
         } catch (error) {

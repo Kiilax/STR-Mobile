@@ -8,9 +8,9 @@ import { useEventDataStore } from "@/hooks/useEventDataStore";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 
 export default function TabNav() {
-  const { eventData, eventDataLoading } = useEventDataStore();
+  const { eventData } = useEventDataStore();
   const { eventId } = useEventIdStore();
-  
+
   const getTitle = () => {
     if (eventData?.title) {
       return `Évènement : ${eventData.title}`;
@@ -20,7 +20,7 @@ export default function TabNav() {
     }
     return "Évènement : Aucun";
   };
-  
+
   const headerTitle = getTitle();
 
   return (
