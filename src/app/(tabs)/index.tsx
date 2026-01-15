@@ -8,7 +8,7 @@ import MapView, {
   Polyline,
   PROVIDER_DEFAULT,
 } from "react-native-maps";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Fragment } from "react";
 import { ModalWrapper, ErrorModal, Button } from "@/components";
 import EquipmentActions from "@/components/equipment-actions/equipment-actions";
 import {
@@ -153,52 +153,46 @@ export default function MapScreen() {
               const fillColor = marker.isVisited
                 ? "rgba(0,255,0,0.3)"
                 : "rgba(255,0,0,0.3)";
-              if (marker.coordinates.length === 1) {
-                return (
+
+              return (
+                <Fragment key={marker.id}>
                   <Marker
-                    key={marker.id}
                     coordinate={marker.coordinates[0]}
                     image={
-                      marker.isVisited
-                        ? require("@/assets/markers/md-gr.png")
-                        : equipment?.image
+                      equipment?.image ||
+                      require("@/assets/markers/item-md.png")
                     }
                     onPress={() => {
                       setShowModal(true);
                       setEquipmentPlacementId(marker.id);
                     }}
                   />
-                );
-              }
-              if (isVehicle) {
-                return (
-                  <Polygon
-                    key={marker.id}
-                    coordinates={marker.coordinates}
-                    strokeColor={strokeColor}
-                    fillColor={fillColor}
-                    strokeWidth={2}
-                    tappable
-                    onPress={() => {
-                      setShowModal(true);
-                      setEquipmentPlacementId(marker.id);
-                    }}
-                  />
-                );
-              }
-
-              return (
-                <Polyline
-                  key={marker.id}
-                  coordinates={marker.coordinates}
-                  strokeColor={strokeColor}
-                  strokeWidth={2}
-                  tappable
-                  onPress={() => {
-                    setShowModal(true);
-                    setEquipmentPlacementId(marker.id);
-                  }}
-                />
+                  {marker.coordinates.length > 1 && isVehicle && (
+                    <Polygon
+                      coordinates={marker.coordinates}
+                      strokeColor={strokeColor}
+                      fillColor={fillColor}
+                      strokeWidth={2}
+                      tappable
+                      onPress={() => {
+                        setShowModal(true);
+                        setEquipmentPlacementId(marker.id);
+                      }}
+                    />
+                  )}
+                  {marker.coordinates.length > 1 && !isVehicle && (
+                    <Polyline
+                      coordinates={marker.coordinates}
+                      strokeColor={strokeColor}
+                      strokeWidth={2}
+                      tappable
+                      onPress={() => {
+                        setShowModal(true);
+                        setEquipmentPlacementId(marker.id);
+                      }}
+                    />
+                  )}
+                </Fragment>
               );
             })}
 
