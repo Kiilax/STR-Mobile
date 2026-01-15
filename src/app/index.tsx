@@ -87,7 +87,11 @@ export default function EventScanner() {
       const foundTeamId = useQRCodeStore.getState().scannedTeamId;
 
       if (foundUrl && foundEventId) {
-        await handleReceiveEvent(foundUrl, foundEventId);
+        await handleReceiveEvent(
+          foundUrl,
+          foundEventId,
+          foundTeamId || undefined
+        );
 
         if (foundTeamId) {
           await setCurrentTeamId(foundTeamId);
