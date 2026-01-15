@@ -6,7 +6,7 @@ import {
   LoadingModal,
 } from "@/components";
 import { StyleSheet, Image, View } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useEventIdStore } from "@/hooks/useEventIdStore";
 import { useTeamActionsStore } from "@/hooks/useTeamActionsStore";
@@ -14,9 +14,12 @@ import { colors } from "@/constants/theme";
 import { useQrCode, useSynchronization } from "@/modules/synchronization/hooks";
 import { QRCodeContent } from "@/types/qrCodeContent";
 import { useAlertModal, useLoadingModal } from "@/hooks";
+import { useUrlStore } from "@/hooks/useUrlStore";
+import useQRCodeStore from "@/hooks/useQRCodeStore";
 
 export default function EventScanner() {
   const [showQRScanner, setShowQRScanner] = useState(false);
+  const isProcessingRef = useRef(false);
   const { eventId, eventIdLoading } = useEventIdStore();
   const hasNavigated = useRef(false);
   const router = useRouter();
@@ -26,48 +29,15 @@ export default function EventScanner() {
 
   const { setCurrentTeamId } = useTeamActionsStore();
 
-  const onUrlFound = useCallback(
-    async (
-      foundUrl: string,
-      foundEventId: number,
-      foundTeamId: string | null
-    ) => {
-      if (hasNavigated.current) return;
-      hasNavigated.current = true;
-
-      await handleReceiveEvent(foundUrl, foundEventId);
-
-      if (foundTeamId) {
-        await setCurrentTeamId(foundTeamId);
-      }
-
-      router.navigate({
-        pathname: "/(tabs)",
-        params: { zoomToEvent: "true" },
-      });
-    },
-    [handleReceiveEvent, setCurrentTeamId, router]
-  );
-
   const { handleQRScanResult } = useQrCode({
-    onUrlFound,
     onError: showError,
-    onLoadingStart: useCallback(
-      () =>
-        showLoading(
-          "Connexion en cours",
-          "Vérification de la connexion au serveur..."
-        ),
-      [showLoading]
-    ),
-    onLoadingEnd: hideLoading,
   });
 
   const handleCloseScanner = () => {
     setShowQRScanner(false);
   };
 
-  const handleScan = (parsedData: QRCodeContent | null) => {
+  const handleScan = async (parsedData: QRCodeContent | null) => {
     if (!parsedData) {
       showError(
         "Erreur",
@@ -95,13 +65,59 @@ export default function EventScanner() {
       return;
     }
 
-    handleQRScanResult(JSON.stringify(parsedData));
+    setShowQRScanner(false);
+    isProcessingRef.current = true;
+    showLoading(
+      "Connexion en cours",
+      "Vérification de la connexion au serveur..."
+    );
+
+    const success = await handleQRScanResult(JSON.stringify(parsedData));
+
+    if (success) {
+      if (hasNavigated.current) {
+        hideLoading();
+        isProcessingRef.current = false;
+        return;
+      }
+      hasNavigated.current = true;
+
+      const foundUrl = useUrlStore.getState().url;
+      const foundEventId = useQRCodeStore.getState().scannedEventId;
+      const foundTeamId = useQRCodeStore.getState().scannedTeamId;
+
+      if (foundUrl && foundEventId) {
+        await handleReceiveEvent(foundUrl, foundEventId);
+
+        if (foundTeamId) {
+          await setCurrentTeamId(foundTeamId);
+        }
+      }
+
+      hideLoading();
+      isProcessingRef.current = false;
+      router.navigate({
+        pathname: "/(tabs)",
+        params: { zoomToEvent: "true" },
+      });
+    } else {
+      hideLoading();
+      isProcessingRef.current = false;
+    }
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      hasNavigated.current = false;
+      isProcessingRef.current = false;
+    }, [])
+  );
+
   useEffect(() => {
-    if (eventIdLoading) return;
+    if (eventIdLoading || isProcessingRef.current) return;
 
     if (!eventId) {
+      hasNavigated.current = false;
       setShowQRScanner(true);
     } else {
       router.replace({

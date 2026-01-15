@@ -171,9 +171,8 @@ export function useSynchronization(): UseSynchronizationReturn {
           const targetTeamId =
             overrideTeamId || useTeamActionsStore.getState().currentTeamId;
 
-          if (targetTeamId) {
-            rawPlacements =
-              useEquipmentPlacementStore.getState().equipmentPlacements;
+          if (targetTeamId && event.teamPlacements) {
+            rawPlacements = event.teamPlacements;
           }
 
           const processedPlacements = processPlacements(rawPlacements);

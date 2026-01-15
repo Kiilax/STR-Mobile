@@ -52,19 +52,26 @@ export default function SynchronizationScreen() {
         foundEventId: number,
         foundTeamId: string | null
       ) => {
-        await handleReceiveEvent(
-          foundUrl,
-          foundEventId,
-          foundTeamId || undefined
-        );
+        try {
+          await handleReceiveEvent(
+            foundUrl,
+            foundEventId,
+            foundTeamId || undefined
+          );
 
-        if (foundTeamId) {
-          await setCurrentTeamId(foundTeamId);
+          if (foundTeamId) {
+            await setCurrentTeamId(foundTeamId);
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 100));
+
+          navigation.getParent()?.navigate("index");
+        } catch (error) {
+          console.error("Erreur lors de la réception de l'événement:", error);
+          showError("Erreur", "Impossible de charger l'événement");
         }
-
-        navigation.getParent()?.navigate("index");
       },
-      [handleReceiveEvent, setCurrentTeamId, navigation]
+      [handleReceiveEvent, setCurrentTeamId, navigation, showError]
     ),
     onError: showError,
     onLoadingStart: useCallback(
@@ -78,7 +85,7 @@ export default function SynchronizationScreen() {
     onLoadingEnd: hideLoading,
   });
 
-  const handleScan = (parsedData: QRCodeContent | null) => {
+  const handleScan = async (parsedData: QRCodeContent | null) => {
     if (!parsedData) {
       showError("Erreur", "QR Code invalide ou format non reconnu");
       return;
@@ -100,7 +107,8 @@ export default function SynchronizationScreen() {
       return;
     }
 
-    handleQRScanResult(parsedData);
+    setShowQRScanner(false);
+    await handleQRScanResult(parsedData);
   };
 
   const handleRescanPress = () => {
