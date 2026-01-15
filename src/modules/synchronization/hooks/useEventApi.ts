@@ -49,10 +49,12 @@ export function useEventApi() {
 
         await fetchAll(targetUrl);
 
-        if (targetTeamId)
-          await fetchAllByTeamId(Number(targetTeamId), targetUrl);
+        let teamPlacements = null;
+        if (targetTeamId) {
+          teamPlacements = await fetchAllByTeamId(Number(targetTeamId), targetUrl);
+        }
 
-        return response;
+        return { ...response, teamPlacements };
       } catch (err: any) {
         setError(err.message || "Failed to fetch event");
         throw err;
