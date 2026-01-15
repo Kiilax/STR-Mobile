@@ -40,7 +40,10 @@ export default function MapScreen() {
         return true;
       };
 
-      const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
 
       return () => backHandler.remove();
     }, [])
