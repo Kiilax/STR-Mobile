@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, BackHandler } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useMap } from "@/modules/map/hooks";
 import { colors, darkTheme, typography } from "@/constants/theme";
@@ -8,7 +8,7 @@ import MapView, {
   Polyline,
   PROVIDER_DEFAULT,
 } from "react-native-maps";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { ModalWrapper, ErrorModal, Button } from "@/components";
 import EquipmentActions from "@/components/equipment-actions/equipment-actions";
 import {
@@ -18,7 +18,7 @@ import {
   useAlertModal,
 } from "@/hooks";
 import { useEquipmentPlacementStore } from "@/hooks/useEquipementPlacmentStore";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useFocusEffect } from "expo-router";
 
 const mapStyle = [
   {
@@ -33,6 +33,18 @@ export default function MapScreen() {
   const { eventData } = useEventDataStore();
   const [showModal, setShowModal] = useState(false);
   const { alertState, showError, hideAlert } = useAlertModal();
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () => backHandler.remove();
+    }, [])
+  );
 
   const {
     zones,
