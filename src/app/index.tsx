@@ -136,7 +136,7 @@ export default function EventScanner() {
       <View style={styles.loadingContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("@assets/images/stras-ta-route.webp")}
+            source={require("@assets/images/stras-ta-route.png")}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -149,7 +149,7 @@ export default function EventScanner() {
     <View style={styles.loadingContainer}>
       <View style={styles.logoContainer}>
         <Image
-          source={require("@assets/images/stras-ta-route.webp")}
+          source={require("@assets/images/stras-ta-route.png")}
           style={styles.logo}
           resizeMode="contain"
         />
