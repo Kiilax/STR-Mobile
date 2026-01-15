@@ -35,7 +35,9 @@ export const useEventIdStore = create<EventIdState>((set, get) => ({
       set({ eventId: null });
       await AsyncStore.remove(keys.eventId);
     } catch (err) {
-      console.error("Error removing eventId", err);
+      const error = err instanceof Error ? err : new Error("Unknown error");
+      set({ eventIdError: error });
+      await get().refreshEventId();
     }
   },
 
