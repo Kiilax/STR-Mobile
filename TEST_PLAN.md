@@ -1,3 +1,5 @@
+Convertir en pdf une fois totalement fini : https://www.markdowntopdf.com/
+
 # Plan de Test
 
 Ce document recense les tests existants et justifie la stratégie de test actuelle, en soulignant les défis liés au test du reste de l'application.
@@ -6,22 +8,33 @@ Ce document recense les tests existants et justifie la stratégie de test actuel
 
 Les tests actuels se concentrent sur les **fonctions utilitaires** et les **modules isolés**. Ces parties du code sont "pures" ou ont des dépendances facilement mockables, ce qui garantit des tests fiables et rapides.
 
-### Utilitaires et Logique Métier
+### Détail des Fonctions Testées
 
-| Fichier                         | Description                                                                   | Couverture | Justification                                                                                 |
-| :------------------------------ | :---------------------------------------------------------------------------- | :--------- | :-------------------------------------------------------------------------------------------- |
-| `addressConverter-test.ts`    | Conversion et formatage des adresses.                                         | Unit       | Fonction pure sans état, critique pour l'affichage correct des adresses.                     |
-| `eventBounds-test.ts`         | Calcul des limites géographiques (bounds) pour la carte.                     | Unit       | Logique mathématique complexe indispensable pour le centrage automatique de la carte.        |
-| `rectangleCalculator-test.ts` | Calcul géométrique des rectangles de véhicules à partir des coordonnées. | Unit       | Géométrie critique pour le rendu visuel des véhicules; sujet aux erreurs de calcul manuel. |
+Voici la liste exhaustive des fonctions couvertes par les tests unitaires, avec leurs signatures et la justification du test.
 
-### Infrastructure et Stockage
+#### A. Utilitaires et Logique Métier
 
-| Fichier                    | Description                                                                                              | Couverture         | Justification                                                                                                                          |
-| :------------------------- | :------------------------------------------------------------------------------------------------------- | :----------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
-| `asyncStore-test.ts`     | Wrapper autour de `AsyncStorage`. Vérifie la persistance, la lecture et la gestion des erreurs.       | Unit / Integration | Brique infrastructurelle de base; garantit que la persistance des données fonctionne correctement.                                    |
-| `imageStorage-test.ts`   | Logique de sauvegarde et récupération des images locales.                                              | Unit               | Gestion critique des fichiers hors-ligne; permet de valider la logique de nommage et d'écrasement sans manipuler de vrais fichiers.   |
-| `fileDownloader-test.ts` | Logique de téléchargement de fichiers.                                                                 | Unit               | Assure que la logique de téléchargement gère bien les erreurs et les chemins d'accès.                                              |
-| `proxyApi-test.ts`       | Client API. Vérifie la construction des requêtes et la gestion des réponses HTTP (200, 404, erreurs). | Unit               | Point d'entrée unique de l'API; permet de simuler tous les codes d'erreur HTTP (400, 404, 500) difficiles à reproduire manuellement. |
+| Fichier / Module | Fonction | Signature | Scénarios Testés | Justification |
+| :--- | :--- | :--- | :--- | :--- |
+| **`addressConverter`** | `convertToAddress` | `(coords: Coordinates) => Promise<string \| undefined>` | - Succès (retourne l'adresse)<br>- Erreur (gère l'exception API) | Transformation critique pour l'affichage humain des lieux. |
+| | `convertToCoordinates` | `(address: string) => Promise<Coordinates \| undefined>` | - Succès (retourne lat/long)<br>- Erreur (gère l'exception API) | Indispensable pour placer une adresse sur la carte. |
+| **`eventBounds`** | `calculateEventBounds` | `(event: Event \| null) => Region \| null` | - Event null/vide<br>- Zones seules<br>- Parcours seuls<br>- Points d'intérêt seuls<br>- Mixte<br>- Delta minimum (0.01) | Algorithme complexe de géométrie pour centrer la carte. Les cas limites (vide, point unique) sont fréquents. |
+| **`rectangleCalculator`** | `getVehicleRect` | `(placement: EquipmentPlacement) => Coordinates[] \| null` | - Véhicule valide (calcule 4 coins)<br>- Équipement introuvable<br>- Coordonnées insuffisantes | Garantit que les véhicules sont dessinés correctement (rectangles orientés) et non comme de simples points. |
+
+#### B. Infrastructure et Stockage
+
+| Fichier / Module | Fonction | Signature | Scénarios Testés | Justification |
+| :--- | :--- | :--- | :--- | :--- |
+| **`AsyncStore`** | `get<T>` | `(key: Keys, defaultValue: T) => Promise<T>` | - Item existe (parse JSON)<br>- Item inexistant (retourne default)<br>- Erreur de lecture | Lecture robuste de la configuration/état local. |
+| | `set<T>` | `(key: Keys, value: T) => Promise<void>` | - Succès (stringify JSON)<br>- Gestion d'erreur | Écriture sécurisée pour éviter la corruption de données. |
+| | `update<T>` | `(key: Keys, initial: T, updater: (prev: T) => T) => Promise<T>` | - Mise à jour atomique simulée | Permet de modifier une partie de l'état sans tout écraser. |
+| | `remove` | `(key: Keys) => Promise<void>` | - Suppression simple | Nettoyage propre des données. |
+| | `clear` | `() => Promise<void>` | - Vidage complet | Réinitialisation (ex: dissociation). |
+| **`ImageStorage`** | `save` | `(uri: string) => Promise<string \| null>` | - Écrasement (fichier existant)<br>- Nouveau fichier<br>- Erreur copie | Gestion complexe du système de fichiers (déplacement, suppression préalable). Critique pour le mode hors-ligne. |
+| | `remove` | `(uri: string) => Promise<boolean \| undefined>` | - Fichier existant<br>- Fichier inexistant<br>- Erreur suppression | Évite l'accumulation de fichiers orphelins. |
+| **`FileDownloader`** | `download` | `(url: string, endpoint: string) => Promise<string>` | - Succès (200 + sauvegarde)<br>- Nom de fichier (Content-Disposition)<br>- Erreur Réseau<br>- Erreur HTTP (404...) | Brique de base pour récupérer les assets. Doit être résiliente aux pannes réseau. |
+| **`ProxyApi`** | `request` | `(url: string, endpoint: string, options: any) => Promise<any>` | - 200 OK<br>- 404 Not Found<br>- Erreur logique API (`success: false`)<br>- 204 No Content | Centralise la gestion des erreurs API. Essentiel pour uniformiser le comportement de l'app face au serveur. |
+| | `get`, `post`, `patch`, `delete` | `(helpers)` | - Vérification des méthodes HTTP et headers | Wrappers syntaxiques pour simplifier les appels. |
 
 ---
 
