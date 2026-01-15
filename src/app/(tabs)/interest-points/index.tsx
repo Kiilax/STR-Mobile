@@ -51,7 +51,10 @@ export default function InterestPointsScreen() {
             ]}
           >
             {hasImage ? (
-              <Image source={{ uri: item.images[0] }} style={styles.cardImage} />
+              <Image
+                source={{ uri: item.images[0] }}
+                style={styles.cardImage}
+              />
             ) : (
               <Ionicons
                 name="location-outline"

@@ -192,8 +192,8 @@ export default function SynchronizationScreen() {
                     status === "syncing"
                       ? "Synchronisation..."
                       : pointsToSync > 0
-                        ? "Envoyer maintenant"
-                        : "Tout est synchronisé"
+                      ? "Envoyer maintenant"
+                      : "Tout est synchronisé"
                   }
                   variant={pointsToSync === 0 ? "secondary" : "primary"}
                   onPress={handleSendInterestPoints}
