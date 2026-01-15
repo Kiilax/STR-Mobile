@@ -5,10 +5,23 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { darkTheme } from "@/constants/theme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useEventDataStore } from "@/hooks/useEventDataStore";
+import { useEventIdStore } from "@/hooks/useEventIdStore";
 
 export default function TabNav() {
-  const { eventData } = useEventDataStore();
-  const title = eventData?.title;
+  const { eventData, eventDataLoading } = useEventDataStore();
+  const { eventId } = useEventIdStore();
+  
+  const getTitle = () => {
+    if (eventData?.title) {
+      return `Évènement : ${eventData.title}`;
+    }
+    if (eventId && !eventData) {
+      return "Évènement : Chargement...";
+    }
+    return "Évènement : Aucun";
+  };
+  
+  const headerTitle = getTitle();
 
   return (
     <SafeAreaProvider>
@@ -22,7 +35,7 @@ export default function TabNav() {
             name="index"
             options={{
               headerShown: true,
-              title: "Évènement :" + (title ? ` ${title}` : " Aucun"),
+              title: headerTitle,
               tabBarLabel: "Carte",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="map" size={size} color={color} />
@@ -33,7 +46,7 @@ export default function TabNav() {
             name="interest-points"
             options={{
               headerShown: true,
-              title: "Évènement :" + (title ? ` ${title}` : " Aucun"),
+              title: headerTitle,
               tabBarLabel: "Points à sécuriser",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="location" size={size} color={color} />
@@ -44,7 +57,7 @@ export default function TabNav() {
             name="synchronization"
             options={{
               headerShown: true,
-              title: "Évènement :" + (title ? ` ${title}` : " Aucun"),
+              title: headerTitle,
               tabBarLabel: "Évènement",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="calendar" size={size} color={color} />
@@ -54,8 +67,8 @@ export default function TabNav() {
           <Tabs.Screen
             name="teamActions"
             options={{
-              headerShown: true,
-              title: "Évènement :" + (title ? ` ${title}` : " Aucun"),
+              headerShown: false,
+              title: headerTitle,
               tabBarLabel: "Planning",
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="list" size={size} color={color} />
