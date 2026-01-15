@@ -282,6 +282,11 @@ const styles = StyleSheet.create({
     right: 20,
     bottom: 95,
     borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
   },
   tourFab: {
     bottom: 160,

@@ -194,27 +194,33 @@ export default function SynchronizationScreen() {
                 </Text>
               </View>
 
-              <Button
-                title={
-                  status === "syncing"
-                    ? "Synchronisation..."
-                    : pointsToSync > 0
-                    ? "Envoyer maintenant"
-                    : "Tout est synchronisé"
-                }
-                variant={pointsToSync === 0 ? "secondary" : "primary"}
-                onPress={handleSendInterestPoints}
-                disabled={!canSync || status === "syncing"}
-                loading={status === "syncing"}
-                fullWidth
-              />
-
+              {pointsToSync > 0 && (
+                <Button
+                  title={
+                    status === "syncing"
+                      ? "Synchronisation..."
+                      : pointsToSync > 0
+                      ? "Envoyer maintenant"
+                      : "Tout est synchronisé"
+                  }
+                  variant={pointsToSync === 0 ? "secondary" : "primary"}
+                  onPress={handleSendInterestPoints}
+                  disabled={!canSync || status === "syncing"}
+                  loading={status === "syncing"}
+                  fullWidth
+                />
+              )}
               <Button
                 title="Mettre à jour l'évènement"
                 variant="secondary"
                 onPress={handleRescanPress}
                 fullWidth
-                style={styles.rescanButton}
+              />
+              <Button
+                title="Dissocier l'évènement"
+                variant="danger"
+                onPress={handleDissociateAndExit}
+                fullWidth
               />
             </View>
 
@@ -237,13 +243,6 @@ export default function SynchronizationScreen() {
                   <Text style={styles.statusText}>{message}</Text>
                 </View>
               )}
-
-              <Button
-                title="Dissocier l'évènement"
-                variant="danger"
-                onPress={handleDissociateAndExit}
-                fullWidth
-              />
             </View>
           </>
         )}
