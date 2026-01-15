@@ -269,10 +269,6 @@ export default function TeamActionsScreen() {
       ) : (
         <View style={{ flex: 1 }}>
           <View style={styles.dashboardContainer}>
-            <View style={styles.simpleHeader}>
-              <Text style={styles.teamTitleLarge}>Équipe {currentTeamId}</Text>
-            </View>
-
             <View style={styles.listContainer}>
               {loadingActions ? (
                 <View style={styles.centerContent}>

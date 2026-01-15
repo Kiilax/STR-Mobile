@@ -114,9 +114,6 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     opacity: 0.9,
   },
-  rescanButton: {
-    marginTop: 12,
-  },
   icon: {
     opacity: 0.5,
     marginBottom: 24,

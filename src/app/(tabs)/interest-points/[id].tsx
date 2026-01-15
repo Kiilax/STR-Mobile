@@ -12,7 +12,8 @@ import {
   TextInput,
   Pressable,
 } from "react-native";
-import { colors } from "@/constants/theme";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { colors, typography } from "@/constants/theme";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
@@ -22,7 +23,7 @@ import { ImageStorage } from "@/utils";
 import { useInterestPointsStore } from "@/hooks/useInterestPointsStore";
 import { useEquipmentsStore } from "@/hooks/useEquipmentsStore";
 import { useAlertModal } from "@/hooks";
-import { ErrorModal } from "@/components";
+import { ErrorModal, Button } from "@/components";
 
 export default function InterestPointDetailsScreen() {
   const { id } = useLocalSearchParams();
@@ -63,7 +64,7 @@ export default function InterestPointDetailsScreen() {
 
   if (!interestPoints) {
     return (
-      <View style={styles.container}>
+      <View style={styles.centerContent}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
         <Text style={styles.loadingText}>
           Chargement du point à sécuriser...
@@ -74,24 +75,24 @@ export default function InterestPointDetailsScreen() {
 
   if (!selectedInterestPoint) {
     return (
-      <View style={styles.container}>
-        <View style={styles.errorContainer}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centerContent}>
           <Ionicons name="alert-circle" size={48} color={colors.dark.accent} />
           <Text style={styles.errorText}>Point à sécuriser non trouvé</Text>
-          <TouchableOpacity
-            style={styles.backButton}
+          <Button
+            title="Retour"
             onPress={() => router.back()}
-          >
-            <Text style={styles.backButtonText}>Retour</Text>
-          </TouchableOpacity>
+            variant="secondary"
+            style={styles.backButton}
+          />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (!interestPoint) {
     return (
-      <View style={styles.container}>
+      <View style={styles.centerContent}>
         <ActivityIndicator size="large" color={colors.dark.tint} />
         <Text style={styles.loadingText}>
           Chargement du point à sécuriser...
@@ -227,39 +228,51 @@ export default function InterestPointDetailsScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
+    <SafeAreaView style={styles.container} edges={["left", "right"]}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header avec boutons d'action */}
-        <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <Text style={styles.comment}>{interestPoint.comment}</Text>
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View style={styles.iconContainer}>
+              <Ionicons
+                name="location-outline"
+                size={24}
+                color={colors.dark.tint}
+              />
+            </View>
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.headerTitle}>{interestPoint.address}</Text>
+            </View>
             <View style={styles.headerActions}>
               <TouchableOpacity
-                style={styles.editButton}
+                style={styles.actionButton}
                 onPress={() => setEditModalVisible(true)}
               >
                 <Ionicons name="pencil" size={20} color={colors.dark.tint} />
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.deleteButton}
+                style={styles.actionButton}
                 onPress={deleteInterestPoint}
               >
-                <Ionicons name="trash" size={20} color="#b14" />
+                <Ionicons name="trash-outline" size={20} color="#F44336" />
               </TouchableOpacity>
             </View>
           </View>
-          {interestPoint.address && (
-            <View style={styles.addressContainer}>
-              <Ionicons name="location" size={16} color={colors.dark.tint} />
-              <Text style={styles.addressText}>{interestPoint.address}</Text>
-            </View>
-          )}
+
+          <View style={styles.divider} />
+
+          <View style={styles.cardContent}>
+            <Text style={styles.label}>Commentaire</Text>
+            <Text style={styles.commentText}>
+              {interestPoint.comment || "Aucun commentaire"}
+            </Text>
+          </View>
         </View>
 
         {/* Section Images */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Images</Text>
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>Images</Text>
             <TouchableOpacity
               style={styles.addButton}
               onPress={() => setImagePickerModalVisible(true)}
@@ -269,9 +282,9 @@ export default function InterestPointDetailsScreen() {
           </View>
 
           {interestPoint.images && interestPoint.images.length > 0 ? (
-            <View style={styles.imagesContainer}>
+            <View style={styles.imagesWrapper}>
               <Carousel
-                width={width - 40}
+                width={width - 64} // Padding: 20 (screen) + 12 (card) * 2 approx
                 height={250}
                 data={interestPoint.images.map((uri, index) => ({
                   uri,
@@ -307,70 +320,70 @@ export default function InterestPointDetailsScreen() {
                 <Text style={styles.imageCounter}>
                   {currentImageIndex + 1} / {interestPoint.images.length}
                 </Text>
-                <Text style={styles.indicatorText}>
-                  Glissez pour naviguer entre les images
-                </Text>
               </View>
             </View>
           ) : (
-            <View style={styles.noImagesContainer}>
-              <Text style={styles.noImagesText}>Aucune image</Text>
+            <View style={styles.emptyStateContainer}>
+              <Text style={styles.emptyStateText}>Aucune image</Text>
               <TouchableOpacity
-                style={styles.addImageButton}
+                style={styles.dashedButton}
                 onPress={() => setImagePickerModalVisible(true)}
               >
-                <Ionicons name="images" size={24} color={colors.dark.tint} />
-                <Text style={styles.addImageText}>Ajouter une image</Text>
+                <Ionicons
+                  name="camera-outline"
+                  size={24}
+                  color={colors.dark.tint}
+                />
+                <Text style={styles.dashedButtonText}>Ajouter une photo</Text>
               </TouchableOpacity>
             </View>
           )}
         </View>
 
+        {/* Section Équipements */}
         {selectedEquipments.length > 0 && (
-          <View style={styles.section}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.sectionTitle}>Équipements associés</Text>
-              <View style={styles.equipmentsContainer}>
-                {selectedEquipments.map((equipment, index) => (
-                  <View
-                    key={equipment.id}
-                    style={[
-                      styles.equipmentItem,
-                      index === selectedEquipments.length - 1 &&
-                        styles.lastEquipmentItem,
-                    ]}
-                  >
-                    <Image
-                      source={{ uri: equipment.image }}
-                      style={styles.equipmentImage}
-                    />
-
-                    <View style={styles.equipmentHeader}>
-                      <Text style={styles.equipmentName}>{equipment.name}</Text>
-                    </View>
-                    <Text style={styles.equipmentDescription}>
+          <View style={styles.card}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.cardTitle}>Équipements associés</Text>
+            </View>
+            <View style={styles.equipmentsList}>
+              {selectedEquipments.map((equipment, index) => (
+                <View
+                  key={equipment.id}
+                  style={[
+                    styles.equipmentItem,
+                    index === selectedEquipments.length - 1 &&
+                      styles.lastEquipmentItem,
+                  ]}
+                >
+                  <Image
+                    source={{ uri: equipment.image }}
+                    style={styles.equipmentImage}
+                  />
+                  <View style={styles.equipmentInfo}>
+                    <Text style={styles.equipmentName}>{equipment.name}</Text>
+                    <Text style={styles.equipmentDesc}>
                       {equipment.description}
                     </Text>
-                    <Text style={styles.equipmentDimensions}>
-                      Dimensions: {equipment.length} x {equipment.width} x{" "}
-                      {equipment.height}
+                    <Text style={styles.equipmentDims}>
+                      {equipment.length} x {equipment.width} x{" "}
+                      {equipment.height}m
                     </Text>
                   </View>
-                ))}
-              </View>
+                </View>
+              ))}
             </View>
           </View>
         )}
 
         {/* Bouton retour */}
-        <TouchableOpacity
-          style={styles.backButton}
+        <Button
+          title="Retour à la liste"
           onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={24} color={colors.dark.tint} />
-          <Text style={styles.backButtonText}>Retour</Text>
-        </TouchableOpacity>
-      </View>
+          icon={<Ionicons name="arrow-back" size={20} color="white" />}
+          variant="danger"
+        />
+      </ScrollView>
 
       {/* Modal d'édition du commentaire */}
       <Modal
@@ -424,7 +437,7 @@ export default function InterestPointDetailsScreen() {
                 style={styles.imagePickerOption}
                 onPress={pickImage}
               >
-                <Ionicons name="images" size={32} color={colors.dark.tint} />
+                <Ionicons name="images" size={24} color={colors.dark.tint} />
                 <Text style={styles.imagePickerOptionText}>
                   Choisir depuis la galerie
                 </Text>
@@ -448,130 +461,139 @@ export default function InterestPointDetailsScreen() {
         buttons={alertState.buttons}
         onClose={hideAlert}
       />
-    </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.dark.background || "#121212",
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+  centerContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
     backgroundColor: colors.dark.background,
   },
-  content: {
-    padding: 20,
+  loadingText: {
+    marginTop: 16,
+    color: colors.dark.inverted,
+    fontSize: typography.body.fontSize,
   },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    marginTop: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: colors.dark.secondary,
-    borderRadius: 8,
+  errorText: {
+    marginTop: 16,
+    color: colors.dark.inverted,
+    fontSize: typography.h3.fontSize,
+    textAlign: "center",
+  },
+
+  // CARD STYLES
+  card: {
+    backgroundColor: colors.dark.secondary || "#1E1E1E",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
     borderWidth: 1,
-    borderColor: colors.dark.accent,
+    borderColor: "rgba(255,255,255,0.05)",
   },
-  backButtonText: {
-    color: colors.dark.tint,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  header: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.dark.accent,
-    backgroundColor: colors.dark.secondary,
-    borderRadius: 4,
-    marginBottom: 12,
-    shadowColor: colors.dark.inverted,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 3,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.dark.accent,
-  },
-  headerContent: {
+  cardHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  cardTitle: {
+    color: colors.dark.text || "#FFFFFF",
+    fontSize: typography.h4.fontSize,
+    fontWeight: "600",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    marginVertical: 12,
+  },
+  cardContent: {
+    gap: 8,
+  },
+
+  // HEADER SPECIFIC
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(33, 150, 243, 0.1)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: "rgba(33, 150, 243, 0.3)",
+  },
+  headerTextContainer: {
+    flex: 1,
+    marginRight: 12,
+  },
+  headerTitle: {
+    color: colors.dark.text || "#FFFFFF",
+    fontSize: typography.body.fontSize,
+    fontWeight: "600",
+    lineHeight: 22,
   },
   headerActions: {
     flexDirection: "row",
-    gap: 12,
+    gap: 8,
   },
-  editButton: {
-    padding: 8,
+  actionButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  deleteButton: {
-    padding: 8,
+
+  // TEXT STYLES
+  label: {
+    color: colors.dark.text,
+    fontSize: 12,
+    opacity: 0.5,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 4,
   },
-  comment: {
-    flex: 1,
+  commentText: {
     color: colors.dark.inverted,
-    fontSize: 16,
+    fontSize: 15,
     lineHeight: 22,
-    marginRight: 12,
+    opacity: 0.9,
   },
-  addressContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 8,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: colors.dark.accent,
-  },
-  addressText: {
-    color: colors.dark.inverted,
-    fontSize: 13,
-    opacity: 0.8,
-    flex: 1,
-  },
-  section: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.dark.accent,
-    backgroundColor: colors.dark.secondary,
-    borderRadius: 4,
-    marginBottom: 12,
-    shadowColor: colors.dark.inverted,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 3,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.dark.accent,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  sectionTitle: {
-    color: colors.dark.inverted,
-    fontSize: 18,
-    fontWeight: "600",
-  },
+
+  // IMAGES
   addButton: {
-    padding: 4,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  imagesContainer: {
-    marginTop: 16,
+  imagesWrapper: {
+    alignItems: "center",
   },
   imageContainer: {
-    borderRadius: 4,
+    width: "100%",
+    borderRadius: 8,
     overflow: "hidden",
-    width: "85%",
-    position: "relative",
+    backgroundColor: "#000",
   },
   image: {
     width: "100%",
     height: 250,
-    backgroundColor: colors.dark.secondary,
   },
   deleteImageButton: {
     position: "absolute",
@@ -580,121 +602,142 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
     borderRadius: 12,
   },
-  noImagesContainer: {
-    alignItems: "center",
-    padding: 20,
-  },
-  noImagesText: {
-    color: colors.dark.inverted,
-    fontSize: 16,
-    marginBottom: 16,
-    opacity: 0.7,
-  },
-  addImageButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: colors.dark.tint,
-    borderRadius: 8,
-    borderStyle: "dashed",
-  },
-  addImageText: {
-    color: colors.dark.tint,
-    fontSize: 16,
-  },
   carouselIndicator: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
     marginTop: 12,
-    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderRadius: 12,
   },
   imageCounter: {
     color: colors.dark.inverted,
-    fontSize: 14,
-    fontWeight: "600",
-    opacity: 0.9,
-  },
-  indicatorText: {
-    color: colors.dark.inverted,
     fontSize: 12,
-    opacity: 0.7,
-    fontStyle: "italic",
+    fontWeight: "600",
   },
-  equipmentsContainer: {
-    marginTop: 8,
+  emptyStateContainer: {
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  emptyStateText: {
+    color: colors.dark.inverted,
+    fontSize: 14,
+    opacity: 0.5,
+    marginBottom: 12,
+  },
+  dashedButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    borderStyle: "dashed",
+    borderRadius: 8,
+  },
+  dashedButtonText: {
+    color: colors.dark.text,
+    fontSize: 14,
+  },
+
+  // EQUIPMENTS
+  equipmentsList: {
+    gap: 0,
   },
   equipmentItem: {
-    padding: 12,
+    flexDirection: "row",
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: colors.dark.accent,
-    marginBottom: 8,
+    borderBottomColor: "rgba(255,255,255,0.05)",
   },
   lastEquipmentItem: {
     borderBottomWidth: 0,
-    marginBottom: 0,
-  },
-  equipmentHeader: {
-    marginBottom: 4,
-  },
-  equipmentName: {
-    color: colors.dark.inverted,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  equipmentDescription: {
-    color: colors.dark.inverted,
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 4,
-    opacity: 0.9,
-  },
-  equipmentDimensions: {
-    color: colors.dark.inverted,
-    fontSize: 12,
-    opacity: 0.7,
-    fontStyle: "italic",
+    paddingBottom: 0,
   },
   equipmentImage: {
-    width: 48,
-    height: 48,
+    width: 50,
+    height: 50,
     borderRadius: 8,
-    marginTop: 8,
+    backgroundColor: "#333",
+    marginRight: 12,
   },
+  equipmentInfo: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  equipmentName: {
+    color: colors.dark.text,
+    fontSize: 15,
+    fontWeight: "600",
+    marginBottom: 2,
+  },
+  equipmentDesc: {
+    color: colors.dark.inverted,
+    fontSize: 13,
+    opacity: 0.7,
+    marginBottom: 2,
+  },
+  equipmentDims: {
+    color: colors.dark.inverted,
+    fontSize: 11,
+    opacity: 0.5,
+    fontStyle: "italic",
+  },
+
+  // COMMON BUTTONS
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.05)",
+  },
+  backButtonText: {
+    color: colors.dark.text,
+    fontSize: 15,
+    fontWeight: "600",
+    marginLeft: 8,
+  },
+
+  // MODALS
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.8)",
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
   modalContent: {
     backgroundColor: colors.dark.secondary,
-    borderRadius: 12,
-    padding: 20,
+    borderRadius: 16,
+    padding: 24,
     width: "100%",
     maxWidth: 400,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   modalTitle: {
     color: colors.dark.inverted,
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 16,
+    marginBottom: 20,
     textAlign: "center",
   },
   commentInput: {
-    backgroundColor: colors.dark.background,
+    backgroundColor: "rgba(0,0,0,0.2)",
     borderWidth: 1,
-    borderColor: colors.dark.accent,
-    borderRadius: 8,
-    padding: 12,
+    borderColor: "rgba(255,255,255,0.1)",
+    borderRadius: 12,
+    padding: 16,
     color: colors.dark.inverted,
     fontSize: 16,
-    minHeight: 100,
+    minHeight: 120,
     textAlignVertical: "top",
-    marginBottom: 20,
+    marginBottom: 24,
   },
   modalActions: {
     flexDirection: "row",
@@ -703,63 +746,47 @@ const styles = StyleSheet.create({
   },
   modalButton: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderRadius: 8,
-    minWidth: 80,
+    minWidth: 100,
     alignItems: "center",
+    justifyContent: "center",
   },
   cancelButton: {
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: colors.dark.accent,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   saveButton: {
     backgroundColor: colors.dark.tint,
   },
   cancelButtonText: {
     color: colors.dark.inverted,
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: "600",
   },
   saveButtonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
   },
   imagePickerOptions: {
-    gap: 16,
-    marginBottom: 20,
+    gap: 12,
+    marginBottom: 24,
   },
   imagePickerOption: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 16,
     padding: 16,
-    backgroundColor: colors.dark.background,
-    borderRadius: 8,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.dark.accent,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   imagePickerOptionText: {
     color: colors.dark.inverted,
     fontSize: 16,
-  },
-  loadingText: {
-    marginTop: 10,
-    color: colors.dark.inverted,
-    fontSize: 16,
-    textAlign: "center",
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  errorText: {
-    marginTop: 16,
-    color: colors.dark.inverted,
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 20,
+    fontWeight: "500",
   },
 });
