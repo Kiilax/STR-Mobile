@@ -36,10 +36,8 @@ export const useQrCode = ({
         typeof data === "string" ? JSON.parse(data) : data
       ) as QRCodeContent;
 
-      // Afficher le loading AVANT de commencer le traitement
       onLoadingStart?.();
 
-      // Petit délai pour s'assurer que le state React est mis à jour
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       const success = await processScanResult(parsedData);
