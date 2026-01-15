@@ -67,7 +67,7 @@ export default function TabNav() {
           <Tabs.Screen
             name="teamActions"
             options={{
-              headerShown: false,
+              headerShown: true,
               title: headerTitle,
               tabBarLabel: "Planning",
               tabBarIcon: ({ color, size }) => (
