@@ -27,6 +27,17 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          },
+          "ios": {
+            "flipper": true
+          }
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",
@@ -53,7 +64,10 @@
       "reactCompiler": true
     },
     "extra": {
-      "router": {}
+      "router": {},
+      "eas": {
+        "projectId": "c1d27493-f8ce-46aa-a943-fa810838e37d"
+      }
     }
   }
 }

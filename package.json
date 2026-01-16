@@ -28,6 +28,7 @@
     "eslint-plugin-react-native": "^5.0.0",
     "eslint-plugin-reactotron": "^0.1.9",
     "expo": "~54.0.31",
+    "expo-build-properties": "~1.0.10",
     "expo-camera": "~17.0.10",
     "expo-constants": "~18.0.10",
     "expo-file-system": "~19.0.18",
